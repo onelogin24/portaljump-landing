@@ -1,0 +1,408 @@
+/* ============ mobile first: stage in flow, chips become a snap row ============ */
+.root {
+  --S: min(118vw, 640px);
+  --D: calc(var(--S) * 0.9); /* globe diameter */
+  --pin: calc(var(--D) * 0.115);
+  position: relative;
+  z-index: 2;
+  width: var(--S);
+  margin-inline: calc((100% - var(--S)) / 2);
+  display: grid;
+  grid-template-rows: var(--S) auto;
+}
+
+.stage {
+  position: relative;
+  grid-row: 1;
+  width: var(--S);
+  height: var(--S);
+  margin: 0;
+  z-index: 2;
+  animation: stageIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+
+@keyframes stageIn {
+  from {
+    opacity: 0;
+    scale: 0.94;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.poster,
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.poster {
+  transition: opacity 0.45s ease 0.08s;
+}
+
+.canvas {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.ready .canvas {
+  opacity: 1;
+}
+
+.ready .poster {
+  opacity: 0;
+}
+
+/* ---------- layers around the globe ---------- */
+.ringsBack,
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ringsBack {
+  z-index: 1;
+}
+
+.overlay {
+  z-index: 4;
+}
+
+.ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;
+  opacity: 0.32;
+}
+
+.arc {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.68;
+}
+
+.node {
+  opacity: 0;
+}
+
+.nodeGlow {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+.nodeCore {
+  fill: #fff;
+}
+
+.chipLine {
+  display: none;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.4;
+  stroke-dasharray: 0.1 5;
+  stroke-linecap: round;
+  opacity: calc(var(--v, 0) * 0.85);
+  transition: stroke 0.2s ease;
+}
+
+.lineActive {
+  stroke: var(--c);
+  opacity: var(--v, 0);
+}
+
+/* one low soft bank tucked under the globe base */
+.cloudBase {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: calc(var(--S) / 2 + var(--D) * 0.27);
+  width: calc(var(--D) * 1.05);
+  height: auto;
+  translate: -50% 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* the drag target is just the globe disc, so the empty corners never swallow touches */
+.drag {
+  position: absolute;
+  z-index: 5;
+  left: calc(50% - var(--D) / 2);
+  top: calc(var(--S) / 2 - var(--D) / 2);
+  width: var(--D);
+  height: var(--D);
+  border-radius: 50%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.drag[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+/* ---------- avatars: 58px at the reference size, scaling with the globe ---------- */
+.pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  width: var(--pin);
+  height: var(--pin);
+  margin: calc(var(--pin) / -2) 0 0 calc(var(--pin) / -2);
+  pointer-events: none;
+  will-change: transform, opacity;
+  visibility: hidden;
+}
+
+.pinInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: scale 0.25s ease;
+}
+
+.pinInner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #dfe9fb;
+  box-shadow: 0 0 0 calc(var(--pin) * 0.052) #fff, 0 calc(var(--pin) * 0.12) calc(var(--pin) * 0.3) rgba(8, 30, 90, 0.32);
+  transition: box-shadow 0.25s ease;
+}
+
+.status {
+  position: absolute;
+  top: -3%;
+  right: -7%;
+  width: 24%;
+  height: 24%;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 0 calc(var(--pin) * 0.03) rgba(255, 255, 255, 0.55);
+}
+
+.pinActive {
+  scale: 1.12;
+}
+
+.pinActive img {
+  box-shadow: 0 0 0 calc(var(--pin) * 0.052) #fff, 0 0 0 calc(var(--pin) * 0.13) color-mix(in srgb, var(--dot) 55%, transparent), 0 calc(var(--pin) * 0.15) calc(var(--pin) * 0.35) rgba(8, 30, 90, 0.38);
+}
+
+/* ---------- chips: mobile snap row ---------- */
+.chips {
+  grid-row: 2;
+  position: relative;
+  z-index: 7;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 16px 14px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 16px;
+  scrollbar-width: none;
+  left: calc((var(--S) - 100vw) / 2);
+  width: 100vw;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chipPos {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(12, 42, 92, 0.52); /* the mobile row sits on pale sky, so it needs a deeper tint to stay legible */
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  animation: chipIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.3s + var(--i) * 0.05s) both;
+}
+
+.chip:hover,
+.chipActive {
+  border-color: #fff;
+}
+
+.chip:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.dot {
+  display: none;
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 10px var(--c);
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* ============ desktop: composition measured from the 1536x1024 reference ============ */
+@media (min-width: 1080px) {
+  .root {
+    /* hero-relative sizing: globe diameter is 55% of the hero height, capped by width */
+    container-type: size;
+    --D: min(55cqh, 40cqw);
+    --S: calc(var(--D) / 0.9);
+    --pin: calc(var(--D) * 0.0967);
+    position: absolute;
+    inset: 0;
+    width: auto;
+    margin: 0;
+    display: block;
+  }
+
+  .stage {
+    position: absolute;
+    left: calc(50.6% - var(--S) / 2);
+    top: calc(58% - var(--S) / 2);
+    width: var(--S);
+    height: var(--S);
+  }
+
+  .drag {
+    left: calc(50.6% - var(--D) / 2);
+    top: calc(58% - var(--D) / 2);
+  }
+
+  .cloudBase {
+    top: calc(58% + var(--D) * 0.27);
+    left: 50.6%;
+  }
+
+  .chips {
+    position: absolute;
+    inset: 0;
+    display: block;
+    left: 0;
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .chipPos {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 0;
+    height: 0;
+  }
+
+  .chip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .chip:hover,
+  .chipActive {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .dot {
+    display: block;
+  }
+
+  .chipPos[data-side='right'] .dot {
+    right: -14px;
+  }
+
+  .chipPos[data-side='left'] .dot {
+    left: -14px;
+  }
+
+  .chipLine {
+    display: inline;
+  }
+}
+
+/* poster capture (npm run poster): a bare 1280px globe on a transparent page */
+.root[data-poster] {
+  --S: 1280px;
+  --D: calc(var(--S) * 0.9);
+  container-type: normal;
+  position: relative;
+  inset: auto;
+  width: var(--S);
+  height: var(--S);
+  margin: 0;
+  display: block;
+}
+
+.root[data-poster] .stage {
+  position: relative;
+  left: auto;
+  top: auto;
+  animation: none;
+}
+
+.root[data-poster] .canvas {
+  opacity: 1;
+}
+
+.root[data-poster] .poster {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage,
+  .chip {
+    animation: none;
+  }
+  .canvas,
+  .poster {
+    transition: none;
+  }
+}

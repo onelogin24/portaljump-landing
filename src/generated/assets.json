@@ -1,0 +1,36 @@
+{
+  "avatars": [
+    "/avatars/maya.svg",
+    "/avatars/noah.svg",
+    "/avatars/zoe.svg",
+    "/avatars/kai.svg",
+    "/avatars/amira.svg",
+    "/avatars/leo.svg",
+    "/avatars/sven.svg",
+    "/avatars/priya.svg",
+    "/avatars/wei.svg",
+    "/avatars/jack.svg",
+    "/avatars/sofia.svg",
+    "/avatars/kofi.svg"
+  ],
+  "clouds": {
+    "left": {
+      "src": "/clouds/cloud-left.webp",
+      "small": "/clouds/cloud-left-560.webp",
+      "w": 1100,
+      "smallW": 560
+    },
+    "right": {
+      "src": "/clouds/cloud-right.webp",
+      "small": "/clouds/cloud-right-640.webp",
+      "w": 1280,
+      "smallW": 640
+    },
+    "base": {
+      "src": "/clouds/cloud-base.webp",
+      "small": "/clouds/cloud-base-450.webp",
+      "w": 900,
+      "smallW": 450
+    }
+  }
+}
