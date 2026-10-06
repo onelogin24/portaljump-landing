@@ -1,43 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { Check } from "lucide-react";
-import { story, type StoryStep } from "../content/site";
-import { MapPanel } from "./MapPanel";
+import { story } from "../content/site";
+import { Itinerary } from "./Itinerary";
 
-const INTERVAL_MS = 6000;
-
-function StoryCard({ step }: { step: StoryStep }) {
-  const { card } = step;
-  return (
-    <div className="story-card">
-      {card.kind === "list" ? (
-        <ul className="card ui-card list-card">
-          {card.items.map((i) => (
-            <li key={i}>
-              <span className="tick">
-                <Check size={12} strokeWidth={2.5} aria-hidden="true" />
-              </span>
-              {i}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="card ui-card">
-          <p className="card-title">{card.title}</p>
-          <p className="card-text">{card.text}</p>
-        </div>
-      )}
-      {step.chips && (
-        <ul className="chips left">
-          {step.chips.map((c) => (
-            <li key={c} className="chip">
-              {c}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
+const INTERVAL_MS = 9000;
 
 export function Story() {
   const [active, setActive] = useState(0);
@@ -112,13 +77,7 @@ export function Story() {
         ))}
       </div>
       <div id="story-panel" role="tabpanel" aria-labelledby={`tab-${active}`}>
-        <MapPanel active={active}>
-          {story.steps.map((s, i) => (
-            <div key={s.tab} aria-hidden={active !== i} className={`slide story-overlay ${active === i ? "active" : ""}`}>
-              <StoryCard step={s} />
-            </div>
-          ))}
-        </MapPanel>
+        <Itinerary active={active} />
       </div>
     </section>
   );

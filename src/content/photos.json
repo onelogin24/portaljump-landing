@@ -1,9 +1,33 @@
 {
+  "band": {
+    "width": 1600,
+    "height": 1066,
+    "smWidth": 1280,
+    "smHeight": 853
+  },
   "hero": {
     "width": 2560,
     "height": 1707,
     "smWidth": 1280,
     "smHeight": 853
+  },
+  "pick-golden": {
+    "width": 2560,
+    "height": 3840,
+    "smWidth": 1280,
+    "smHeight": 1920
+  },
+  "pick-miradouro": {
+    "width": 2560,
+    "height": 3840,
+    "smWidth": 1280,
+    "smHeight": 1920
+  },
+  "pick-nata": {
+    "width": 2560,
+    "height": 3044,
+    "smWidth": 1280,
+    "smHeight": 1522
   },
   "who-couples": {
     "width": 2560,
@@ -22,6 +46,12 @@
     "height": 1707,
     "smWidth": 1280,
     "smHeight": 853
+  },
+  "who-groups": {
+    "width": 2560,
+    "height": 1919,
+    "smWidth": 1280,
+    "smHeight": 959
   },
   "who-solo": {
     "width": 2560,

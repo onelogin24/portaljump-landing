@@ -20,7 +20,7 @@ export function Photo({ file, alt, sizes = "100vw", position = "center", eager, 
   const name = file.replace(/\.\w+$/, "");
   const m = meta[name];
   return (
-    <div className={`photo ${className}`}>
+    <div className={`photo ${m ? "has-img" : ""} ${className}`}>
       {!failed && m && (
         <picture>
           <source

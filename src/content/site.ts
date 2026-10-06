@@ -9,8 +9,8 @@ export const hero = {
   subline: "Bookings, plans, picks and reviews, pinned where they happen.",
   image: "hero.jpg",
   alt: "A traveller looking out over a sunlit coastal city",
-  trip: { title: "Lisbon, 5 days", meta: "2 stays, 1 flight, 9 places" },
-  flight: "Flight booked, Fri 9:40",
+  trip: { title: "Amalfi Coast, 5 days", meta: "2 stays, 1 ferry, 9 places" },
+  flight: "Ferry to Positano, Fri 9:40",
   chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
@@ -18,31 +18,13 @@ export type StoryStep = {
   tab: string;
   headline: [string, string];
   body: string;
-  chips?: string[];
-  card: { kind: "text"; title: string; text: string } | { kind: "list"; items: string[] };
 };
 
 export const story = {
   steps: [
-    {
-      tab: "Plan",
-      headline: ["Plan it", "like you."],
-      body: "Tell it how you travel. Every pick fits.",
-      chips: ["Street food first", "Walkable", "Kid friendly"],
-      card: { kind: "text", title: "Day 2", text: "Market, tram 28, castle, sunset at Graca" },
-    },
-    {
-      tab: "Book",
-      headline: ["Book it", "in one place."],
-      body: "Flights, stays and tables, kept together.",
-      card: { kind: "list", items: ["Flight", "Hotel", "Dinner"] },
-    },
-    {
-      tab: "Go",
-      headline: ["Go with", "the map."],
-      body: "Your plans, live on the map while you travel.",
-      card: { kind: "text", title: "Next: Time Out Market", text: "6 min walk" },
-    },
+    { tab: "Plan", headline: ["Plan it", "like you."], body: "Tell it how you travel. Every pick fits." },
+    { tab: "Book", headline: ["Book it", "in one place."], body: "Flights, stays and tables, kept together." },
+    { tab: "Go", headline: ["Go with", "the map."], body: "Your plans, live on the map while you travel." },
   ] as StoryStep[],
 };
 
@@ -54,27 +36,33 @@ export const features = {
     { lead: "Picks.", rest: "Places that fit your style.", kind: "picks" },
     { lead: "Reviews.", rest: "From people who went.", kind: "reviews" },
   ] as const,
+  confirmed: "Confirmed",
   bookings: [
-    { title: "Flight to Lisbon", date: "Fri 12 Jun, 9:40" },
-    { title: "Alfama Guesthouse", date: "12 to 17 Jun" },
-    { title: "Dinner at Taberna", date: "Sat 13 Jun, 20:00" },
+    { icon: "plane", title: "Flight to Lisbon", date: "Fri 12 Jun 9:40" },
+    { icon: "bed", title: "Alfama Guesthouse", date: "12 to 17 Jun" },
+    { icon: "fork", title: "Dinner at Taberna", date: "Sat 20:00" },
+    { icon: "ticket", title: "Tram 28 day pass", date: "Sun" },
+  ] as const,
+  picks: [
+    { image: "pick-nata.jpg", alt: "Pasteis de nata on a plate", name: "Pasteis de nata", tag: "Saved" },
+    { image: "pick-miradouro.jpg", alt: "Viewpoint over Lisbon rooftops", name: "Miradouro de Graca", tag: "Fits your style" },
+    { image: "pick-golden.jpg", alt: "A street in golden hour light", name: "Golden hour walk", tag: "Saved" },
   ],
-  picks: ["Time Out Market", "Miradouro", "Pasteis stop"],
-  review: {
-    text: "Easy walk from the tram, great for a slow lunch. Book ahead on weekends.",
-    meta: "Visited in May",
-  },
+  reviews: [
+    { text: "Slow lunch, easy walk from the tram.", meta: "Visited in May" },
+    { text: "Get there before 10. Quiet, cool, and the view is worth the climb.", meta: "Visited in June" },
+  ],
 };
 
 export const band = {
   image: "band.jpg",
-  alt: "A quiet temple garden in Kyoto at golden hour",
+  alt: "A quiet temple garden in Kyoto in autumn",
   card: {
-    title: "Kyoto trip",
+    title: "Kyoto, autumn",
     items: [
       { label: "Flight confirmed", done: true },
       { label: "Ryokan booked", done: true },
-      { label: "Tea class Saturday", done: false },
+      { label: "Tea ceremony Saturday", done: false },
     ],
   },
 };
@@ -85,7 +73,7 @@ export const who = {
     { name: "Solo", line: "Go where you want, when you want.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
     { name: "Couples", line: "Plan together, in one place.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
     { name: "Families", line: "Everyone's plans, one map.", image: "who-families.jpg", position: "center 50%", alt: "A family walking along a beach together" },
-    { name: "Groups", line: "No more group chat chaos.", image: "who-groups.jpg", position: "center 50%", alt: "A group of friends laughing around a table on holiday" },
+    { name: "Groups", line: "No more group chat chaos.", image: "who-groups.jpg", position: "center", alt: "A group of friends laughing around a table on holiday" },
     { name: "Creators", line: "Share the trips you love.", image: "who-creators.jpg", position: "center 50%", alt: "A creator filming a street scene on a trip" },
   ],
 };

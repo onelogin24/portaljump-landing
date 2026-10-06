@@ -5,7 +5,7 @@ import { Photo } from "./Photo";
 export function ImageBand() {
   return (
     <section className="section wrap" aria-label="Trip checklist example" data-reveal>
-      <Photo file={band.image} alt={band.alt} sizes="(min-width: 1248px) 1200px, 100vw" position="center 55%" className="band">
+      <Photo file={band.image} alt={band.alt} sizes="(min-width: 1248px) 1200px, 100vw" position="center 45%" className="band">
         <div className="card band-card">
           <p className="band-title">{band.card.title}</p>
           <ul>

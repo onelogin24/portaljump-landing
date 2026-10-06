@@ -1,15 +1,16 @@
+import type { CSSProperties } from "react";
 import { who } from "../content/site";
 import { Photo } from "./Photo";
 
 export function WhoFor() {
   return (
-    <section className="section wrap" aria-labelledby="who-title" data-reveal>
-      <h2 id="who-title" className="h-xl">
+    <section className="section wrap" aria-labelledby="who-title">
+      <h2 id="who-title" className="h-xl" data-reveal>
         {who.headline}
       </h2>
       <ul className="who-row">
-        {who.items.map((w) => (
-          <li key={w.name}>
+        {who.items.map((w, i) => (
+          <li key={w.name} data-reveal style={{ "--i": i } as CSSProperties}>
             <Photo file={w.image} alt={w.alt} sizes="(min-width: 1024px) 232px, 260px" position={w.position} className="who-card">
               <div className="who-shade" />
               <div className="who-text">

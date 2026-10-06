@@ -1,77 +1,94 @@
-import { Star } from "lucide-react";
+import type { CSSProperties } from "react";
+import { Bed, Plane, Star, Ticket, Utensils } from "lucide-react";
 import { features } from "../content/site";
+import { MapPin, MapStage, points, smoothPath } from "./MapStage";
+import { Photo } from "./Photo";
 
-const gradients = ["#EDE6DA,#D9CFC0", "#DDE6E0,#BFD0C6", "#EBDDD6,#D8BFB2"];
+const bookingIcons = { plane: Plane, bed: Bed, fork: Utensils, ticket: Ticket };
+
+const route = smoothPath([points.market, points.martim, points.castle, points.graca]);
+const centre = {
+  x: (points.market.x + points.martim.x + points.castle.x + points.graca.x) / 4,
+  y: (points.market.y + points.martim.y + points.castle.y + points.graca.y) / 4,
+};
+const numbered = [points.market, points.martim, points.castle, points.graca];
 
 function Illustration({ kind }: { kind: (typeof features.cards)[number]["kind"] }) {
   switch (kind) {
     case "map":
       return (
         <div className="ill ill-map" aria-hidden="true">
-          <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
-            <path d="M0 150 C80 120 140 190 230 150 S360 110 400 130" stroke="#E4DDCE" strokeWidth="18" fill="none" />
-            <path d="M60 60 C120 30 170 120 220 90 S320 40 350 150" stroke="#0B0B0C" strokeWidth="2" strokeDasharray="6 6" fill="none" strokeLinecap="round" />
-          </svg>
-          {[
-            ["60px", "60px", 1],
-            ["32%", "42%", 2],
-            ["55%", "40%", 3],
-            ["87%", "68%", 4],
-          ].map(([l, t, n]) => (
-            <span key={n} className="pin" style={{ left: l as string, top: t as string }}>
-              {n}
-            </span>
-          ))}
+          <MapStage
+            zoom={1.9}
+            origin={centre}
+            svg={
+              <path d={route} fill="none" stroke="#0B0B0C" strokeWidth="2" strokeDasharray="6 6" vectorEffect="non-scaling-stroke" />
+            }
+          >
+            {(ctx) => numbered.map((p, i) => <MapPin key={i} at={ctx.px(p)} kind="num" n={i + 1} />)}
+          </MapStage>
         </div>
       );
     case "bookings":
       return (
-        <div className="ill ill-bookings" aria-hidden="true">
-          {features.bookings.map((b, i) => (
-            <div key={b.title} className="card booking" style={{ marginLeft: i * 14 }}>
-              <strong>{b.title}</strong>
-              <span>{b.date}</span>
-            </div>
-          ))}
-        </div>
+        <ul className="ill ill-bookings">
+          {features.bookings.map((b) => {
+            const Icon = bookingIcons[b.icon];
+            return (
+              <li key={b.title} className="card booking">
+                <span className="booking-icon">
+                  <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                </span>
+                <span className="booking-text">
+                  <strong>{b.title}</strong>
+                  <span>{b.date}</span>
+                </span>
+                <span className="pill">{features.confirmed}</span>
+              </li>
+            );
+          })}
+        </ul>
       );
     case "picks":
       return (
-        <div className="ill ill-picks" aria-hidden="true">
-          {features.picks.map((p, i) => (
-            <div key={p} className="card pick">
-              <div className="thumb" style={{ background: `linear-gradient(135deg, ${gradients[i % 3].split(",")[0]}, ${gradients[i % 3].split(",")[1]})` }} />
-              <span>{p}</span>
-            </div>
+        <ul className="ill ill-picks">
+          {features.picks.map((p) => (
+            <li key={p.name} className="pick">
+              <Photo file={p.image} alt={p.alt} sizes="(min-width: 768px) 180px, 30vw" className="pick-photo" />
+              <span className="pick-name">{p.name}</span>
+              <span className="pick-tag">{p.tag}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       );
     case "reviews":
       return (
-        <div className="ill ill-reviews" aria-hidden="true">
-          <div className="card review">
-            <div className="stars">
-              {[0, 1, 2, 3, 4].map((n) => (
-                <Star key={n} size={16} strokeWidth={1.75} fill="#0B0B0C" />
-              ))}
-            </div>
-            <p>{features.review.text}</p>
-            <span>{features.review.meta}</span>
-          </div>
-        </div>
+        <ul className="ill ill-reviews">
+          {features.reviews.map((r) => (
+            <li key={r.meta} className="card review">
+              <span className="stars" aria-label="5 out of 5 stars">
+                {[0, 1, 2, 3, 4].map((n) => (
+                  <Star key={n} size={16} strokeWidth={1.75} fill="#0B0B0C" aria-hidden="true" />
+                ))}
+              </span>
+              <p>{r.text}</p>
+              <span className="review-meta">{r.meta}</span>
+            </li>
+          ))}
+        </ul>
       );
   }
 }
 
 export function FeatureGrid() {
   return (
-    <section className="section wrap" aria-labelledby="features-title" data-reveal>
-      <h2 id="features-title" className="h-xl">
+    <section className="section wrap" aria-labelledby="features-title">
+      <h2 id="features-title" className="h-xl" data-reveal>
         {features.headline[0]} <span className="soft">{features.headline[1]}</span>
       </h2>
       <div className="feature-grid">
-        {features.cards.map((c) => (
-          <article key={c.kind} className="card feature">
+        {features.cards.map((c, i) => (
+          <article key={c.kind} className="card feature" data-reveal style={{ "--i": i } as CSSProperties}>
             <h3>
               {c.lead} <span className="soft">{c.rest}</span>
             </h3>

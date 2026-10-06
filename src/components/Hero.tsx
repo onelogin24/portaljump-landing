@@ -1,4 +1,4 @@
-import { BedDouble, Plane, Utensils, Compass, Star } from "lucide-react";
+import { BedDouble, Plane, Ship, Utensils, Compass, Star } from "lucide-react";
 import { hero } from "../content/site";
 import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
@@ -32,7 +32,7 @@ export function Hero() {
           </div>
           <div className="fcard flight-card">
             <span className="icon-dot">
-              <Plane size={16} strokeWidth={1.75} />
+              <Ship size={16} strokeWidth={1.75} />
             </span>
             {hero.flight}
           </div>
