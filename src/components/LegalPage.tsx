@@ -64,7 +64,7 @@ function inline(text: string): ReactNode {
 
 export function LegalPage({ title, source }: { title: string; source: string }) {
   const blocks = parse(source);
-  const toc = blocks.filter((b): b is Extract<Block, { t: "h2" }> => b.t === "h2");
+  const toc = blocks.filter((b): b is Extract<Block, { id: string }> => b.t === "h2");
   return (
     <>
       <TopBar />
