@@ -66,7 +66,6 @@ function Illustration({ kind }: { kind: (typeof features.cards)[number]["kind"] 
 export function FeatureGrid() {
   return (
     <section className="section wrap" aria-labelledby="features-title" data-reveal>
-      <p className="tag">{features.tag}</p>
       <h2 id="features-title" className="h-xl">
         {features.headline[0]} <span className="soft">{features.headline[1]}</span>
       </h2>

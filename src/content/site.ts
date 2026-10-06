@@ -25,7 +25,6 @@ export type StoryStep = {
 };
 
 export const story = {
-  tag: "How it works",
   steps: [
     {
       tab: "Plan",
@@ -56,7 +55,6 @@ export const story = {
 };
 
 export const features = {
-  tag: "One trip, one place",
   headline: ["Everything in one trip.", "Nothing in ten tabs."],
   cards: [
     { lead: "Map.", rest: "Every stop, pinned.", kind: "map" },
@@ -90,7 +88,6 @@ export const band = {
 };
 
 export const who = {
-  tag: "Who it's for",
   headline: "Built for every kind of trip.",
   items: [
     { name: "Solo", line: "Go where you want, when you want.", image: "who-solo.jpg", alt: "A solo traveller with a backpack on a mountain trail" },

@@ -23,9 +23,11 @@ export function Footer() {
         </nav>
       </div>
       <div className="wrap footer-bottom">
-        <span>{footerMeta.copyright}</span>
-        <a href={`mailto:${footerMeta.email}`}>{footerMeta.email}</a>
-        <span>{footerMeta.credits}</span>
+        <div className="footer-bottom-row">
+          <span>{footerMeta.copyright}</span>
+          <a href={`mailto:${footerMeta.email}`}>{footerMeta.email}</a>
+          <span>{footerMeta.credits}</span>
+        </div>
       </div>
     </footer>
   );

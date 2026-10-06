@@ -4,7 +4,6 @@ import { Photo } from "./Photo";
 export function WhoFor() {
   return (
     <section className="section wrap" aria-labelledby="who-title" data-reveal>
-      <p className="tag">{who.tag}</p>
       <h2 id="who-title" className="h-xl">
         {who.headline}
       </h2>

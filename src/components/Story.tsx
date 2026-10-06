@@ -71,17 +71,14 @@ export function Story() {
   return (
     <section
       className="section wrap story"
-      aria-labelledby="story-title"
+      aria-labelledby={`story-title-${active}`}
       data-reveal
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <p className="tag" id="story-title">
-        {story.tag}
-      </p>
-      <div className="tabs" role="tablist" aria-label={story.tag} onKeyDown={onKeyDown}>
+      <div className="tabs" role="tablist" aria-label="How it works" onKeyDown={onKeyDown}>
         {story.steps.map((s, i) => (
           <button
             key={s.tab}
@@ -112,7 +109,7 @@ export function Story() {
             className={`slide ${active === i ? "active" : ""}`}
           >
             <div className="slide-head">
-              <h2 className="h-lg">
+              <h2 className="h-lg" id={`story-title-${i}`}>
                 {s.headline[0]} <span className="soft">{s.headline[1]}</span>
               </h2>
               <p className="body">{s.body}</p>
