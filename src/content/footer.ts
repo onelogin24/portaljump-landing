@@ -13,5 +13,5 @@ export const footerMeta = {
   brand: "Portal Jump",
   copyright: "© 2026 APLUSB DECOR PRIVATE LIMITED",
   email: "hello@portaljump.co",
-  credits: "Photos: credits on file",
+  credits: "Photography credits on file",
 };

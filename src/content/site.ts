@@ -15,6 +15,7 @@ export const hero = {
 };
 
 export type StoryStep = {
+  tab: string;
   headline: [string, string];
   body: string;
   image: string;
@@ -27,25 +28,28 @@ export const story = {
   tag: "How it works",
   steps: [
     {
+      tab: "Plan",
       headline: ["Plan it", "like you."],
       body: "Tell it how you travel. Every pick fits.",
-      image: "story-plan.jpg",
-      alt: "Travellers walking through a lively old town market",
+      image: "tab-plan.jpg",
+      alt: "A travel day planned across a city",
       chips: ["Street food first", "Walkable", "Kid friendly"],
       card: { kind: "text", text: "Day 2: market, tram 28, sunset at Graca" },
     },
     {
+      tab: "Book",
       headline: ["Book it", "in one place."],
       body: "Flights, stays and tables, kept together.",
-      image: "story-book.jpg",
-      alt: "A cosy hotel room with a window overlooking the city",
+      image: "tab-book.jpg",
+      alt: "A hotel room with a window onto the city",
       card: { kind: "list", items: ["Flight", "Hotel", "Dinner"] },
     },
     {
+      tab: "Go",
       headline: ["Go with", "the map."],
       body: "Your plans, live on the map while you travel.",
-      image: "story-go.jpg",
-      alt: "A traveller walking a cobbled street while checking a map",
+      image: "tab-go.jpg",
+      alt: "A traveller walking a street with a map",
       card: { kind: "text", text: "Next: Time Out Market, 6 min walk" },
     },
   ] as StoryStep[],
