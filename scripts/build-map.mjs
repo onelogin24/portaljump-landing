@@ -231,6 +231,42 @@ await mkdir(path.join(root, "public", "map"), { recursive: true });
 await mkdir(path.join(root, "src", "generated"), { recursive: true });
 await writeFile(path.join(root, "public", "map", "lisbon.svg"), out.svg);
 
+// Recommended places: resolved with OpenStreetMap Nominatim, never guessed.
+const RECS = [
+  ["rec-comercio", "Praca do Comercio, Lisboa"],
+  ["rec-se", "Se de Lisboa"],
+  ["rec-santajusta", "Elevador de Santa Justa"],
+  ["rec-castelo", "Castelo de Sao Jorge"],
+  ["rec-santaluzia", "Miradouro de Santa Luzia"],
+  ["rec-carmo", "Convento do Carmo"],
+];
+const recommendations = [];
+const missing = [];
+for (const [id, q] of RECS) {
+  const url =
+    "https://nominatim.openstreetmap.org/search?format=json&limit=1&bounded=1" +
+    `&viewbox=${BBOX.west},${BBOX.north},${BBOX.east},${BBOX.south}&q=${encodeURIComponent(q)}`;
+  let hit = null;
+  try {
+    const res = await fetch(url, { headers: { "User-Agent": "PortalJumpSite/1.0 (hello@portaljump.co)" } });
+    if (res.ok) hit = (await res.json())[0] ?? null;
+  } catch {
+    hit = null;
+  }
+  if (hit) {
+    const lon = Number(hit.lon);
+    const lat = Number(hit.lat);
+    const inside = lon >= BBOX.west && lon <= BBOX.east && lat >= BBOX.south && lat <= BBOX.north;
+    if (inside) {
+      const [x, y] = project([lon, lat]);
+      recommendations.push({ id, x: r1(x), y: r1(y), lon, lat });
+    } else missing.push(id);
+  } else missing.push(id);
+  await new Promise((r) => setTimeout(r, 1100));
+}
+if (missing.length) console.log("LEFT OUT (no result inside the bbox):", missing.join(", "));
+
+const geo = Object.fromEntries(Object.entries(POINTS).map(([k, ll]) => [k, ll]));
 const points = Object.fromEntries(
   Object.entries(POINTS).map(([k, ll]) => {
     const [x, y] = project(ll);
@@ -239,6 +275,6 @@ const points = Object.fromEntries(
 );
 await writeFile(
   path.join(root, "src", "generated", "map-points.json"),
-  JSON.stringify({ width: W, height: H, points }, null, 2) + "\n",
+  JSON.stringify({ width: W, height: H, points, geo, recommendations }, null, 2) + "\n",
 );
 console.log(`lisbon.svg ${(out.svg.length / 1024).toFixed(0)} KB, ${W}x${H}`, out.stats, attempt);

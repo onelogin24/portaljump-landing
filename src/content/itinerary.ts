@@ -79,3 +79,31 @@ export const panelText = {
     { place: "Tram 28 day pass", note: "Sunday" },
   ],
 };
+
+export type RecMeta = {
+  id: string;
+  name: string;
+  descriptor: string;
+  reason: string;
+  icon: "landmark" | "church" | "lift" | "castle" | "binoculars";
+};
+
+export const recommendedTitle = "More you might like";
+
+export const recMeta: RecMeta[] = [
+  { id: "rec-comercio", name: "Praca do Comercio", descriptor: "Riverside square", reason: "Because you like views", icon: "landmark" },
+  { id: "rec-se", name: "Lisbon Cathedral", descriptor: "Se de Lisboa", reason: "On your way to Alfama", icon: "church" },
+  { id: "rec-santajusta", name: "Santa Justa Lift", descriptor: "Elevador de Santa Justa", reason: "Short walk from Chiado", icon: "lift" },
+  { id: "rec-castelo", name: "Sao Jorge Castle", descriptor: "Castelo de Sao Jorge", reason: "Because you like views", icon: "castle" },
+  { id: "rec-santaluzia", name: "Miradouro de Santa Luzia", descriptor: "Viewpoint", reason: "Next to your route", icon: "binoculars" },
+  { id: "rec-carmo", name: "Carmo Convent", descriptor: "Convento do Carmo", reason: "Quiet morning stop", icon: "church" },
+];
+
+export const recText = {
+  add: "Add to day",
+  added: "Added",
+  walk: (min: number) => `About ${min} min walk`,
+  recommended: "recommended",
+};
+
+export const dayCardTravel = ["About 10 min by tram 28", "About 12 min walk, uphill"];

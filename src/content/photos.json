@@ -29,6 +29,42 @@
     "smWidth": 1280,
     "smHeight": 1522
   },
+  "rec-carmo": {
+    "width": 2560,
+    "height": 3840,
+    "smWidth": 1280,
+    "smHeight": 1920
+  },
+  "rec-castelo": {
+    "width": 2560,
+    "height": 1819,
+    "smWidth": 1280,
+    "smHeight": 909
+  },
+  "rec-comercio": {
+    "width": 2560,
+    "height": 1707,
+    "smWidth": 1280,
+    "smHeight": 853
+  },
+  "rec-santajusta": {
+    "width": 2560,
+    "height": 1707,
+    "smWidth": 1280,
+    "smHeight": 853
+  },
+  "rec-santaluzia": {
+    "width": 2560,
+    "height": 1707,
+    "smWidth": 1280,
+    "smHeight": 853
+  },
+  "rec-se": {
+    "width": 2000,
+    "height": 3008,
+    "smWidth": 1280,
+    "smHeight": 1925
+  },
   "who-couples": {
     "width": 2560,
     "height": 3840,

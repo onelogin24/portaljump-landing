@@ -1,4 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import mapData from "../generated/map-points.json";
 
 export type XY = { x: number; y: number };
@@ -9,6 +10,8 @@ export type Reserve = { right: number; bottom: number };
 export const MAP_W = mapData.width;
 export const MAP_H = mapData.height;
 export const points = mapData.points as Record<"chiado" | "lanes" | "graca" | "stay" | "market", XY>;
+export const geo = mapData.geo as Record<"chiado" | "lanes" | "graca" | "stay" | "market", [number, number]>;
+export const recPoints = mapData.recommendations as { id: string; x: number; y: number; lon: number; lat: number }[];
 
 const TWEEN_MS = 1000;
 const PAD = 0.18;
@@ -54,10 +57,17 @@ export const legMid = (a: XY, b: XY) => legGeometry(a, b).mid;
 export type PinData = {
   key: string;
   at: XY;
-  photo: string;
+  /** photo file name without extension; when missing, Fallback is drawn on a warm circle */
+  photo?: string;
+  Fallback?: LucideIcon;
   n?: number;
   icon?: "bed" | "fork";
   drop?: boolean;
+  /** size relative to the main pin size */
+  rel?: number;
+  opacity?: number;
+  /** black ring instead of white */
+  ringDark?: boolean;
 };
 
 export type LegState = "hidden" | "drawing" | "drawn";
@@ -195,21 +205,33 @@ export function MapCanvas({ fit, reserve = { right: 0, bottom: 0 }, pins, legs =
         ))}
         {size.w > 0 &&
           pins.map((p) => (
-            <g key={p.key} transform={`translate(${p.at.x} ${p.at.y}) scale(${unit * s})`}>
+            <g
+              key={p.key}
+              className="pin-fade"
+              style={{ opacity: p.opacity ?? 1 }}
+              transform={`translate(${p.at.x} ${p.at.y}) scale(${unit * s * (p.rel ?? 1)})`}
+            >
               <g className={p.drop && animate ? "pin-drop" : undefined}>
                 <g filter={`url(#${uid}-shadow)`}>
-                  <circle r="26" fill="#fff" />
-                  <image
-                    href={`/images/${p.photo}-sm.webp`}
-                    x="-23"
-                    y="-23"
-                    width="46"
-                    height="46"
-                    preserveAspectRatio="xMidYMid slice"
-                    clipPath={`url(#${uid}-clip)`}
-                  />
+                  <circle r="26" fill={p.ringDark ? "#0B0B0C" : "#fff"} />
+                  {p.photo ? (
+                    <image
+                      href={`/images/${p.photo}-sm.webp`}
+                      x="-23"
+                      y="-23"
+                      width="46"
+                      height="46"
+                      preserveAspectRatio="xMidYMid slice"
+                      clipPath={`url(#${uid}-clip)`}
+                    />
+                  ) : (
+                    <>
+                      <circle r="23" fill="#F3EEE5" />
+                      {p.Fallback && <p.Fallback x={-13} y={-13} width={26} height={26} strokeWidth={1.75} color="#0B0B0C" />}
+                    </>
+                  )}
                 </g>
-                <circle cx="18" cy="-18" r="10" fill="#0B0B0C" />
+                {(p.n !== undefined || p.icon) && <circle cx="18" cy="-18" r="10" fill="#0B0B0C" />}
                 {p.n !== undefined && (
                   <text x="18" y="-18" textAnchor="middle" dominantBaseline="central" className="pin-num">
                     {p.n}

@@ -8,16 +8,17 @@ export function Story() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [stopped, setStopped] = useState(false);
+  const [held, setHeld] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const count = story.steps.length;
 
   const reduced = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
-    if (paused || stopped || reduced) return;
+    if (paused || held || stopped || reduced) return;
     const t = setTimeout(() => setActive((a) => (a + 1) % count), INTERVAL_MS);
     return () => clearTimeout(t);
-  }, [active, paused, stopped, reduced, count]);
+  }, [active, paused, held, stopped, reduced, count]);
 
   function choose(i: number) {
     setStopped(true);
@@ -77,7 +78,7 @@ export function Story() {
         ))}
       </div>
       <div id="story-panel" role="tabpanel" aria-labelledby={`tab-${active}`}>
-        <Itinerary active={active} />
+        <Itinerary active={active} onHold={setHeld} />
       </div>
     </section>
   );

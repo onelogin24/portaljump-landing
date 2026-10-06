@@ -2,13 +2,17 @@ import type { CSSProperties } from "react";
 import { Bed, Plane, Star, Ticket, Utensils } from "lucide-react";
 import { features } from "../content/site";
 import { MapCanvas, points, type LegData, type PinData } from "./MapCanvas";
+import { recPin, recs } from "./recs";
 import { stops } from "../content/itinerary";
 import { Photo } from "./Photo";
 
 const bookingIcons = { plane: Plane, bed: Bed, fork: Utensils, ticket: Ticket };
 
-const fit = [points.chiado, points.lanes, points.graca];
-const mapPins: PinData[] = stops.map((s) => ({ key: s.id, at: points[s.at], photo: s.photo, n: s.n }));
+const fit = [points.chiado, points.lanes, points.graca, ...recs.map((r) => r.at)];
+const mapPins: PinData[] = [
+  ...recs.map((r) => recPin(r, 0.45)),
+  ...stops.map((s) => ({ key: s.id, at: points[s.at], photo: s.photo, n: s.n })),
+];
 const mapLegs: LegData[] = [
   { key: "leg1", a: points.chiado, b: points.lanes, state: "drawn" },
   { key: "leg2", a: points.lanes, b: points.graca, state: "drawn" },
