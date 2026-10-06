@@ -142,6 +142,34 @@
   opacity: calc(var(--v, 0) * 0.7);
 }
 
+/* the cushion the globe rests on: 70% of the globe diameter, its top edge overlapping the bottom 12% of the globe,
+   drawn in front of the globe. Centred on the globe, so it scales with it on every screen. */
+.cushion {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: calc(var(--S) / 2 + var(--D) * 0.38);
+  width: calc(var(--D) * 0.7);
+  margin-left: calc(var(--D) * -0.35);
+  pointer-events: none;
+  transform: translate3d(calc(var(--px, 0) * 3px), calc(var(--py, 0) * 3px), 0);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cushionImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  animation: cushionDrift 40s ease-in-out infinite;
+}
+
+@keyframes cushionDrift {
+  50% {
+    translate: 10px 0;
+  }
+}
+
 /* the drag target is just the globe disc, so the empty corners never swallow touches */
 .drag {
   position: absolute;
@@ -341,6 +369,11 @@
     top: calc(58% - var(--D) / 2);
   }
 
+  .cushion {
+    left: 50.6%;
+    top: calc(58% + var(--D) * 0.38);
+  }
+
   .chips {
     position: absolute;
     inset: 0;
@@ -425,6 +458,13 @@
   .overlay,
   .ringsBack,
   .pinInner {
+    animation: none;
+  }
+  .cushion {
+    transform: none;
+    transition: none;
+  }
+  .cushionImg {
     animation: none;
   }
   .canvas,

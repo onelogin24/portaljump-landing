@@ -1,4 +1,7 @@
+import assets from '../generated/assets.json';
 import styles from './Sky.module.css';
+
+const banks = assets.clouds.banks;
 
 // Sparse far-layer stars placed to match the reference frame (% of the hero).
 const STARS = [
@@ -23,6 +26,18 @@ export default function Sky() {
         {STARS.map((s, i) => (
           <span key={i} className={styles.star} style={{ left: `${s.x}%`, top: `${s.y}%`, animationDelay: `${s.d}s` }} />
         ))}
+      </div>
+      <div className={styles.banks}>
+        <img
+          className={styles.banksImg}
+          src={banks.src}
+          srcSet={`${banks.half} ${banks.halfW}w, ${banks.src} ${banks.w}w`}
+          sizes="100vw"
+          width={banks.w}
+          height={banks.h}
+          alt=""
+          decoding="async"
+        />
       </div>
       <div className={styles.grain} />
     </div>

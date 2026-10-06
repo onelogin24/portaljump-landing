@@ -10,6 +10,7 @@
 //  public/avatars/<name>-{192,384}.webp    illustrated faces cut out of scripts/data/faces-{a,b}.png, circular alpha
 //  public/grain.png                        static film grain tile laid over the sky
 //  public/fonts/*.woff2                    self-hosted Inter (latin) 400 / 500 / 700 and Inter Tight 400 / 600
+//  public/clouds/cloud-{banks,cushion}.webp  clouds lifted off black (scripts/data/clouds-*.png), full and half size
 //  src/generated/assets.json               manifest consumed by the app
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,7 +20,7 @@ import * as opentype from 'opentype.js';
 const root = path.resolve(import.meta.dirname, '..');
 const pub = (...p) => path.join(root, 'public', ...p);
 const data = (...p) => path.join(root, 'scripts', 'data', ...p);
-for (const d of ['textures', 'fonts', 'avatars']) {
+for (const d of ['textures', 'fonts', 'avatars', 'clouds']) {
   fs.rmSync(pub(d), { recursive: true, force: true });
   fs.mkdirSync(pub(d), { recursive: true });
 }
@@ -118,6 +119,44 @@ console.log('fonts');
   console.log('grain.png');
 }
 
+// ---------- clouds: lift the art off its black background ----------
+// The Figma renders are clouds on pure black, so the picture is premultiplied by black: alpha = brightest channel,
+// colour = RGB / alpha. Near-black (alpha < 0.03) is fully clear. Each piece is trimmed to its content.
+const clouds = {};
+for (const [key, file] of [['banks', 'clouds-banks.png'], ['cushion', 'clouds-cushion.png']]) {
+  const { data: rgbIn, info } = await sharp(data(file)).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width: cw, height: ch } = info;
+  const rgba = Buffer.alloc(cw * ch * 4);
+  let x0 = cw;
+  let y0 = ch;
+  let x1 = -1;
+  let y1 = -1;
+  for (let i = 0; i < cw * ch; i++) {
+    const r = rgbIn[i * 3];
+    const g = rgbIn[i * 3 + 1];
+    const b = rgbIn[i * 3 + 2];
+    const a = Math.max(r, g, b) / 255;
+    if (a < 0.03) continue;
+    rgba[i * 4] = Math.min(255, Math.round(r / a));
+    rgba[i * 4 + 1] = Math.min(255, Math.round(g / a));
+    rgba[i * 4 + 2] = Math.min(255, Math.round(b / a));
+    rgba[i * 4 + 3] = Math.round(a * 255);
+    const x = i % cw;
+    const y = (i / cw) | 0;
+    if (x < x0) x0 = x;
+    if (x > x1) x1 = x;
+    if (y < y0) y0 = y;
+    if (y > y1) y1 = y;
+  }
+  const w = x1 - x0 + 1;
+  const h = y1 - y0 + 1;
+  const img = sharp(rgba, { raw: { width: cw, height: ch, channels: 4 } }).extract({ left: x0, top: y0, width: w, height: h });
+  await img.clone().webp({ quality: 90, alphaQuality: 100, effort: 5 }).toFile(pub('clouds', `cloud-${key}.webp`));
+  await img.clone().resize(Math.round(w / 2), Math.round(h / 2), { kernel: 'lanczos3' }).webp({ quality: 90, alphaQuality: 100, effort: 5 }).toFile(pub('clouds', `cloud-${key}-half.webp`));
+  clouds[key] = { src: `/clouds/cloud-${key}.webp`, half: `/clouds/cloud-${key}-half.webp`, w, h, halfW: Math.round(w / 2) };
+  console.log(`clouds: ${key} ${w}x${h}`);
+}
+
 // ---------- avatars: cut the 12 circles out of the two sheets ----------
 // Each sheet is a 4x2 grid of circles on ivory. Find them by their distance from the ivory, take the bounding box,
 // inset 3%, and export a square-cropped circular webp with transparent corners. No colour grading.
@@ -204,7 +243,7 @@ console.log('fonts');
     avatars.push(`/avatars/${name}-384.webp`);
     console.log(`  ${name} <- ${source[i]} (${w}x${h} circle at ${c.x0},${c.y0}, crop ${side}px)`);
   }
-  fs.writeFileSync(path.join(root, 'src', 'generated', 'assets.json'), JSON.stringify({ avatars }, null, 2) + '\n');
+  fs.writeFileSync(path.join(root, 'src', 'generated', 'assets.json'), JSON.stringify({ avatars, clouds }, null, 2) + '\n');
   console.log('avatars: 12 cut');
 }
 

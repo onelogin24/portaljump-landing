@@ -553,6 +553,19 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
 
       {!poster && (
         <>
+          <div className={styles.cushion} aria-hidden="true">
+            <img
+              className={styles.cushionImg}
+              src={assets.clouds.cushion.src}
+              srcSet={`${assets.clouds.cushion.half} ${assets.clouds.cushion.halfW}w, ${assets.clouds.cushion.src} ${assets.clouds.cushion.w}w`}
+              sizes="(min-width: 1080px) 28vw, 74vw"
+              width={assets.clouds.cushion.w}
+              height={assets.clouds.cushion.h}
+              alt=""
+              decoding="async"
+            />
+          </div>
+
           <svg className={styles.overlay} aria-hidden="true" focusable="false">
             <defs>
               <radialGradient id="limb-fade" ref={maskGradRef} gradientUnits="userSpaceOnUse">

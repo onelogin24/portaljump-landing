@@ -12,5 +12,21 @@
     "/avatars/jack-384.webp",
     "/avatars/sofia-384.webp",
     "/avatars/kofi-384.webp"
-  ]
+  ],
+  "clouds": {
+    "banks": {
+      "src": "/clouds/cloud-banks.webp",
+      "half": "/clouds/cloud-banks-half.webp",
+      "w": 1792,
+      "h": 599,
+      "halfW": 896
+    },
+    "cushion": {
+      "src": "/clouds/cloud-cushion.webp",
+      "half": "/clouds/cloud-cushion-half.webp",
+      "w": 1641,
+      "h": 425,
+      "halfW": 821
+    }
+  }
 }
