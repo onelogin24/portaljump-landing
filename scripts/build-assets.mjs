@@ -6,7 +6,7 @@
 //     shapes and an elevation map (scripts/data/earth-topology.png) for the land colour and posterised hill shading.
 //     scripts/data/globe-style.png is a style reference only and is never read here.
 //     Every country name (Natural Earth 50m, scripts/data/ne_50m_admin_0_countries.geojson) and the five oceans are
-//     lettered into the texture in Fraunces Italic.
+//     lettered into the texture in D-DIN (scripts/data/fonts), with thin country borders.
 //  public/avatars/<name>-{192,384}.webp    illustrated faces cut out of scripts/data/faces-{a,b}.png, circular alpha
 //  public/grain.png                        static film grain tile laid over the sky
 //  public/fonts/*.woff2                    self-hosted Inter (latin) 400 / 500 / 700 and Inter Tight 400 / 600
@@ -474,27 +474,31 @@ for (const [cx, cy, size] of peaks) {
 }
 lap('albedo painted');
 
-// ---------- lettering: every country and the five oceans, Fraunces Italic ----------
-// Sizes below are written at 4096 width and multiplied by K. Each name is stretched by 1/cos(latitude) so it looks
-// normal once wrapped on the sphere. Names that cannot reach 10px inside their country go beside it in open ocean
-// with a hairline leader.
+// ---------- lettering: borders, every country and the five oceans, D-DIN ----------
+// Map-style labels: UPPERCASE D-DIN, sized by Natural Earth LABELRANK (px at 8192 width), shrunk until they fit inside
+// their country. Each name is stretched by 1/cos(latitude) so it reads normally once wrapped on the sphere. A name that
+// cannot reach 14px goes beside its country on a 1px hairline leader.
 {
-  const fontBuf = fs.readFileSync(path.join(root, 'node_modules/@fontsource/fraunces/files/fraunces-latin-400-italic.woff'));
-  const font = (opentype.default ?? opentype).parse(fontBuf.buffer.slice(fontBuf.byteOffset, fontBuf.byteOffset + fontBuf.byteLength));
-  const LS = 0.04; // letter-spacing, em
-  const MIN_PX = 10 * K;
-  const MAX_PX = 46 * K;
-  const LEADER_PX = 12 * K;
+  const loadFont = (file) => {
+    const b = fs.readFileSync(data('fonts', file));
+    return (opentype.default ?? opentype).parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
+  };
+  const FACES = { regular: loadFont('D-DIN.otf'), bold: loadFont('D-DIN-Bold.otf') };
+  const LS = 0.12; // letter-spacing, em
+  const MIN_PX = 14;
+  const INK_LABEL = '#24324A';
+  // by LABELRANK: 1-2 = 40 Bold, 3-4 = 28 Bold, 5-6 = 20 Regular, 7+ = 14 Regular
+  const rankStyle = (rank) => (rank <= 2 ? { size: 40, face: 'bold' } : rank <= 4 ? { size: 28, face: 'bold' } : rank <= 6 ? { size: 20, face: 'regular' } : { size: 14, face: 'regular' });
   const lx = (lon) => ((lon + 180) / 360) * AW;
   const ly = (lat) => ((90 - lat) / 180) * AH;
   const cosLat = (lat) => Math.max(Math.cos((lat * Math.PI) / 180), 0.12);
-  const textW = (t, size, ls) => font.getAdvanceWidth(t, size, { letterSpacing: ls });
+  const textW = (face, t, size, ls) => FACES[face].getAdvanceWidth(t, size, { letterSpacing: ls });
 
   // path data for `text`, centred on cx with its baseline at baselineY and its width stretched by sx
   // (the stretch is baked into the coordinates so the halo stroke stays even)
-  const textPath = (text, size, ls, sx, cx, baselineY) => {
-    const w = textW(text, size, ls);
-    const p = font.getPath(text, -w / 2, 0, size, { letterSpacing: ls });
+  const textPath = (face, text, size, ls, sx, cx, baselineY) => {
+    const w = textW(face, text, size, ls);
+    const p = FACES[face].getPath(text, -w / 2, 0, size, { letterSpacing: ls });
     for (const c of p.commands) {
       for (const k of ['x', 'x1', 'x2']) if (k in c) c[k] = c[k] * sx + cx;
       for (const k of ['y', 'y1', 'y2']) if (k in c) c[k] += baselineY;
@@ -502,6 +506,7 @@ lap('albedo painted');
     return p.toPathData(1);
   };
 
+  const borders = [];
   const els = [];
   const placed = []; // [x0, y0, x1, y1] boxes already used
   const hits = (r, pad) => placed.some((q) => r[0] < q[2] + pad && r[2] > q[0] - pad && r[1] < q[3] + pad && r[3] > q[1] - pad);
@@ -511,17 +516,17 @@ lap('albedo painted');
     if (x0 < 0) els.push(make(AW));
     if (x1 > AW) els.push(make(-AW));
   };
-  const addText = (lines, size, ls, sx, cx, cy, style) => {
-    const lh = size * 1.05;
-    const wMax = Math.max(...lines.map((l) => textW(l, size, ls))) * sx;
+  const addText = (face, lines, size, ls, sx, cx, cy, style) => {
+    const lh = size * 1.1;
+    const wMax = Math.max(...lines.map((l) => textW(face, l, size, ls))) * sx;
     const h = lh * lines.length;
-    const rows = lines.map((l, i) => [l, cy + (i - (lines.length - 1) / 2) * lh + size * 0.3]);
+    const rows = lines.map((l, i) => [l, cy + (i - (lines.length - 1) / 2) * lh + size * 0.36]); // cap height is ~0.72em
     emit(
       (off) =>
         rows
           .map(([l, by]) => {
-            const d = textPath(l, size, ls, sx, cx + off, by);
-            const halo = style.halo ? `<path d="${d}" fill="none" stroke="#F1EADB" stroke-opacity="0.9" stroke-width="${2 * K}" stroke-linejoin="round"/>` : '';
+            const d = textPath(face, l, size, ls, sx, cx + off, by);
+            const halo = style.halo ? `<path d="${d}" fill="none" stroke="#F1EADB" stroke-opacity="0.85" stroke-width="3" stroke-linejoin="round"/>` : '';
             return `${halo}<path d="${d}" fill="${style.fill}" fill-opacity="${style.opacity}"/>`;
           })
           .join(''),
@@ -531,15 +536,52 @@ lap('albedo painted');
     return [cx - wMax / 2, cy - h / 2, cx + wMax / 2, cy + h / 2];
   };
 
-  // oceans first, so country leaders keep clear of them: [name, lon, lat, size at 4096]
-  for (const [name, lon, lat, size] of [
-    ['Pacific', -142, -6, 80],
-    ['Atlantic', -42, 26, 72],
-    ['Indian', 78, -20, 66],
-    ['Southern', 40, -60, 62],
-    ['Arctic', -170, 80, 60],
+  // ---- the countries
+  const geo = JSON.parse(fs.readFileSync(data('ne_50m_admin_0_countries.geojson'), 'utf8')).features;
+
+  // thin borders: a segment shared by two countries is a border (a coast belongs to one country only), drawn once
+  {
+    const seen = new Map();
+    const key = (a, b) => {
+      const p = `${a[0].toFixed(3)},${a[1].toFixed(3)}`;
+      const q = `${b[0].toFixed(3)},${b[1].toFixed(3)}`;
+      return p < q ? `${p}|${q}` : `${q}|${p}`;
+    };
+    for (const f of geo) {
+      const g = f.geometry;
+      const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+      for (const rings of polys) {
+        for (const ring of rings) {
+          for (let i = 0; i < ring.length - 1; i++) {
+            if (Math.abs(ring[i + 1][0] - ring[i][0]) > 180) continue;
+            const k = key(ring[i], ring[i + 1]);
+            const e = seen.get(k);
+            if (e) e.n++;
+            else seen.set(k, { a: ring[i], b: ring[i + 1], n: 1, id: f.properties.NAME });
+          }
+        }
+      }
+    }
+    let d = '';
+    let count = 0;
+    for (const e of seen.values()) {
+      if (e.n < 2) continue;
+      d += `M${lx(e.a[0]).toFixed(1)} ${ly(e.a[1]).toFixed(1)}L${lx(e.b[0]).toFixed(1)} ${ly(e.b[1]).toFixed(1)}`;
+      count++;
+    }
+    borders.push(`<path d="${d}" fill="none" stroke="#24324A" stroke-opacity="0.25" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>`);
+    lap(`${count} border segments`);
+  }
+
+  // oceans first, so country leaders keep clear of them: [name, lon, lat]
+  for (const [name, lon, lat] of [
+    ['Pacific', -142, -6],
+    ['Atlantic', -42, 26],
+    ['Indian', 78, -20],
+    ['Southern', 40, -60],
+    ['Arctic', -170, 80],
   ]) {
-    placed.push(addText([name], size * K, 0.3, 1 / cosLat(lat), lx(lon), ly(lat), { fill: '#F1EADB', opacity: 0.45 }));
+    placed.push(addText('regular', [name.toUpperCase()], 56, 0.4, 1 / cosLat(lat), lx(lon), ly(lat), { fill: '#F1EADB', opacity: 0.5 }));
   }
 
   // length of the polygon's chord through (lon, lat) along a row (axis h) or column (axis v), in degrees; null if outside
@@ -566,7 +608,8 @@ lap('albedo painted');
     const ys = rings[0].map((p) => p[1]);
     return (Math.max(...xs) - Math.min(...xs)) * (Math.max(...ys) - Math.min(...ys));
   };
-  const countries = JSON.parse(fs.readFileSync(data('ne_50m_admin_0_countries.geojson'), 'utf8')).features.map((f) => {
+  const missing = new Set();
+  const countries = geo.map((f) => {
     const g = f.geometry;
     const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
     const lon = f.properties.LABEL_X;
@@ -582,12 +625,16 @@ lap('albedo painted');
       }
     }
     const rings = best ?? polys.reduce((a, b) => (bboxArea(b) > bboxArea(a) ? b : a));
-    return { name: f.properties.NAME, lon, lat, hDeg: chord(rings, lon, lat, 'h'), vDeg: chord(rings, lon, lat, 'v') };
+    const name = f.properties.NAME.toUpperCase();
+    for (const ch of name) if (FACES.bold.charToGlyphIndex(ch) === 0 || FACES.regular.charToGlyphIndex(ch) === 0) missing.add(ch);
+    return { name, rank: f.properties.LABELRANK, lon, lat, hDeg: chord(rings, lon, lat, 'h'), vDeg: chord(rings, lon, lat, 'v') };
   });
+  if (missing.size) console.log('  glyphs missing from D-DIN:', [...missing].join(' '));
 
-  // best size for a name inside its country: one line or, for multi-word names, two
+  // size for a name inside its country: its rank size, shrunk until it fits on one line or, for multi-word names, two
   const fit = (c) => {
     if (c.hDeg == null || c.vDeg == null) return null;
+    const { size: rankSize, face } = rankStyle(c.rank);
     const sx = 1 / cosLat(c.lat);
     const wTex = (c.hDeg / 360) * AW;
     const hPx = (c.vDeg / 180) * AH;
@@ -607,9 +654,9 @@ lap('albedo painted');
     }
     let best = null;
     for (const lines of options) {
-      const w1 = Math.max(...lines.map((l) => textW(l, 1, LS))) * sx;
-      const size = Math.min(MAX_PX, (0.9 * wTex) / w1, (0.8 * hPx) / (lines.length * 1.05));
-      if (!best || size > best.size) best = { lines, size, sx };
+      const w1 = Math.max(...lines.map((l) => textW(face, l, 1, LS))) * sx;
+      const size = Math.min(rankSize, (0.92 * wTex) / w1, (0.8 * hPx) / (lines.length * 1.1));
+      if (!best || size > best.size) best = { lines, size, sx, face };
     }
     return best;
   };
@@ -621,14 +668,14 @@ lap('albedo painted');
   for (const c of countries) {
     const f = fit(c);
     if (f && f.size >= MIN_PX) {
-      placed.push(addText(f.lines, f.size, LS, f.sx, lx(c.lon), ly(c.lat), { fill: '#2B3B2E', opacity: 0.7, halo: true }));
+      placed.push(addText(f.face, f.lines, f.size, LS, f.sx, lx(c.lon), ly(c.lat), { fill: INK_LABEL, opacity: 0.8, halo: true }));
       inside++;
     } else {
       small.push(c);
     }
   }
 
-  // too small: the name goes beside the country, in the nearest open ocean, on a hairline leader
+  // too small: the name goes beside the country, in the nearest open ocean, on a 1px hairline leader
   const isOcean = (x, y) => {
     const xi = ((Math.round(x) % AW) + AW) % AW;
     const yi = Math.round(y);
@@ -638,8 +685,8 @@ lap('albedo painted');
   const unplaced = [];
   for (const c of small) {
     const sx = 1 / cosLat(c.lat);
-    const w = textW(c.name, LEADER_PX, LS) * sx;
-    const h = LEADER_PX * 1.05;
+    const w = textW('regular', c.name, MIN_PX, LS) * sx;
+    const h = MIN_PX * 1.1;
     const ox = lx(c.lon);
     const oy = ly(c.lat);
     // 1) open ocean close by, 2) any free space close by (landlocked microstates), 3) open ocean further out
@@ -665,16 +712,16 @@ lap('albedo painted');
       unplaced.push(c.name);
       continue;
     }
-    placed.push(addText([c.name], LEADER_PX, LS, sx, spot.cx, spot.cy, { fill: '#2B3B2E', opacity: 0.7, halo: true }));
+    placed.push(addText('regular', [c.name], MIN_PX, LS, sx, spot.cx, spot.cy, { fill: INK_LABEL, opacity: 0.8, halo: true }));
     // hairline from the country to the nearest edge of its label
     const ex = Math.max(spot.rect[0], Math.min(ox, spot.rect[2]));
     const ey = Math.max(spot.rect[1], Math.min(oy, spot.rect[3]));
-    els.push(`<line x1="${ox.toFixed(1)}" y1="${oy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#2B3B2E" stroke-opacity="0.6" stroke-width="${0.8 * K}" stroke-linecap="round"/>`);
+    els.push(`<line x1="${ox.toFixed(1)}" y1="${oy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${INK_LABEL}" stroke-opacity="0.6" stroke-width="1" stroke-linecap="round"/>`);
     leaders++;
   }
   lap(`${inside} names inside their country, ${leaders} on leaders, ${unplaced.length} unplaced${unplaced.length ? ': ' + unplaced.join(', ') : ''}`);
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${AW}" height="${AH}" viewBox="0 0 ${AW} ${AH}">${els.join('')}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${AW}" height="${AH}" viewBox="0 0 ${AW} ${AH}">${borders.join('')}${els.join('')}</svg>`;
   const lettered = await sharp(albedo, { raw: { width: AW, height: AH, channels: 3 } })
     .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
     .removeAlpha()
