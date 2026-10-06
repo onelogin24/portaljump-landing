@@ -1,0 +1,32 @@
+{
+  "hero": {
+    "width": 2560,
+    "height": 1707,
+    "smWidth": 1280,
+    "smHeight": 853
+  },
+  "who-couples": {
+    "width": 2560,
+    "height": 3840,
+    "smWidth": 1280,
+    "smHeight": 1920
+  },
+  "who-creators": {
+    "width": 2560,
+    "height": 1920,
+    "smWidth": 1280,
+    "smHeight": 960
+  },
+  "who-families": {
+    "width": 2560,
+    "height": 1707,
+    "smWidth": 1280,
+    "smHeight": 853
+  },
+  "who-solo": {
+    "width": 2560,
+    "height": 3413,
+    "smWidth": 1280,
+    "smHeight": 1707
+  }
+}

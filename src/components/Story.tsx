@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Check } from "lucide-react";
 import { story, type StoryStep } from "../content/site";
-import { Photo } from "./Photo";
+import { MapPanel } from "./MapPanel";
 
 const INTERVAL_MS = 6000;
 
@@ -21,7 +21,10 @@ function StoryCard({ step }: { step: StoryStep }) {
           ))}
         </ul>
       ) : (
-        <p className="card ui-card">{card.text}</p>
+        <div className="card ui-card">
+          <p className="card-title">{card.title}</p>
+          <p className="card-text">{card.text}</p>
+        </div>
       )}
       {step.chips && (
         <ul className="chips left">
@@ -89,7 +92,7 @@ export function Story() {
             role="tab"
             id={`tab-${i}`}
             aria-selected={active === i}
-            aria-controls={`panel-${i}`}
+            aria-controls="story-panel"
             tabIndex={active === i ? 0 : -1}
             className="tab"
             onClick={() => choose(i)}
@@ -100,25 +103,22 @@ export function Story() {
       </div>
       <div className="slides">
         {story.steps.map((s, i) => (
-          <div
-            key={s.tab}
-            id={`panel-${i}`}
-            role="tabpanel"
-            aria-labelledby={`tab-${i}`}
-            aria-hidden={active !== i}
-            className={`slide ${active === i ? "active" : ""}`}
-          >
-            <div className="slide-head">
-              <h2 className="h-lg" id={`story-title-${i}`}>
-                {s.headline[0]} <span className="soft">{s.headline[1]}</span>
-              </h2>
-              <p className="body">{s.body}</p>
-            </div>
-            <Photo file={s.image} alt={s.alt} className="slide-panel">
-              <StoryCard step={s} />
-            </Photo>
+          <div key={s.tab} aria-hidden={active !== i} className={`slide ${active === i ? "active" : ""}`}>
+            <h2 className="h-lg" id={`story-title-${i}`}>
+              {s.headline[0]} <span className="soft">{s.headline[1]}</span>
+            </h2>
+            <p className="body">{s.body}</p>
           </div>
         ))}
+      </div>
+      <div id="story-panel" role="tabpanel" aria-labelledby={`tab-${active}`}>
+        <MapPanel active={active}>
+          {story.steps.map((s, i) => (
+            <div key={s.tab} aria-hidden={active !== i} className={`slide story-overlay ${active === i ? "active" : ""}`}>
+              <StoryCard step={s} />
+            </div>
+          ))}
+        </MapPanel>
       </div>
     </section>
   );

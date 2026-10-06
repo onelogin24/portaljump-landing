@@ -26,7 +26,13 @@ export function Footer() {
         <div className="footer-bottom-row">
           <span>{footerMeta.copyright}</span>
           <a href={`mailto:${footerMeta.email}`}>{footerMeta.email}</a>
-          <span>{footerMeta.credits}</span>
+          <span>
+            {footerMeta.credits.before}
+            <a href={footerMeta.credits.link.href} target="_blank" rel="noopener noreferrer">
+              {footerMeta.credits.link.label}
+            </a>
+            {footerMeta.credits.after}
+          </span>
         </div>
       </div>
     </footer>

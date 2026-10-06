@@ -18,10 +18,8 @@ export type StoryStep = {
   tab: string;
   headline: [string, string];
   body: string;
-  image: string;
-  alt: string;
   chips?: string[];
-  card: { kind: "text"; text: string } | { kind: "list"; items: string[] };
+  card: { kind: "text"; title: string; text: string } | { kind: "list"; items: string[] };
 };
 
 export const story = {
@@ -30,26 +28,20 @@ export const story = {
       tab: "Plan",
       headline: ["Plan it", "like you."],
       body: "Tell it how you travel. Every pick fits.",
-      image: "tab-plan.jpg",
-      alt: "A travel day planned across a city",
       chips: ["Street food first", "Walkable", "Kid friendly"],
-      card: { kind: "text", text: "Day 2: market, tram 28, sunset at Graca" },
+      card: { kind: "text", title: "Day 2", text: "Market, tram 28, castle, sunset at Graca" },
     },
     {
       tab: "Book",
       headline: ["Book it", "in one place."],
       body: "Flights, stays and tables, kept together.",
-      image: "tab-book.jpg",
-      alt: "A hotel room with a window onto the city",
       card: { kind: "list", items: ["Flight", "Hotel", "Dinner"] },
     },
     {
       tab: "Go",
       headline: ["Go with", "the map."],
       body: "Your plans, live on the map while you travel.",
-      image: "tab-go.jpg",
-      alt: "A traveller walking a street with a map",
-      card: { kind: "text", text: "Next: Time Out Market, 6 min walk" },
+      card: { kind: "text", title: "Next: Time Out Market", text: "6 min walk" },
     },
   ] as StoryStep[],
 };
@@ -90,11 +82,11 @@ export const band = {
 export const who = {
   headline: "Built for every kind of trip.",
   items: [
-    { name: "Solo", line: "Go where you want, when you want.", image: "who-solo.jpg", alt: "A solo traveller with a backpack on a mountain trail" },
-    { name: "Couples", line: "Plan together, in one place.", image: "who-couples.jpg", alt: "A couple sharing a map at a seaside cafe" },
-    { name: "Families", line: "Everyone's plans, one map.", image: "who-families.jpg", alt: "A family walking along a beach together" },
-    { name: "Groups", line: "No more group chat chaos.", image: "who-groups.jpg", alt: "A group of friends laughing around a table on holiday" },
-    { name: "Creators", line: "Share the trips you love.", image: "who-creators.jpg", alt: "A creator filming a street scene on a trip" },
+    { name: "Solo", line: "Go where you want, when you want.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
+    { name: "Couples", line: "Plan together, in one place.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
+    { name: "Families", line: "Everyone's plans, one map.", image: "who-families.jpg", position: "center 50%", alt: "A family walking along a beach together" },
+    { name: "Groups", line: "No more group chat chaos.", image: "who-groups.jpg", position: "center 50%", alt: "A group of friends laughing around a table on holiday" },
+    { name: "Creators", line: "Share the trips you love.", image: "who-creators.jpg", position: "center 50%", alt: "A creator filming a street scene on a trip" },
   ],
 };
 
