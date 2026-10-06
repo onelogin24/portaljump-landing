@@ -70,11 +70,14 @@ export const who = {
   ],
 };
 
-export const trust = [
-  { icon: "lock", title: "Your trips stay private.", body: "Only you see your plans unless you share them." },
-  { icon: "share", title: "Share what you choose.", body: "Send one day or the whole trip." },
-  { icon: "download", title: "Yours to keep.", body: "Export your trip any time." },
-] as const;
+export const pitch = {
+  headline: ["A trip that fits you.", "Not a schedule."],
+  items: [
+    { n: "01", title: "Picked for you", body: "Tell it what you love. It recommends places that match." },
+    { n: "02", title: "In the right order", body: "Stops lined up so you walk less and see more." },
+    { n: "03", title: "No clock-watching", body: "See how long between stops and how long the day takes. Never a timetable." },
+  ],
+};
 
 export const closing = {
   line1: "Every trip, mapped.",

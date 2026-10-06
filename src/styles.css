@@ -523,12 +523,12 @@ h3 { font-weight: 700; font-size: 22px; letter-spacing: -0.01em; line-height: 1.
 .who-text { position: absolute; left: var(--space-text); right: var(--space-text); bottom: var(--space-text); color: #fff; }
 .who-text p { font-size: 13px; line-height: 1.5; margin-top: 4px; color: rgba(255, 255, 255, 0.85); }
 
-/* trust */
-.trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-items); text-align: center; }
-.trust-card { display: flex; flex-direction: column; align-items: center; padding: 32px; }
-.trust-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #f3eee5; }
-.trust h3 { margin-top: var(--space-text); }
-.trust p { margin-top: var(--space-chip); color: var(--ink-2); }
+/* pitch row */
+.pitch { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--space-items) * 2); margin-top: var(--space-head); }
+.pitch-col { padding-top: var(--space-items); border-top: 1px solid var(--line); }
+.pitch-n { display: block; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+.pitch-col h3 { margin-top: var(--space-chip); }
+.pitch-col p { margin-top: var(--space-chip); color: var(--ink-2); }
 
 /* closing: waitlist on the Kyoto photo */
 .closing-photo { height: 640px; }
@@ -636,7 +636,7 @@ h3 { font-weight: 700; font-size: 22px; letter-spacing: -0.01em; line-height: 1.
   .hero-copy { left: 24px; bottom: 24px; width: calc(100% - 48px); }
   .topbar-links { display: none; }
   .feature-grid { grid-template-columns: 1fr; }
-  .trust { grid-template-columns: 1fr; gap: var(--space-head); }
+  .pitch { grid-template-columns: 1fr; }
   .map-panel { height: 640px; }
   .itin-card { top: auto; bottom: 32px; left: var(--float-inset); right: var(--float-inset); width: auto; }
   .footer-top { flex-direction: column; }

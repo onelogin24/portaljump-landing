@@ -3,7 +3,7 @@ import { Hero } from "./components/Hero";
 import { Story } from "./components/Story";
 import { FeatureGrid } from "./components/FeatureGrid";
 import { WhoFor } from "./components/WhoFor";
-import { Trust } from "./components/Trust";
+import { Pitch } from "./components/Pitch";
 import { Closing } from "./components/Closing";
 import { Footer } from "./components/Footer";
 import { useReveal } from "./useReveal";
@@ -18,7 +18,7 @@ export default function App() {
         <Story />
         <FeatureGrid />
         <WhoFor />
-        <Trust />
+        <Pitch />
         <Closing />
       </main>
       <Footer />
