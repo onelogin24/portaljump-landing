@@ -5,7 +5,10 @@ const stub = (labels: string[]): FooterLink[] => labels.map((label) => ({ label,
 
 export const footerColumns: FooterColumn[] = [
   { title: "Product", links: stub(["Stays", "Flights", "Eats", "Things to do", "Trips"]) },
-  { title: "Company", links: stub(["About", "Contact", "Privacy", "Terms"]) },
+  {
+    title: "Company",
+    links: [...stub(["About", "Contact"]), { label: "Privacy", href: "/privacy" }, { label: "Terms", href: "/terms" }],
+  },
   { title: "Social", links: stub(["Instagram", "X", "LinkedIn"]) },
 ];
 

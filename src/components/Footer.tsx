@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="wrap footer-top">
-        <a href="#" className="brand">
+        <a href="/" className="brand">
           {footerMeta.brand}
         </a>
         <nav className="footer-cols" aria-label="Footer">
@@ -26,6 +26,7 @@ export function Footer() {
         <div className="footer-bottom-row">
           <span>{footerMeta.copyright}</span>
           <a href={`mailto:${footerMeta.email}`}>{footerMeta.email}</a>
+          <a href="/privacy">Privacy</a>
           <span>
             {footerMeta.credits.before}
             <a href={footerMeta.credits.link.href} target="_blank" rel="noopener noreferrer">
