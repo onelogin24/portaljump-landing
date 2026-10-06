@@ -1,32 +1,25 @@
 import type { CSSProperties } from "react";
 import { Bed, Plane, Star, Ticket, Utensils } from "lucide-react";
 import { features } from "../content/site";
-import { MapPin, MapStage, points, smoothPath } from "./MapStage";
+import { MapCanvas, points, type LegData, type PinData } from "./MapCanvas";
+import { stops } from "../content/itinerary";
 import { Photo } from "./Photo";
 
 const bookingIcons = { plane: Plane, bed: Bed, fork: Utensils, ticket: Ticket };
 
-const route = smoothPath([points.market, points.martim, points.castle, points.graca]);
-const centre = {
-  x: (points.market.x + points.martim.x + points.castle.x + points.graca.x) / 4,
-  y: (points.market.y + points.martim.y + points.castle.y + points.graca.y) / 4,
-};
-const numbered = [points.market, points.martim, points.castle, points.graca];
+const fit = [points.chiado, points.lanes, points.graca];
+const mapPins: PinData[] = stops.map((s) => ({ key: s.id, at: points[s.at], photo: s.photo, n: s.n }));
+const mapLegs: LegData[] = [
+  { key: "leg1", a: points.chiado, b: points.lanes, state: "drawn" },
+  { key: "leg2", a: points.lanes, b: points.graca, state: "drawn" },
+];
 
 function Illustration({ kind }: { kind: (typeof features.cards)[number]["kind"] }) {
   switch (kind) {
     case "map":
       return (
         <div className="ill ill-map" aria-hidden="true">
-          <MapStage
-            zoom={1.9}
-            origin={centre}
-            svg={
-              <path d={route} fill="none" stroke="#0B0B0C" strokeWidth="2" strokeDasharray="6 6" vectorEffect="non-scaling-stroke" />
-            }
-          >
-            {(ctx) => numbered.map((p, i) => <MapPin key={i} at={ctx.px(p)} kind="num" n={i + 1} />)}
-          </MapStage>
+          <MapCanvas fit={fit} pins={mapPins} legs={mapLegs} animate={false} pinSize={40} />
         </div>
       );
     case "bookings":

@@ -1,40 +1,45 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { credit, itinerary } from "../content/itinerary";
-import { MapPin, MapStage, points, smoothPath, type Ctx, type XY } from "./MapStage";
+import { Footprints, TramFront } from "lucide-react";
+import { credit, dinner, legs as legInfo, panelText, preferences, stay, stops } from "../content/itinerary";
+import { MapCanvas, legMid, points, type LegData, type LegState, type PinData, type Size } from "./MapCanvas";
 
-const ZOOM_GO = 1.6;
-const ZOOM_MS = 1200;
-const WALK_MS = 8000;
+const thumb = (name: string) => `/images/${name}-sm.webp`;
+const CARD_OPEN_MS = 1600;
+const CARD_SHRINK_MS = 300;
 
-const planPath = smoothPath([points.market, points.martim, points.castle, points.graca]);
-const walkPath = (() => {
-  const a = points.you;
-  const b = points.market;
-  const mid = { x: (a.x + b.x) / 2 + 26, y: (a.y + b.y) / 2 - 34 };
-  return smoothPath([a, mid, b]);
-})();
+const legIcons = { tram: TramFront, walk: Footprints };
+const dayFit = [points.chiado, points.lanes, points.graca];
+const bookFit = [points.stay, points.market, points.graca];
 
-const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+function useMedia(query: string) {
+  const [match, setMatch] = useState(() => typeof matchMedia === "function" && matchMedia(query).matches);
+  useEffect(() => {
+    const mq = matchMedia(query);
+    const on = () => setMatch(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, [query]);
+  return match;
+}
 
 export function Itinerary({ active }: { active: number }) {
   const panel = useRef<HTMLDivElement>(null);
-  const settle = useRef<HTMLDivElement>(null);
-  const mask = useRef<SVGPathElement>(null);
-  const walk = useRef<SVGPathElement>(null);
-  const walker = useRef<HTMLDivElement>(null);
-  const ctxRef = useRef<Ctx | null>(null);
-  const prevZoomed = useRef(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const [started, setStarted] = useState(false);
+  const [chips, setChips] = useState(0);
   const [pins, setPins] = useState(0);
   const [rows, setRows] = useState(0);
-  const [mapOn, setMapOn] = useState(false);
-  const [zoomed, setZoomed] = useState(false);
-  const [walking, setWalking] = useState(false);
-  const [size, setSize] = useState({ w: 0, h: 0 });
+  const [cards, setCards] = useState<{ i: number; closing: boolean }[]>([]);
+  const [legStates, setLegStates] = useState<LegState[]>(["hidden", "hidden"]);
+  const [legChips, setLegChips] = useState(0);
+  const [extra, setExtra] = useState(0);
+  const [foot, setFoot] = useState(false);
+  const [cardH, setCardH] = useState(0);
+  const [, setSize] = useState<Size>({ w: 0, h: 0 });
 
-  const reduced = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const tab = itinerary[active];
+  const reduced = useMedia("(prefers-reduced-motion: reduce)");
+  const mobile = useMedia("(max-width: 767px)");
 
   // Start once the panel is 30% visible.
   useEffect(() => {
@@ -56,187 +61,240 @@ export function Itinerary({ active }: { active: number }) {
     return () => io.disconnect();
   }, []);
 
+  // Measure the side card so the map can keep clear of it on small screens.
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setCardH(el.offsetHeight));
+    ro.observe(el);
+    setCardH(el.offsetHeight);
+    return () => ro.disconnect();
+  }, []);
+
   // The sequence for each tab. It replays whenever the tab changes.
   useLayoutEffect(() => {
     const timers: number[] = [];
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
-    const n = tab.pins.length;
-    const r = tab.rows.length;
-    const m = mask.current;
-    const len = m ? m.getTotalLength() : 0;
-    if (m) {
-      m.getAnimations().forEach((a) => a.cancel());
-      m.style.strokeDasharray = `${len}`;
-      m.style.strokeDashoffset = reduced ? "0" : `${len}`;
-    }
-    settle.current?.getAnimations().forEach((a) => a.cancel());
-
-    if (reduced) {
-      setMapOn(true);
-      setPins(n);
-      setRows(r);
-      setZoomed(active === 2);
-      setWalking(false);
-      prevZoomed.current = active === 2;
-      return;
-    }
-    if (!started && active === 0) {
-      setMapOn(false);
+    const reset = () => {
+      setChips(0);
       setPins(0);
       setRows(0);
-      setZoomed(false);
-      setWalking(false);
+      setCards([]);
+      setLegStates(["hidden", "hidden"]);
+      setLegChips(0);
+      setExtra(0);
+      setFoot(false);
+    };
+
+    if (reduced) {
+      reset();
+      if (active === 0) {
+        setChips(preferences.length);
+        setPins(stops.length);
+        setRows(stops.length);
+      } else if (active === 1) {
+        setPins(stops.length);
+        setRows(stops.length);
+        setLegStates(["drawn", "drawn"]);
+        setLegChips(legInfo.length);
+        setFoot(true);
+      } else {
+        setRows(panelText.bookings.length);
+        setExtra(2);
+      }
       return;
     }
 
-    setPins(0);
-    setRows(0);
-    setWalking(false);
-    setMapOn(true);
-    setZoomed(active === 2);
+    reset();
+    if (!started && active === 0) return;
 
     if (active === 0) {
-      settle.current?.animate(
-        [
-          { opacity: 0, transform: "scale(1.04)" },
-          { opacity: 1, transform: "scale(1)" },
-        ],
-        { duration: 1200, easing: "ease-out" },
-      );
-      for (let i = 0; i < n; i++) {
-        at(1200 + i * 500, () => {
+      preferences.forEach((_, i) => at(i * 300, () => setChips(i + 1)));
+      stops.forEach((_, i) => {
+        const t = 1200 + i * 600;
+        at(t, () => {
           setPins(i + 1);
           setRows(i + 1);
+          setCards((c) => [...c, { i, closing: false }]);
         });
-      }
-      if (m) {
-        m.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: 2200, delay: 1200, easing: "ease-in-out", fill: "both" });
-      }
-    } else if (active === 1) {
-      const base = prevZoomed.current ? ZOOM_MS : 300;
-      for (let i = 0; i < r; i++) at(base + i * 500, () => setRows(i + 1));
-      for (let i = 0; i < n; i++) at(base + i * 500, () => setPins(i + 1));
-    } else {
-      at(ZOOM_MS, () => {
-        setPins(n);
-        setRows(r);
-        setWalking(true);
+        at(t + CARD_OPEN_MS, () => setCards((c) => c.map((x) => (x.i === i ? { ...x, closing: true } : x))));
+        at(t + CARD_OPEN_MS + CARD_SHRINK_MS, () => setCards((c) => c.filter((x) => x.i !== i)));
       });
+    } else if (active === 1) {
+      stops.forEach((_, i) =>
+        at(i * 200, () => {
+          setPins(i + 1);
+          setRows(i + 1);
+        }),
+      );
+      at(1000, () => setLegStates(["drawing", "hidden"]));
+      at(2200, () => {
+        setLegStates(["drawn", "drawing"]);
+        setLegChips(1);
+      });
+      at(3400, () => {
+        setLegStates(["drawn", "drawn"]);
+        setLegChips(2);
+        setFoot(true);
+      });
+    } else {
+      panelText.bookings.forEach((_, i) => at(1000 + i * 400, () => setRows(i + 1)));
+      at(1000, () => setExtra(1));
+      at(1500, () => setExtra(2));
     }
-    prevZoomed.current = active === 2;
     return () => timers.forEach((t) => window.clearTimeout(t));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, started, reduced]);
 
-  // The walker follows the dashed path to Time Out Market, 8 second loop.
-  useEffect(() => {
-    if (active !== 2) return;
-    const el = walker.current;
-    const path = walk.current;
-    if (!el || !path) return;
-    const place = (p: XY) => {
-      const c = ctxRef.current;
-      if (!c) return;
-      const q = c.px(p);
-      el.style.left = `${q.x}px`;
-      el.style.top = `${q.y}px`;
-    };
-    place(points.you);
-    if (!walking || reduced) return;
-    const L = path.getTotalLength();
-    const t0 = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const t = ((now - t0) % WALK_MS) / WALK_MS;
-      const e = t < 0.85 ? ease(t / 0.85) : 1;
-      const p = path.getPointAtLength(L * e);
-      place({ x: p.x, y: p.y });
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [active, walking, reduced, size.w, size.h, zoomed]);
-
   const animate = !reduced;
+  const stopPin = (i: number, drop: boolean): PinData => ({
+    key: stops[i].id,
+    at: points[stops[i].at],
+    photo: stops[i].photo,
+    n: stops[i].n,
+    drop,
+  });
+
+  let pinList: PinData[];
+  if (active === 2) {
+    const extras = [stay, dinner].slice(0, extra).map((e) => ({ key: e.id, at: points[e.at], photo: e.photo, icon: e.icon, drop: true }));
+    pinList = [stopPin(2, false), ...extras];
+  } else {
+    pinList = stops.slice(0, pins).map((_, i) => stopPin(i, true));
+  }
+
+  const legList: LegData[] =
+    active === 1
+      ? [
+          { key: "leg1", a: points.chiado, b: points.lanes, state: legStates[0] },
+          { key: "leg2", a: points.lanes, b: points.graca, state: legStates[1] },
+        ]
+      : [];
+
+  const reserve = mobile ? { right: 0, bottom: cardH + 48 } : { right: 348, bottom: 0 };
 
   return (
     <div ref={panel} className="map-panel" role="group" aria-label="Itinerary preview">
-      <MapStage
-        zoom={zoomed ? ZOOM_GO : 1}
-        origin={points.you}
+      <MapCanvas
+        fit={active === 2 ? bookFit : dayFit}
+        reserve={reserve}
+        pins={pinList}
+        legs={legList}
         animate={animate}
-        settleRef={settle}
-        settleHidden={!mapOn}
-        onSize={(w, h) => setSize((s) => (s.w === w && s.h === h ? s : { w, h }))}
-        svg={
+        onSize={setSize}
+      >
+        {({ toPx, size }) => (
           <>
             {active === 0 && (
-              <>
-                <mask id="route-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1600">
-                  <path ref={mask} d={planPath} fill="none" stroke="#fff" strokeWidth="24" strokeLinecap="round" />
-                </mask>
-                <path
-                  d={planPath}
-                  fill="none"
-                  stroke="#0B0B0C"
-                  strokeWidth="2"
-                  strokeDasharray="6 6"
-                  vectorEffect="non-scaling-stroke"
-                  mask="url(#route-mask)"
-                />
-              </>
+              <ul className="pref-chips">
+                {preferences.map((p, i) => (
+                  <li key={p} className={`chip ${i < chips ? "show" : ""}`}>
+                    {p}
+                  </li>
+                ))}
+              </ul>
             )}
-            {active === 2 && (
-              <path
-                ref={walk}
-                d={walkPath}
-                fill="none"
-                stroke="#0B0B0C"
-                strokeWidth="2"
-                strokeDasharray="4 4"
-                vectorEffect="non-scaling-stroke"
-                className={pins > 0 ? "route-on" : "route-off"}
-              />
-            )}
+            {active === 0 &&
+              cards.map(({ i, closing }) => {
+                const s = stops[i];
+                const p = toPx(points[s.at]);
+                const left = p.x > size.w * 0.5;
+                return (
+                  <div key={s.id} className="pcard-pos" style={{ left: left ? p.x - 34 - 180 : p.x + 34, top: p.y }}>
+                    <div className={`pcard card ${left ? "to-left" : ""} ${closing ? "closing" : ""}`}>
+                      <img src={thumb(s.photo)} alt="" />
+                      <p className="pcard-name">{s.name}</p>
+                      <span className="pcard-tag">{s.reason}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            {active === 1 &&
+              legInfo.map((l, i) => {
+                if (i >= legChips) return null;
+                const m = toPx(legMid(legList[i].a, legList[i].b));
+                const Icon = legIcons[l.icon];
+                return (
+                  <div key={l.text} className="leg-chip" style={{ left: m.x, top: m.y }}>
+                    <Icon size={14} strokeWidth={1.75} aria-hidden="true" />
+                    <span>
+                      {l.text}
+                      {"sub" in l && l.sub && <span className="leg-sub">{l.sub}</span>}
+                    </span>
+                  </div>
+                );
+              })}
+            {active === 2 &&
+              [stay, dinner].slice(0, extra).map((e) => {
+                const p = toPx(points[e.at]);
+                return (
+                  <div key={e.id} className="pin-chip" style={{ left: p.x, top: p.y - 36 }}>
+                    {e.label}
+                  </div>
+                );
+              })}
           </>
-        }
-      >
-        {(ctx) => {
-          ctxRef.current = ctx;
-          return (
-            <>
-              {tab.pins.map((p, i) =>
-                i < pins ? (
-                  <MapPin
-                    key={`${active}-${i}`}
-                    at={ctx.px(points[p.at])}
-                    kind={p.kind}
-                    n={p.n}
-                    chip={p.chip}
-                    drop={animate}
-                    animate={animate}
-                  />
-                ) : null,
-              )}
-              {active === 2 && <div ref={walker} className="walker" />}
-            </>
-          );
-        }}
-      </MapStage>
+        )}
+      </MapCanvas>
 
-      <div className="itin-card card" aria-live="polite">
-        <p className="card-title">{tab.title}</p>
-        <ul className="itin-rows">
-          {tab.rows.map((row, i) => (
-            <li key={`${active}-${i}`} className={`itin-row ${i < rows ? "show" : ""}`}>
-              {row.time && <span className="itin-time">{row.time}</span>}
-              <span className="itin-place">{row.place}</span>
-              {row.note && <span className="itin-note">{row.note}</span>}
-              {row.pill && <span className="pill">{row.pill}</span>}
-            </li>
-          ))}
-        </ul>
-        {tab.footer && <p className={`itin-foot ${rows >= tab.rows.length ? "show" : ""}`}>{tab.footer}</p>}
+      <div ref={cardRef} className="itin-card card" aria-live="polite">
+        {active === 0 && (
+          <>
+            <p className="card-title">{panelText.styleTitle}</p>
+            <ul className="itin-rows">
+              {stops.map((s, i) => (
+                <li key={s.id} className={`itin-row thumb-row ${i < rows ? "show" : ""}`}>
+                  <img className="thumb thumb-40" src={thumb(s.photo)} alt="" loading="lazy" />
+                  <span className="itin-text">
+                    <span className="itin-place">{s.name}</span>
+                    <span className="itin-note">{s.reason}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        {active === 1 && (
+          <>
+            <p className="card-title">{panelText.dayTitle}</p>
+            <ul className="itin-rows timeline">
+              {stops.map((s, i) => (
+                <li key={s.id} className="timeline-item">
+                  <div className={`itin-row thumb-row ${i < rows ? "show" : ""}`}>
+                    <img className="thumb thumb-44" src={thumb(s.photo)} alt="" loading="lazy" />
+                    <span className="itin-text">
+                      <span className="itin-place">{s.name}</span>
+                      <span className="itin-time">{s.when}</span>
+                      <span className="itin-note">{s.stay}</span>
+                    </span>
+                  </div>
+                  {i < legInfo.length && (
+                    <p className={`itin-travel ${i < legChips ? "show" : ""}`}>
+                      {legInfo[i].text}
+                      {"sub" in legInfo[i] ? `, ${(legInfo[i] as { sub: string }).sub}` : ""}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <p className={`itin-foot ${foot ? "show" : ""}`}>{panelText.dayFooter}</p>
+          </>
+        )}
+        {active === 2 && (
+          <>
+            <p className="card-title">{panelText.bookingsTitle}</p>
+            <ul className="itin-rows">
+              {panelText.bookings.map((b, i) => (
+                <li key={b.place} className={`itin-row book-row ${i < rows ? "show" : ""}`}>
+                  <span className="itin-text">
+                    <span className="itin-place">{b.place}</span>
+                    <span className="itin-note">{b.note}</span>
+                  </span>
+                  <span className="pill">{panelText.confirmed}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
 
       <a className="map-credit" href={credit.href} target="_blank" rel="noopener noreferrer">

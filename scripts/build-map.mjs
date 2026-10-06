@@ -11,12 +11,11 @@ const W = 1600;
 const ENDPOINT = "https://overpass-api.de/api/interpreter";
 
 const POINTS = {
-  market: [-9.1459, 38.7069],
-  martim: [-9.1357, 38.7163],
-  castle: [-9.1335, 38.7139],
+  chiado: [-9.1424, 38.7107],
+  lanes: [-9.13, 38.7114],
   graca: [-9.1315, 38.7163],
-  alfama: [-9.13, 38.7114],
-  you: [-9.1372, 38.7105],
+  stay: [-9.1292, 38.7121],
+  market: [-9.1459, 38.7069],
 };
 
 // Web Mercator projection into the SVG box

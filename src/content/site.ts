@@ -6,11 +6,11 @@ export const nav = {
 
 export const hero = {
   headline: "Your whole trip. One map.",
-  subline: "Bookings, plans, picks and reviews, pinned where they happen.",
+  subline: "A personal itinerary map. Places picked for you, in the right order, with how long between them.",
   image: "hero.jpg",
   alt: "A traveller looking out over a sunlit coastal city",
   trip: { title: "Amalfi Coast, 5 days", meta: "2 stays, 1 ferry, 9 places" },
-  flight: "Ferry to Positano, Fri 9:40",
+  flight: "Ferry to Positano, about 40 min",
   chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
@@ -22,9 +22,9 @@ export type StoryStep = {
 
 export const story = {
   steps: [
-    { tab: "Plan", headline: ["Plan it", "like you."], body: "Tell it how you travel. Every pick fits." },
-    { tab: "Book", headline: ["Book it", "in one place."], body: "Flights, stays and tables, kept together." },
-    { tab: "Go", headline: ["Go with", "the map."], body: "Your plans, live on the map while you travel." },
+    { tab: "Your style", headline: ["Tell it", "how you travel."], body: "Pick what you love. It recommends the rest." },
+    { tab: "Your day", headline: ["Your day,", "mapped."], body: "Stops in the right order, with how long between them." },
+    { tab: "Your bookings", headline: ["Everything in", "one place."], body: "Stays, tables and tickets, pinned where they happen." },
   ] as StoryStep[],
 };
 
@@ -38,9 +38,9 @@ export const features = {
   ] as const,
   confirmed: "Confirmed",
   bookings: [
-    { icon: "plane", title: "Flight to Lisbon", date: "Fri 12 Jun 9:40" },
+    { icon: "plane", title: "Flight to Lisbon", date: "Fri 12 Jun" },
     { icon: "bed", title: "Alfama Guesthouse", date: "12 to 17 Jun" },
-    { icon: "fork", title: "Dinner at Taberna", date: "Sat 20:00" },
+    { icon: "fork", title: "Dinner at Taberna", date: "Saturday night" },
     { icon: "ticket", title: "Tram 28 day pass", date: "Sun" },
   ] as const,
   picks: [
