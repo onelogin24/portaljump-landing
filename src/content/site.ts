@@ -94,6 +94,7 @@ export const form = {
   placeholder: "you@email.com",
   button: "Join waitlist",
   invalid: "Enter a valid email",
+  failed: "Something went wrong. Try again.",
   success: "You're on the list.",
   subject: "Waitlist request",
 };

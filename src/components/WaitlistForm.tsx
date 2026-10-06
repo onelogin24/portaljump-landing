@@ -7,7 +7,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function WaitlistForm({ className = "" }: { className?: string }) {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const errId = useId();
@@ -16,22 +16,24 @@ export function WaitlistForm({ className = "" }: { className?: string }) {
     e.preventDefault();
     const value = email.trim();
     if (!EMAIL_RE.test(value)) {
-      setError(true);
+      setErrorMsg(form.invalid);
       return;
     }
-    setError(false);
+    setErrorMsg(null);
     if (WAITLIST_ENDPOINT) {
       setBusy(true);
       try {
         const res = await fetch(WAITLIST_ENDPOINT, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ email: value }),
+          redirect: "follow",
         });
-        if (!res.ok) throw new Error("bad status");
-        setDone(true);
+        const data = await res.json();
+        if (res.ok && data.ok === true) setDone(true);
+        else setErrorMsg(data.error === "invalid_email" ? form.invalid : form.failed);
       } catch {
-        setError(true);
+        setErrorMsg(form.failed);
       } finally {
         setBusy(false);
       }
@@ -59,18 +61,21 @@ export function WaitlistForm({ className = "" }: { className?: string }) {
           autoComplete="email"
           placeholder={form.placeholder}
           aria-label="Email address"
-          aria-invalid={error}
-          aria-describedby={error ? errId : undefined}
+          aria-invalid={errorMsg === form.invalid}
+          aria-describedby={errorMsg ? errId : undefined}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setErrorMsg(null);
+          }}
         />
         <button type="submit" className="btn" disabled={busy}>
           {form.button}
         </button>
       </div>
-      {error && (
+      {errorMsg && (
         <p id={errId} className="wl-error" role="alert">
-          {form.invalid}
+          {errorMsg}
         </p>
       )}
     </form>
