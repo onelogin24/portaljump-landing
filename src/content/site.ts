@@ -57,14 +57,6 @@ export const features = {
 export const band = {
   image: "band.jpg",
   alt: "A quiet temple garden in Kyoto in autumn",
-  card: {
-    title: "Kyoto, autumn",
-    items: [
-      { label: "Flight confirmed", done: true },
-      { label: "Ryokan booked", done: true },
-      { label: "Tea ceremony Saturday", done: false },
-    ],
-  },
 };
 
 export const who = {

@@ -1,16 +1,22 @@
-import { closing } from "../content/site";
+import { band, closing } from "../content/site";
+import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
 
 export function Closing() {
   return (
-    <section id="waitlist" className="section wrap closing" aria-labelledby="closing-title" data-reveal>
-      <h2 id="closing-title" className="h-closing">
-        {closing.line1}
-        <br />
-        <span className="soft">{closing.line2}</span>
-      </h2>
-      <WaitlistForm className="closing-form" />
-      <p className="note">{closing.note}</p>
+    <section id="waitlist" className="section wrap" aria-labelledby="closing-title" data-reveal>
+      <Photo file={band.image} alt={band.alt} sizes="(min-width: 1248px) 1200px, 100vw" position="center 45%" className="closing-photo">
+        <div className="closing-wash" />
+        <div className="closing-copy">
+          <h2 id="closing-title" className="closing-title">
+            {closing.line1}
+            <br />
+            <span className="closing-line2">{closing.line2}</span>
+          </h2>
+          <WaitlistForm className="closing-form" />
+          <p className="note">{closing.note}</p>
+        </div>
+      </Photo>
     </section>
   );
 }
