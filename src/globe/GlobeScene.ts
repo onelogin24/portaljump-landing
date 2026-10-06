@@ -173,7 +173,7 @@ const shellFrag = /* glsl */ `
   }
 `;
 
-export async function createGlobe(canvas: HTMLCanvasElement, opts: { albedoUrl: string; antialias: boolean }): Promise<GlobeApi> {
+export async function createGlobe(canvas: HTMLCanvasElement, opts: { albedoUrl: string; albedoUrlHi?: string; antialias: boolean }): Promise<GlobeApi> {
   const renderer = new WebGLRenderer({ canvas, antialias: opts.antialias, alpha: true, powerPreference: 'high-performance' });
   renderer.setClearColor(0x000000, 0);
 
@@ -183,7 +183,9 @@ export async function createGlobe(canvas: HTMLCanvasElement, opts: { albedoUrl: 
 
   const loader = new TextureLoader();
   const load = (url: string) => new Promise<Texture>((resolve, reject) => loader.load(url, resolve, undefined, reject));
-  const albedo = await load(opts.albedoUrl);
+  // the 8192 map is only fetched when the GPU can hold it; everything else gets the regular one
+  const useHi = !!opts.albedoUrlHi && renderer.capabilities.maxTextureSize >= 8192;
+  const albedo = await load(useHi ? opts.albedoUrlHi! : opts.albedoUrl);
   albedo.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
   albedo.wrapS = RepeatWrapping;
   albedo.wrapT = ClampToEdgeWrapping;

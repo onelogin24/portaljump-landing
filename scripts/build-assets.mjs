@@ -1,9 +1,12 @@
 // Generates every static asset the landing page needs. Run: npm run assets   (~1-2 min, output is committed)
 //
-//  public/textures/earth-albedo-4096.webp  desktop globe colour map, painted like a gouache storybook map from REAL
+//  public/textures/earth-albedo-8192.webp  desktop globe colour map (8192 for big GPUs, 4096 otherwise, 2048 for mobile),
+//  public/textures/earth-albedo-4096.webp  painted like a gouache storybook map from REAL
 //  public/textures/earth-albedo-2048.webp  coastlines: Natural Earth 10m land (scripts/data/ne_10m_land.geojson) for the
 //     shapes and an elevation map (scripts/data/earth-topology.png) for the land colour and posterised hill shading.
 //     scripts/data/globe-style.png is a style reference only and is never read here.
+//     Every country name (Natural Earth 50m, scripts/data/ne_50m_admin_0_countries.geojson) and the five oceans are
+//     lettered into the texture in Fraunces Italic.
 //  public/avatars/<name>-{192,384}.webp    illustrated faces cut out of scripts/data/faces-{a,b}.png, circular alpha
 //  public/grain.png                        static film grain tile laid over the sky
 //  public/fonts/*.woff2                    self-hosted Inter (latin) 400 / 500 / 700 and Inter Tight 400 / 600
@@ -11,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
+import * as opentype from 'opentype.js';
 
 const root = path.resolve(import.meta.dirname, '..');
 const pub = (...p) => path.join(root, 'public', ...p);
@@ -205,8 +209,10 @@ console.log('fonts');
 }
 
 // ---------- land mask: Natural Earth 10m, rasterised at 2x then box-filtered to 4096x2048 ----------
-const AW = 4096;
-const AH = 2048;
+// everything is painted at 8192x4096 (K = 2 x the 4096 sizes in the comments) and downsampled for the smaller tiers
+const K = 2;
+const AW = 4096 * K;
+const AH = 2048 * K;
 const SW = AW * 2;
 const SH = AH * 2;
 const big = new Uint8Array(SW * SH);
@@ -314,26 +320,26 @@ for (let y = AH - 1; y >= 0; y--) {
 lap('coast distance');
 
 // ---------- terrain: elevation map -> height + hillshade ----------
-const topo = await grey(sharp(data('earth-topology.png')).resize(AW, AH, { kernel: 'cubic' }).blur(2.5));
+const topo = await grey(sharp(data('earth-topology.png')).resize(AW, AH, { kernel: 'cubic' }).blur(2.5 * K));
 if (topo.length !== AW * AH) throw new Error('topology buffer size mismatch');
 const E = new Float32Array(AW * AH);
 for (let y = 0; y < AH; y++) {
   for (let x = 0; x < AW; x++) {
     const i = y * AW + x;
     const base = topo[i] / 250;
-    const detail = base > 0.015 ? (fbm2(x / 60, y / 60, 3, 3) - 0.5) * 0.05 * smoothstep(0.015, 0.2, base) : 0;
+    const detail = base > 0.015 ? (fbm2(x / (60 * K), y / (60 * K), 3, 3) - 0.5) * 0.05 * smoothstep(0.015, 0.2, base) : 0;
     E[i] = Math.max(0, base + detail);
   }
 }
 lap('terrain');
 
 // mountain triangles: sparse, on the highest peaks, at least 220 px apart (greedy, tallest first)
-const PEAK_GAP = 220;
+const PEAK_GAP = 220 * K;
 const peaks = [];
 {
   const cand = [];
-  for (let y = 40; y < AH - 40; y += 4) {
-    for (let x = 0; x < AW; x += 4) {
+  for (let y = 40; y < AH - 40; y += 4 * K) {
+    for (let x = 0; x < AW; x += 4 * K) {
       const i = y * AW + x;
       if (L[i] > 250 && E[i] > 0.3 && Math.abs(90 - (y / AH) * 180) < 62) cand.push([E[i], x, y]);
     }
@@ -353,7 +359,7 @@ const peaks = [];
       }
     }
     if (!ok) continue;
-    peaks.push([x, y, 10 + Math.round(hash2(x, y, 9) * 6)]);
+    peaks.push([x, y, (10 + Math.round(hash2(x, y, 9) * 6)) * K]);
     const k = key(cx, cy);
     if (!cell.has(k)) cell.set(k, []);
     cell.get(k).push([x, y]);
@@ -371,8 +377,8 @@ const CREAM = hex('#f1eadb');
 const INK = hex('#2b3b2e');
 const PEAK_INK = hex('#5a3b2c');
 const WHITE = [1, 1, 1];
-const BAND_PX = 14; // the lighter coastal band fades out over this many px at 4096
-const CONTOURS = [8, 18, 32]; // three hand-drawn lines at growing distances from the coast
+const BAND_PX = 14 * K; // the lighter coastal band fades out over this many px at 4096
+const CONTOURS = [8, 18, 32].map((c) => c * K); // three hand-drawn lines at growing distances from the coast
 
 // soft posterise: n steps with a short smooth ramp between them (painted, not smooth terrain)
 const poster = (v, n) => {
@@ -399,11 +405,11 @@ for (let y = 0; y < AH; y++) {
 
     // ocean: deep indigo, a lighter band hugging the coast, three wobbly white contour lines
     let col = OCEAN;
-    if (d < 70) {
+    if (d < 70 * K) {
       col = mix3(col, BAND, 1 - smoothstep(0, BAND_PX, d));
-      const wob = (fbm3(p0 * 40, p1 * 40, p2 * 40, 3) - 0.5) * 9;
+      const wob = (fbm3(p0 * 40, p1 * 40, p2 * 40, 3) - 0.5) * 9 * K;
       let line = 0;
-      for (const c of CONTOURS) line = Math.max(line, 1 - smoothstep(0, 0.8, Math.abs(d - c - wob)));
+      for (const c of CONTOURS) line = Math.max(line, 1 - smoothstep(0, 0.8 * K, Math.abs(d - c - wob)));
       col = mix3(col, WHITE, line * 0.13);
     }
 
@@ -432,12 +438,14 @@ for (let y = 0; y < AH; y++) {
       col = mix3(col, INK, 0.35 * smoothstep(0.25, 0.95, edge));
     } else {
       const edge = 1 - Math.abs(2 * isLand - 1);
-      if (edge > 0.25) col = mix3(col, INK, 0.35 * smoothstep(0.25, 0.95, edge));
+      const outer = 1 - smoothstep(0.5, 0.5 + 0.75 * K, d);
+      const ink = Math.max(edge > 0.25 ? smoothstep(0.25, 0.95, edge) : 0, outer);
+      if (ink > 0) col = mix3(col, INK, 0.35 * ink);
     }
 
     // gouache: slow +-4% colour drift, plus 3% paper grain
     const drift = 1 + (fbm3(p0 * 3.2 + 9, p1 * 3.2, p2 * 3.2, 3) - 0.5) * 0.16;
-    const grain = (hash2(x, y, 41) - 0.5) * 0.06;
+    const grain = (hash2(Math.floor(x / K), Math.floor(y / K), 41) - 0.5) * 0.06;
     const o = i * 3;
     albedo[o] = Math.round(clamp01(col[0] * drift + grain) * 255);
     albedo[o + 1] = Math.round(clamp01(col[1] * drift + grain) * 255);
@@ -466,12 +474,224 @@ for (const [cx, cy, size] of peaks) {
 }
 lap('albedo painted');
 
-const albedo4096 = await sharp(albedo, { raw: { width: AW, height: AH, channels: 3 } }).webp({ quality: 84, smartSubsample: true, effort: 5 }).toBuffer();
+// ---------- lettering: every country and the five oceans, Fraunces Italic ----------
+// Sizes below are written at 4096 width and multiplied by K. Each name is stretched by 1/cos(latitude) so it looks
+// normal once wrapped on the sphere. Names that cannot reach 10px inside their country go beside it in open ocean
+// with a hairline leader.
+{
+  const fontBuf = fs.readFileSync(path.join(root, 'node_modules/@fontsource/fraunces/files/fraunces-latin-400-italic.woff'));
+  const font = (opentype.default ?? opentype).parse(fontBuf.buffer.slice(fontBuf.byteOffset, fontBuf.byteOffset + fontBuf.byteLength));
+  const LS = 0.04; // letter-spacing, em
+  const MIN_PX = 10 * K;
+  const MAX_PX = 46 * K;
+  const LEADER_PX = 12 * K;
+  const lx = (lon) => ((lon + 180) / 360) * AW;
+  const ly = (lat) => ((90 - lat) / 180) * AH;
+  const cosLat = (lat) => Math.max(Math.cos((lat * Math.PI) / 180), 0.12);
+  const textW = (t, size, ls) => font.getAdvanceWidth(t, size, { letterSpacing: ls });
+
+  // path data for `text`, centred on cx with its baseline at baselineY and its width stretched by sx
+  // (the stretch is baked into the coordinates so the halo stroke stays even)
+  const textPath = (text, size, ls, sx, cx, baselineY) => {
+    const w = textW(text, size, ls);
+    const p = font.getPath(text, -w / 2, 0, size, { letterSpacing: ls });
+    for (const c of p.commands) {
+      for (const k of ['x', 'x1', 'x2']) if (k in c) c[k] = c[k] * sx + cx;
+      for (const k of ['y', 'y1', 'y2']) if (k in c) c[k] += baselineY;
+    }
+    return p.toPathData(1);
+  };
+
+  const els = [];
+  const placed = []; // [x0, y0, x1, y1] boxes already used
+  const hits = (r, pad) => placed.some((q) => r[0] < q[2] + pad && r[2] > q[0] - pad && r[1] < q[3] + pad && r[3] > q[1] - pad);
+  // emit an element at x, plus wrapped copies when it crosses the texture seam
+  const emit = (make, x0, x1) => {
+    els.push(make(0));
+    if (x0 < 0) els.push(make(AW));
+    if (x1 > AW) els.push(make(-AW));
+  };
+  const addText = (lines, size, ls, sx, cx, cy, style) => {
+    const lh = size * 1.05;
+    const wMax = Math.max(...lines.map((l) => textW(l, size, ls))) * sx;
+    const h = lh * lines.length;
+    const rows = lines.map((l, i) => [l, cy + (i - (lines.length - 1) / 2) * lh + size * 0.3]);
+    emit(
+      (off) =>
+        rows
+          .map(([l, by]) => {
+            const d = textPath(l, size, ls, sx, cx + off, by);
+            const halo = style.halo ? `<path d="${d}" fill="none" stroke="#F1EADB" stroke-opacity="0.9" stroke-width="${2 * K}" stroke-linejoin="round"/>` : '';
+            return `${halo}<path d="${d}" fill="${style.fill}" fill-opacity="${style.opacity}"/>`;
+          })
+          .join(''),
+      cx - wMax / 2,
+      cx + wMax / 2,
+    );
+    return [cx - wMax / 2, cy - h / 2, cx + wMax / 2, cy + h / 2];
+  };
+
+  // oceans first, so country leaders keep clear of them: [name, lon, lat, size at 4096]
+  for (const [name, lon, lat, size] of [
+    ['Pacific', -142, -6, 80],
+    ['Atlantic', -42, 26, 72],
+    ['Indian', 78, -20, 66],
+    ['Southern', 40, -60, 62],
+    ['Arctic', -170, 80, 60],
+  ]) {
+    placed.push(addText([name], size * K, 0.3, 1 / cosLat(lat), lx(lon), ly(lat), { fill: '#F1EADB', opacity: 0.45 }));
+  }
+
+  // length of the polygon's chord through (lon, lat) along a row (axis h) or column (axis v), in degrees; null if outside
+  const chord = (rings, lon, lat, axis) => {
+    const xs = [];
+    const t = axis === 'h' ? lat : lon;
+    for (const ring of rings) {
+      for (let i = 0; i < ring.length - 1; i++) {
+        const a0 = axis === 'h' ? ring[i][0] : ring[i][1];
+        const b0 = axis === 'h' ? ring[i][1] : ring[i][0];
+        const a1 = axis === 'h' ? ring[i + 1][0] : ring[i + 1][1];
+        const b1 = axis === 'h' ? ring[i + 1][1] : ring[i + 1][0];
+        if ((b0 <= t && t < b1) || (b1 <= t && t < b0)) xs.push(a0 + ((t - b0) / (b1 - b0)) * (a1 - a0));
+      }
+    }
+    xs.sort((p, q) => p - q);
+    const v = axis === 'h' ? lon : lat;
+    for (let i = 0; i + 1 < xs.length; i += 2) if (xs[i] <= v && v <= xs[i + 1]) return xs[i + 1] - xs[i];
+    return null;
+  };
+
+  const bboxArea = (rings) => {
+    const xs = rings[0].map((p) => p[0]);
+    const ys = rings[0].map((p) => p[1]);
+    return (Math.max(...xs) - Math.min(...xs)) * (Math.max(...ys) - Math.min(...ys));
+  };
+  const countries = JSON.parse(fs.readFileSync(data('ne_50m_admin_0_countries.geojson'), 'utf8')).features.map((f) => {
+    const g = f.geometry;
+    const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+    const lon = f.properties.LABEL_X;
+    const lat = f.properties.LABEL_Y;
+    // the polygon that holds the label point, else the biggest one
+    let best = null;
+    let bestH = -1;
+    for (const rings of polys) {
+      const h = chord(rings, lon, lat, 'h');
+      if (h != null && h > bestH) {
+        best = rings;
+        bestH = h;
+      }
+    }
+    const rings = best ?? polys.reduce((a, b) => (bboxArea(b) > bboxArea(a) ? b : a));
+    return { name: f.properties.NAME, lon, lat, hDeg: chord(rings, lon, lat, 'h'), vDeg: chord(rings, lon, lat, 'v') };
+  });
+
+  // best size for a name inside its country: one line or, for multi-word names, two
+  const fit = (c) => {
+    if (c.hDeg == null || c.vDeg == null) return null;
+    const sx = 1 / cosLat(c.lat);
+    const wTex = (c.hDeg / 360) * AW;
+    const hPx = (c.vDeg / 180) * AH;
+    const options = [[c.name]];
+    const words = c.name.split(' ');
+    if (words.length > 1) {
+      let split = 1;
+      let bestDiff = Infinity;
+      for (let i = 1; i < words.length; i++) {
+        const diff = Math.abs(words.slice(0, i).join(' ').length - words.slice(i).join(' ').length);
+        if (diff < bestDiff) {
+          bestDiff = diff;
+          split = i;
+        }
+      }
+      options.push([words.slice(0, split).join(' '), words.slice(split).join(' ')]);
+    }
+    let best = null;
+    for (const lines of options) {
+      const w1 = Math.max(...lines.map((l) => textW(l, 1, LS))) * sx;
+      const size = Math.min(MAX_PX, (0.9 * wTex) / w1, (0.8 * hPx) / (lines.length * 1.05));
+      if (!best || size > best.size) best = { lines, size, sx };
+    }
+    return best;
+  };
+
+  const area = (c) => (c.hDeg ?? 0) * (c.vDeg ?? 0);
+  countries.sort((a, b) => area(b) - area(a));
+  const small = [];
+  let inside = 0;
+  for (const c of countries) {
+    const f = fit(c);
+    if (f && f.size >= MIN_PX) {
+      placed.push(addText(f.lines, f.size, LS, f.sx, lx(c.lon), ly(c.lat), { fill: '#2B3B2E', opacity: 0.7, halo: true }));
+      inside++;
+    } else {
+      small.push(c);
+    }
+  }
+
+  // too small: the name goes beside the country, in the nearest open ocean, on a hairline leader
+  const isOcean = (x, y) => {
+    const xi = ((Math.round(x) % AW) + AW) % AW;
+    const yi = Math.round(y);
+    return yi >= 0 && yi < AH && L[yi * AW + xi] < 20 && DIST[yi * AW + xi] > 2 * K;
+  };
+  let leaders = 0;
+  const unplaced = [];
+  for (const c of small) {
+    const sx = 1 / cosLat(c.lat);
+    const w = textW(c.name, LEADER_PX, LS) * sx;
+    const h = LEADER_PX * 1.05;
+    const ox = lx(c.lon);
+    const oy = ly(c.lat);
+    // 1) open ocean close by, 2) any free space close by (landlocked microstates), 3) open ocean further out
+    let spot = null;
+    const search = (rMax, needOcean) => {
+      for (let r = 6 * K; r <= rMax && !spot; r += 5 * K) {
+        for (let a = 0; a < 24 && !spot; a++) {
+          const th = (a / 24) * Math.PI * 2;
+          const cx = ox + Math.cos(th) * (r + (w / 2) * Math.abs(Math.cos(th)));
+          const cy = oy + Math.sin(th) * (r + (h / 2) * Math.abs(Math.sin(th)));
+          const rect = [cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2];
+          if (rect[1] < 0 || rect[3] > AH || hits(rect, 2 * K)) continue;
+          let ok = true;
+          if (needOcean) for (let i = 0; i <= 8 && ok; i++) for (let j = 0; j <= 2 && ok; j++) ok = isOcean(rect[0] + (w * i) / 8, rect[1] + (h * j) / 2);
+          if (ok) spot = { cx, cy, rect };
+        }
+      }
+    };
+    search(60 * K, true);
+    if (!spot) search(110 * K, false);
+    if (!spot) search(700 * K, true);
+    if (!spot) {
+      unplaced.push(c.name);
+      continue;
+    }
+    placed.push(addText([c.name], LEADER_PX, LS, sx, spot.cx, spot.cy, { fill: '#2B3B2E', opacity: 0.7, halo: true }));
+    // hairline from the country to the nearest edge of its label
+    const ex = Math.max(spot.rect[0], Math.min(ox, spot.rect[2]));
+    const ey = Math.max(spot.rect[1], Math.min(oy, spot.rect[3]));
+    els.push(`<line x1="${ox.toFixed(1)}" y1="${oy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#2B3B2E" stroke-opacity="0.6" stroke-width="${0.8 * K}" stroke-linecap="round"/>`);
+    leaders++;
+  }
+  lap(`${inside} names inside their country, ${leaders} on leaders, ${unplaced.length} unplaced${unplaced.length ? ': ' + unplaced.join(', ') : ''}`);
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${AW}" height="${AH}" viewBox="0 0 ${AW} ${AH}">${els.join('')}</svg>`;
+  const lettered = await sharp(albedo, { raw: { width: AW, height: AH, channels: 3 } })
+    .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  if (lettered.info.channels !== 3 || lettered.data.length !== albedo.length) throw new Error('lettered buffer is ' + lettered.info.channels + ' channels');
+  lettered.data.copy(albedo);
+  lap('lettering composited');
+}
+
+// ---------- export: 8192 for big GPUs, 4096 default, 2048 for mobile ----------
+const albedoImg = () => sharp(albedo, { raw: { width: AW, height: AH, channels: 3 } });
+const albedo8192 = await albedoImg().webp({ quality: 80, smartSubsample: true, effort: 5 }).toBuffer();
+fs.writeFileSync(pub('textures', 'earth-albedo-8192.webp'), albedo8192);
+const albedo4096 = await albedoImg().resize(4096, 2048, { kernel: 'lanczos3' }).webp({ quality: 84, smartSubsample: true, effort: 5 }).toBuffer();
 fs.writeFileSync(pub('textures', 'earth-albedo-4096.webp'), albedo4096);
-const albedo2048 = await sharp(albedo, { raw: { width: AW, height: AH, channels: 3 } })
-  .resize(2048, 1024, { kernel: 'lanczos3' })
-  .webp({ quality: 90, smartSubsample: true, effort: 5 })
-  .toBuffer();
+const albedo2048 = await albedoImg().resize(2048, 1024, { kernel: 'lanczos3' }).webp({ quality: 90, smartSubsample: true, effort: 5 }).toBuffer();
 fs.writeFileSync(pub('textures', 'earth-albedo-2048.webp'), albedo2048);
-console.log('earth-albedo-4096.webp', (albedo4096.length / 1024).toFixed(0), 'KB;  earth-albedo-2048.webp', (albedo2048.length / 1024).toFixed(0), 'KB');
+console.log('earth-albedo-8192.webp', (albedo8192.length / 1024).toFixed(0), 'KB;  4096', (albedo4096.length / 1024).toFixed(0), 'KB;  2048', (albedo2048.length / 1024).toFixed(0), 'KB');
 console.log('done in', ((Date.now() - t0) / 1000).toFixed(0), 's');

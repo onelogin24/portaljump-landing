@@ -453,6 +453,7 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
         .then((m) =>
           m.createGlobe(canvas, {
             albedoUrl: hiRes ? '/textures/earth-albedo-4096.webp' : '/textures/earth-albedo-2048.webp',
+            albedoUrlHi: hiRes ? '/textures/earth-albedo-8192.webp' : undefined,
             antialias: !coarse,
           }),
         )
