@@ -26,6 +26,9 @@ const RAD = Math.PI / 180;
 
 type Pt = { x: number; y: number };
 
+/** portraits ship as <name>-384.webp plus a -192 variant; anything else (e.g. an svg) has no srcset */
+const avatarSrcSet = (src: string) => (src.endsWith('-384.webp') ? `${src.replace('-384', '-192')} 192w, ${src} 384w` : undefined);
+
 // ---------- static globe-space geometry (computed once) ----------
 const PIN_V: Vec3[] = PINS.map((p) => latLonToVec(p.lat, p.lon));
 
@@ -84,6 +87,7 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
   const chipEls = useRef<(HTMLAnchorElement | null)[]>([]);
   const lineEls = useRef<(SVGPathElement | null)[]>([]);
   const arcEls = useRef<(SVGPathElement | null)[]>([]);
+  const arcGradEls = useRef<(SVGLinearGradientElement | null)[]>([]);
   const nodeEls = useRef<(SVGGElement | null)[]>([]);
   const travEls = useRef<(SVGGElement | null)[]>([]);
   const ringBackEls = useRef<(SVGPathElement | null)[]>([]);
@@ -229,16 +233,33 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
         if (!path) continue;
         let d = '';
         let pen = false;
+        let x0 = 0;
+        let y0 = 0;
+        let x1 = 0;
+        let y1 = 0;
         for (const v of ARC_PTS[k]) {
           projectVec(v, rot, proj);
           if (proj.z > HORIZON_Z + 0.005) {
-            d += `${pen ? 'L' : 'M'}${(st.ox + proj.nx * half).toFixed(1)} ${(st.oy - proj.ny * half).toFixed(1)}`;
+            x1 = st.ox + proj.nx * half;
+            y1 = st.oy - proj.ny * half;
+            if (!d) {
+              x0 = x1;
+              y0 = y1;
+            }
+            d += `${pen ? 'L' : 'M'}${x1.toFixed(1)} ${y1.toFixed(1)}`;
             pen = true;
           } else {
             pen = false;
           }
         }
         path.setAttribute('d', d);
+        const grad = arcGradEls.current[k];
+        if (grad && d) {
+          grad.setAttribute('x1', x0.toFixed(1));
+          grad.setAttribute('y1', y0.toFixed(1));
+          grad.setAttribute('x2', x1.toFixed(1));
+          grad.setAttribute('y2', y1.toFixed(1));
+        }
       }
 
       // glowing nodes where arcs cross
@@ -264,7 +285,7 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
           continue;
         }
         const [i, j] = ARCS[TRAVELERS[n]];
-        const u = (t / (11 + n * 3) + n * 0.37) % 1;
+        const u = (t / (18 + n * 5) + n * 0.37) % 1;
         projectVec(slerp(PIN_V[i], PIN_V[j], u), rot, proj);
         if (proj.facing < 0.01) {
           g.style.opacity = '0';
@@ -531,24 +552,21 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
 
       {!poster && (
         <>
-          <img
-            className={styles.cloudBase}
-            src={assets.clouds.base.src}
-            srcSet={`${assets.clouds.base.small} ${assets.clouds.base.smallW}w, ${assets.clouds.base.src} ${assets.clouds.base.w}w`}
-            sizes="(min-width: 1080px) 36vw, 70vw"
-            width={assets.clouds.base.w}
-            height={Math.round(assets.clouds.base.w / 3)}
-            alt=""
-            decoding="async"
-          />
-
           <svg className={styles.overlay} aria-hidden="true" focusable="false">
             <defs>
               <radialGradient id="limb-fade" ref={maskGradRef} gradientUnits="userSpaceOnUse">
-                <stop offset="0" stopColor="#fff" />
-                <stop offset="0.88" stopColor="#fff" />
+                <stop offset="0" stopColor="#e8c27a" />
+                <stop offset="0.88" stopColor="#e8c27a" />
                 <stop offset="0.985" stopColor="#000" />
               </radialGradient>
+              {ARCS.map((_, k) => (
+                <linearGradient key={k} id={`arc-fade-${k}`} ref={(el) => void (arcGradEls.current[k] = el)} gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="#e8c27a" stopOpacity="0" />
+                  <stop offset="0.2" stopColor="#e8c27a" stopOpacity="1" />
+                  <stop offset="0.8" stopColor="#e8c27a" stopOpacity="1" />
+                  <stop offset="1" stopColor="#e8c27a" stopOpacity="0" />
+                </linearGradient>
+              ))}
               <mask id="limb-mask" maskUnits="userSpaceOnUse" x="-20%" y="-20%" width="140%" height="140%">
                 <rect x="-20%" y="-20%" width="140%" height="140%" fill="url(#limb-fade)" />
               </mask>
@@ -560,7 +578,7 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
 
             <g mask="url(#limb-mask)">
               {ARCS.map((_, k) => (
-                <path key={`a${k}`} ref={(el) => void (arcEls.current[k] = el)} className={styles.arc} />
+                <path key={`a${k}`} ref={(el) => void (arcEls.current[k] = el)} className={styles.arc} stroke={`url(#arc-fade-${k})`} />
               ))}
               {NODE_V.map((_, k) => (
                 <g key={`n${k}`} ref={(el) => void (nodeEls.current[k] = el)} className={styles.node}>
@@ -570,8 +588,8 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
               ))}
               {TRAVELERS.map((_, n) => (
                 <g key={`t${n}`} ref={(el) => void (travEls.current[n] = el)} className={styles.node}>
-                  <circle r="9" className={styles.nodeGlow} />
-                  <circle r="3.6" className={styles.nodeCore} />
+                  <circle r="6" className={styles.travGlow} />
+                  <circle r="1.5" className={styles.travCore} />
                 </g>
               ))}
             </g>
@@ -581,7 +599,6 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
                 key={`l${c.label}`}
                 ref={(el) => void (lineEls.current[i] = el)}
                 className={`${styles.chipLine} ${active === i ? styles.lineActive : ''}`}
-                style={{ '--c': c.color } as CSSProperties}
               />
             ))}
           </svg>
@@ -590,8 +607,8 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
 
           {PINS.map((p, i) => (
             <div key={p.id} ref={(el) => void (pinEls.current[i] = el)} className={styles.pin} aria-hidden="true">
-              <div className={`${styles.pinInner} ${activePin === i ? styles.pinActive : ''}`} style={{ '--dot': p.dot } as CSSProperties}>
-                <img src={assets.avatars[i]} width={128} height={128} alt="" draggable={false} />
+              <div className={`${styles.pinInner} ${activePin === i ? styles.pinActive : ''}`}>
+                <img src={assets.avatars[i]} srcSet={avatarSrcSet(assets.avatars[i])} sizes="(min-width: 1080px) 6vw, 14vw" width={128} height={128} alt="" draggable={false} />
                 <span className={styles.status} />
               </div>
             </div>
@@ -599,17 +616,19 @@ export default function GlobeStage({ poster = false }: { poster?: boolean }) {
 
           <ul className={styles.chips}>
             {CHIPS.map((c, i) => (
-              <li key={c.label} className={styles.chipPos} data-side={c.side} style={{ '--x': `${c.x}%`, '--y': `${c.y}%`, '--i': i, '--c': c.color } as CSSProperties}>
+              <li key={c.label} className={styles.chipPos} data-side={c.side} style={{ '--x': `${c.x}%`, '--y': `${c.y}%`, '--i': i } as CSSProperties}>
                 <a
                   ref={(el) => void (chipEls.current[i] = el)}
                   href="#explore"
-                  className={`${styles.chip} ${active === i ? styles.chipActive : ''}`}
+                  className={`glass ${styles.chip} ${active === i ? styles.chipActive : ''}`}
                   onMouseEnter={() => setActive(i)}
                   onMouseLeave={() => setActive(null)}
                   onFocus={() => setActive(i)}
                   onBlur={() => setActive(null)}
                 >
-                  <Icon name={c.icon} color={c.color} />
+                  <span className={styles.icon}>
+                    <Icon name={c.icon} />
+                  </span>
                   <span>{c.label}</span>
                   <span className={styles.dot} aria-hidden="true" />
                 </a>

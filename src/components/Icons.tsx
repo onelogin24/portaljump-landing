@@ -1,4 +1,4 @@
-// Phosphor Icons, duotone weight. Deep per-icon imports keep the bundle to exactly these eight glyphs.
+// Phosphor Icons, light weight. Deep per-icon imports keep the bundle to exactly these eight glyphs.
 import { AirplaneTilt } from '@phosphor-icons/react/dist/csr/AirplaneTilt';
 import { Camera } from '@phosphor-icons/react/dist/csr/Camera';
 import { ForkKnife } from '@phosphor-icons/react/dist/csr/ForkKnife';
@@ -20,10 +20,10 @@ const GLYPHS = {
   laptop: Laptop,
 } as const;
 
-/** 18px duotone glyph tinted to the chip's dot colour (duotone uses currentColor at two opacities). */
-export function Icon({ name, color }: { name: IconName; color: string }) {
+/** 18px light-weight glyph, white (inherits currentColor from the chip). */
+export function Icon({ name }: { name: IconName }) {
   const Glyph = GLYPHS[name];
-  return <Glyph size={18} weight="duotone" color={color} aria-hidden="true" focusable={false} />;
+  return <Glyph size={18} weight="light" color="currentColor" aria-hidden="true" focusable={false} />;
 }
 
 export function ArrowRight() {

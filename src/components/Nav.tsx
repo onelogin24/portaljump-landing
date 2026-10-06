@@ -35,7 +35,7 @@ export default function Nav() {
   }, [open]);
 
   return (
-    <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
+    <header className={`${styles.nav} ${scrolled ? `glass ${styles.scrolled}` : ''}`}>
       <div className={styles.bar}>
         <a className={styles.brand} href="#top" aria-label="Portal Jump, home">
           Portal Jump
@@ -56,7 +56,7 @@ export default function Nav() {
         <button
           ref={toggleRef}
           type="button"
-          className={styles.burger}
+          className={`glass ${styles.burger}`}
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? 'Close menu' : 'Open menu'}

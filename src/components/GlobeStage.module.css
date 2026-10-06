@@ -18,13 +18,13 @@
   height: var(--S);
   margin: 0;
   z-index: 2;
-  animation: stageIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+  animation: stageIn 1.2s var(--ease-out) 0.5s both;
 }
 
 @keyframes stageIn {
   from {
     opacity: 0;
-    scale: 0.94;
+    scale: 0.96;
   }
   to {
     opacity: 1;
@@ -77,6 +77,17 @@
 
 .overlay {
   z-index: 4;
+  animation: fadeIn 1.2s var(--ease-out) 0.5s backwards;
+}
+
+.ringsBack {
+  animation: fadeIn 1.2s var(--ease-out) 0.5s backwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
 }
 
 .ring {
@@ -88,11 +99,12 @@
 
 .arc {
   fill: none;
-  stroke: #fff;
+  /* stroke is a per-arc gradient (set in the markup) so both ends fade to transparent */
   stroke-width: 1;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.68;
+  stroke-dasharray: 4 5;
+  opacity: 0.75;
 }
 
 .node {
@@ -100,11 +112,19 @@
 }
 
 .nodeGlow {
-  fill: rgba(255, 255, 255, 0.3);
+  fill: rgba(255, 255, 255, 0.22);
+}
+
+.travGlow {
+  fill: rgba(232, 194, 122, 0.28);
+}
+
+.travCore {
+  fill: #e8c27a;
 }
 
 .nodeCore {
-  fill: #fff;
+  fill: rgba(255, 255, 255, 0.9);
 }
 
 .chipLine {
@@ -114,26 +134,12 @@
   stroke-width: 1.4;
   stroke-dasharray: 0.1 5;
   stroke-linecap: round;
-  opacity: calc(var(--v, 0) * 0.85);
-  transition: stroke 0.2s ease;
+  opacity: calc(var(--v, 0) * 0.35);
+  transition: opacity 0.2s ease;
 }
 
 .lineActive {
-  stroke: var(--c);
-  opacity: var(--v, 0);
-}
-
-/* one low soft bank tucked under the globe base */
-.cloudBase {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: calc(var(--S) / 2 + var(--D) * 0.27);
-  width: calc(var(--D) * 1.05);
-  height: auto;
-  translate: -50% 0;
-  pointer-events: none;
-  user-select: none;
+  opacity: calc(var(--v, 0) * 0.7);
 }
 
 /* the drag target is just the globe disc, so the empty corners never swallow touches */
@@ -171,7 +177,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  transition: scale 0.25s ease;
+  transition: scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: fadeIn 1.2s var(--ease-out) 0.7s backwards;
 }
 
 .pinInner img {
@@ -179,28 +186,38 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: #dfe9fb;
-  box-shadow: 0 0 0 calc(var(--pin) * 0.052) #fff, 0 calc(var(--pin) * 0.12) calc(var(--pin) * 0.3) rgba(8, 30, 90, 0.32);
-  transition: box-shadow 0.25s ease;
+  box-shadow: 0 6px 18px rgba(6, 20, 60, 0.35);
+}
+
+/* 3px ivory ring with a 1px inner hairline */
+.pinInner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid #f6f1ea;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 0 0 0 rgba(232, 194, 122, 0);
+  transition: box-shadow 0.3s ease;
+  pointer-events: none;
 }
 
 .status {
   position: absolute;
   top: -3%;
   right: -7%;
-  width: 24%;
-  height: 24%;
+  width: 22%;
+  height: 22%;
   border-radius: 50%;
-  background: var(--dot);
-  box-shadow: 0 0 0 calc(var(--pin) * 0.03) rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 calc(var(--pin) * 0.03) rgba(255, 255, 255, 0.3), 0 2px 6px rgba(6, 20, 60, 0.25);
 }
 
 .pinActive {
-  scale: 1.12;
+  scale: 1.08;
 }
 
-.pinActive img {
-  box-shadow: 0 0 0 calc(var(--pin) * 0.052) #fff, 0 0 0 calc(var(--pin) * 0.13) color-mix(in srgb, var(--dot) 55%, transparent), 0 calc(var(--pin) * 0.15) calc(var(--pin) * 0.35) rgba(8, 30, 90, 0.38);
+.pinActive::after {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 0 16px 3px rgba(232, 194, 122, 0.55);
 }
 
 /* ---------- chips: mobile snap row ---------- */
@@ -234,25 +251,27 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   height: 44px;
-  padding: 0 18px 0 14px;
+  padding: 0 18px 0 7px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(12, 42, 92, 0.52); /* the mobile row sits on pale sky, so it needs a deeper tint to stay legible */
+  /* the mobile row sits on pale sky, so it needs a deeper tint to stay legible; desktop uses the plain glass fill */
+  background: rgba(10, 40, 100, 0.4);
   color: #fff;
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1;
+  letter-spacing: -0.01em;
   white-space: nowrap;
   text-decoration: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-  animation: chipIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.3s + var(--i) * 0.05s) both;
+  transition: background-color 0.2s ease, translate 0.2s ease;
+  animation: chipIn 0.8s var(--ease-out) calc(1.5s + var(--i) * 0.06s) backwards;
 }
 
 .chip:hover,
 .chipActive {
-  border-color: #fff;
+  background: rgba(10, 40, 100, 0.5);
+  translate: 0 -1px;
 }
 
 .chip:focus-visible {
@@ -260,26 +279,37 @@
   outline-offset: 3px;
 }
 
+/* 18px light glyph in a 30px circle with a soft top-lit fill */
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.icon svg {
+  display: block;
+}
+
 .dot {
   display: none;
   position: absolute;
   top: 50%;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   translate: 0 -50%;
   border-radius: 50%;
-  background: var(--c);
-  box-shadow: 0 0 10px var(--c);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 @keyframes chipIn {
   from {
     opacity: 0;
-    scale: 0.92;
-  }
-  to {
-    opacity: 1;
-    scale: 1;
+    translate: 0 8px;
   }
 }
 
@@ -311,11 +341,6 @@
     top: calc(58% - var(--D) / 2);
   }
 
-  .cloudBase {
-    top: calc(58% + var(--D) * 0.27);
-    left: 50.6%;
-  }
-
   .chips {
     position: absolute;
     inset: 0;
@@ -341,9 +366,7 @@
     top: 0;
     transform: translate(-50%, -50%);
     pointer-events: auto;
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .chip:hover,
@@ -398,7 +421,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .stage,
-  .chip {
+  .chip,
+  .overlay,
+  .ringsBack,
+  .pinInner {
     animation: none;
   }
   .canvas,

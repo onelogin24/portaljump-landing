@@ -4,112 +4,63 @@
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 30% at 50% 108%, rgba(246, 210, 184, 0.55), rgba(246, 210, 184, 0) 70%),
-    linear-gradient(180deg, #1e4d8f 0%, #4a8ad4 52%, #bfd8f2 82%, #f6d2b8 100%);
+    radial-gradient(ellipse 75% 14% at 50% 100%, rgba(242, 201, 168, 0.9), rgba(242, 201, 168, 0) 100%),
+    linear-gradient(180deg, #0b1838 0%, #1c3470 40%, #3e5c9e 72%, #4a68a8 100%);
+  animation: skyIn 0.6s ease both;
 }
 
-.layerFar,
-.layerMid,
-.cloudsLayer {
+@keyframes skyIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* static film grain: breaks up gradient banding */
+.grain {
   position: absolute;
   inset: 0;
-  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  background: url('/grain.png') 0 0 / 256px 256px;
+  opacity: 0.03;
 }
 
-.layerFar {
+.stars {
+  position: absolute;
+  inset: 0;
   transform: translate3d(calc(var(--px, 0) * -4px), calc(var(--py, 0) * -4px), 0);
-}
-
-.layerMid {
-  transform: translate3d(calc(var(--px, 0) * -9px), calc(var(--py, 0) * -9px), 0);
-}
-
-.cloudsLayer {
-  transform: translate3d(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 7px), 0);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .star {
   position: absolute;
+  width: 1px;
+  height: 1px;
   border-radius: 50%;
   background: #fff;
-  opacity: 0.55;
-}
-
-.sparkle {
-  position: absolute;
-  opacity: 0.8;
-  translate: -50% -50%;
-}
-
-.twinkle {
-  animation: twinkle 4.5s ease-in-out infinite;
+  opacity: 0.5;
+  animation: twinkle 6s ease-in-out infinite;
 }
 
 @keyframes twinkle {
   0%,
   100% {
-    opacity: 0.3;
+    opacity: 0.35;
   }
   50% {
-    opacity: 0.95;
-  }
-}
-
-/* shaded crescent, 70px at (93%, 25%) */
-.moon {
-  position: absolute;
-  left: 92%;
-  top: 12.5%;
-  width: 36px;
-  height: 36px;
-  translate: -50% -50%;
-  opacity: 0.85;
-}
-
-/* voluminous painterly clouds, bottom corners only */
-.cloudLeft,
-.cloudRight {
-  position: absolute;
-  bottom: -1%;
-  height: auto;
-  user-select: none;
-}
-
-.cloudLeft {
-  left: 0;
-  width: 78vw;
-}
-
-.cloudRight {
-  right: 0;
-  width: 84vw;
-}
-
-@media (min-width: 1080px) {
-  .moon {
-    left: 93%;
-    top: 25%;
-    width: 70px;
-    height: 70px;
-  }
-  .cloudLeft {
-    width: 36%;
-    bottom: 0;
-  }
-  .cloudRight {
-    width: 41.7%;
-    bottom: 0;
+    opacity: 0.7;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .twinkle {
+  .sky {
     animation: none;
-    opacity: 0.7;
   }
-  .layerFar,
-  .layerMid,
-  .cloudsLayer {
+  .star {
+    animation: none;
+  }
+  .stars {
     transform: none;
     transition: none;
   }
