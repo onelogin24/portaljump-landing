@@ -1,18 +1,8 @@
-import { BedDouble, Plane, Ship, Utensils, Compass, Star } from "lucide-react";
 import { hero } from "../content/site";
 import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
 
-const chipIcons = {
-  Stays: BedDouble,
-  Flights: Plane,
-  Eats: Utensils,
-  "Things to do": Compass,
-  Reviews: Star,
-};
-
 export function Hero() {
-  const [first, second] = hero.headline.split(", ");
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
       <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 60%" eager className="hero-photo">
@@ -30,32 +20,15 @@ export function Hero() {
             <p className="trip-title">{hero.trip.title}</p>
             <p className="trip-meta">{hero.trip.meta}</p>
           </div>
-          <div className="fcard flight-card">
-            <span className="icon-dot">
-              <Ship size={16} strokeWidth={1.75} />
-            </span>
-            {hero.flight}
-          </div>
         </div>
         <div className="hero-copy">
           <h1 id="hero-title">
-            <span>{first},</span> <span>{second}</span>
+            {hero.headline}
           </h1>
           <p className="hero-sub">{hero.subline}</p>
           <WaitlistForm className="hero-form" />
-          <p className="note">{hero.note}</p>
         </div>
       </Photo>
-      <ul className="chips" aria-label="What you can plan">
-        {hero.chips.map((c) => {
-          const Icon = chipIcons[c];
-          return (
-            <li key={c} className="chip">
-              <Icon size={16} strokeWidth={1.75} aria-hidden="true" /> {c}
-            </li>
-          );
-        })}
-      </ul>
     </section>
   );
 }

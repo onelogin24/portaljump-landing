@@ -6,7 +6,7 @@ export function WhoFor() {
   return (
     <section id="who-its-for" className="section wrap" aria-labelledby="who-title">
       <h2 id="who-title" className="h-xl" data-reveal>
-        {who.headline[0]} <span className="soft">{who.headline[1]}</span>
+        {who.headline[0]}
       </h2>
       <ul className="who-row">
         {who.items.map((w, i) => (

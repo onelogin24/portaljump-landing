@@ -14,7 +14,6 @@ export function Closing() {
             <span className="closing-line2">{closing.line2}</span>
           </h2>
           <WaitlistForm className="closing-form" />
-          <p className="note">{closing.note}</p>
         </div>
       </Photo>
     </section>

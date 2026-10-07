@@ -8,12 +8,11 @@ import {
   panelText,
   preferences,
   recText,
-  recommendedTitle,
   stay,
   stops,
 } from "../content/itinerary";
 import { MapCanvas, legMid, points, type LegData, type LegState, type PinData, type Size, type XY } from "./MapCanvas";
-import { recIcons, recPin, recs, type Rec } from "./recs";
+import { recIcons, recPin, recs } from "./recs";
 
 const thumb = (name: string) => `/images/${name}-th.webp`;
 const CARD_OPEN_MS = 1600;
@@ -63,17 +62,6 @@ function leaderPoints(card: Rect, pin: XY, r: number) {
 }
 
 const nameLines = (text: string, perLine: number) => Math.max(1, Math.ceil(text.length / perLine));
-
-function RecThumb({ rec, size }: { rec: Rec; size: number }) {
-  const Icon = recIcons[rec.icon];
-  return rec.photo ? (
-    <img className="thumb" style={{ width: size, height: size }} src={thumb(rec.photo)} alt="" width={44} height={44} loading="lazy" decoding="async" />
-  ) : (
-    <span className="thumb thumb-icon" style={{ width: size, height: size }}>
-      <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
-    </span>
-  );
-}
 
 export default function Itinerary({ active, onHold }: { active: number; onHold?: (held: boolean) => void }) {
   const panel = useRef<HTMLDivElement>(null);
@@ -464,22 +452,6 @@ export default function Itinerary({ active, onHold }: { active: number; onHold?:
                 </li>
               ))}
             </ul>
-            {recs.length > 0 && (
-              <div className="itin-more">
-                <p className="card-title">{recommendedTitle}</p>
-                <ul className="itin-rows">
-                  {recs.slice(0, 3).map((r, i) => (
-                    <li key={r.id} className={`itin-row thumb-row ${i < recShown ? "show" : ""}`}>
-                      <RecThumb rec={r} size={40} />
-                      <span className="itin-text">
-                        <span className="itin-place">{r.name}</span>
-                        <span className="itin-note">{r.reason}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </>
         )}
         {active === 1 && (
