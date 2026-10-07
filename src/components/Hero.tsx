@@ -12,7 +12,6 @@ const chipIcons = {
 };
 
 export function Hero() {
-  const [first, second] = hero.headline.split(", ");
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
       <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 60%" eager className="hero-photo">
@@ -39,7 +38,7 @@ export function Hero() {
         </div>
         <div className="hero-copy">
           <h1 id="hero-title">
-            <span>{first},</span> <span>{second}</span>
+            <span>{hero.headline[0]}</span> <span>{hero.headline[1]}</span>
           </h1>
           <p className="hero-sub">{hero.subline}</p>
           <WaitlistForm className="hero-form" />

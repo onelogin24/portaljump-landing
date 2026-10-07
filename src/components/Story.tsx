@@ -95,7 +95,7 @@ export function Story() {
         {story.steps.map((s, i) => (
           <div key={s.tab} aria-hidden={active !== i} className={`slide ${active === i ? "active" : ""}`}>
             <h2 className="h-lg" id={`story-title-${i}`}>
-              {s.headline[0]} <span className="soft">{s.headline[1]}</span>
+              {s.headline[0]}{s.headline[1] && <> <span className="soft">{s.headline[1]}</span></>}
             </h2>
             <p className="body">{s.body}</p>
           </div>

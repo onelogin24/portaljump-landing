@@ -103,6 +103,7 @@ button, input { font: inherit; }
 }
 
 .section { padding-top: var(--space-section); }
+.hero + .story { padding-top: calc(var(--space-head) * 2); }
 
 /* type */
 h1 { font-weight: 400; font-size: clamp(36px, 6vw, 64px); letter-spacing: -0.02em; line-height: 1.05; }

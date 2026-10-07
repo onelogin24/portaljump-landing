@@ -8,8 +8,8 @@ export const nav = {
 };
 
 export const hero = {
-  headline: "Every day of your trip, mapped for you.",
-  subline: "Places picked for your taste, in the right order, with travel time between each stop.",
+  headline: ["Your whole trip.", "One Map."] as const,
+  subline: "Booking, plans, picks and reviews, pinned where they happen.",
   note: "Free to join. Only early access emails.",
   image: "hero.jpg",
   alt: "A traveller looking out over a sunlit coastal city",
@@ -20,13 +20,13 @@ export const hero = {
 
 export type StoryStep = {
   tab: string;
-  headline: [string, string];
+  headline: [string, string?];
   body: string;
 };
 
 export const story = {
   steps: [
-    { tab: "Your style", headline: ["Tell it what you love.", "It finds the rest."], body: "Slow mornings, street food, a view at sunset. Every pick follows from that." },
+    { tab: "Your style", headline: ["Go with the map."], body: "Your plans, live on the map while you travel." },
     { tab: "Your day", headline: ["Your day,", "in the right order."], body: "Stops placed so you walk less and see more, with travel time on the map." },
     { tab: "Your bookings", headline: ["Your bookings,", "where they happen."], body: "Your stay, your table and your tickets, on the same map as your plans." },
   ] as StoryStep[],
@@ -84,8 +84,8 @@ export const pitch = {
 };
 
 export const closing = {
-  line1: "Your next trip, already mapped.",
-  line2: "Be one of the first to try it.",
+  line1: "Every trip mapped.",
+  line2: "Start with yours.",
   note: "Free to join. Only early access emails.",
 };
 
