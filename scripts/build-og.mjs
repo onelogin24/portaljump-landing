@@ -100,8 +100,8 @@ ${legs.map(chip).join("\n")}
 <text x="${W - 16}" y="${H - 14}" font-family="${FONT}" font-size="14" text-anchor="end" fill="#6B6B70">Map data \u00A9 OpenStreetMap contributors</text></g>
 <rect width="${PANEL}" height="${H}" fill="#fff"/>
 <text x="64" y="92" font-family="${FONT}" font-weight="700" font-size="28" fill="#0B0B0C">Portal Jump</text>
-${["Your trip,", "mapped."].map((t, i) => `<text x="64" y="${196 + i * 62}" font-family="${FONT}" font-weight="400" font-size="56" fill="#0B0B0C">${t}</text>`).join("\n")}
-${["Places picked for you,", "in the right order."].map((t, i) => `<text x="64" y="${340 + i * 32}" font-family="${FONT}" font-size="24" fill="#6B6B70">${t}</text>`).join("\n")}
+${["Every day of", "your trip,", "mapped for", "you."].map((t, i) => `<text x="64" y="${196 + i * 59}" font-family="${FONT}" font-weight="400" font-size="56" fill="#0B0B0C">${t}</text>`).join("\n")}
+${["Places picked for your", "taste, in the right order,", "with travel time between", "each stop."].map((t, i) => `<text x="64" y="${450 + i * 30}" font-family="${FONT}" font-size="24" fill="#6B6B70">${t}</text>`).join("\n")}
 <text x="64" y="${H - 64}" font-family="${FONT}" font-size="20" fill="#A1A1A6">portaljump.co</text>
 </svg>`;
 

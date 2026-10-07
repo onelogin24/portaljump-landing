@@ -97,6 +97,7 @@ export function Story() {
             <h2 className="h-lg" id={`story-title-${i}`}>
               {s.headline[0]} <span className="soft">{s.headline[1]}</span>
             </h2>
+            <p className="body">{s.body}</p>
           </div>
         ))}
       </div>

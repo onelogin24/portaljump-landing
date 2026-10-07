@@ -1,8 +1,10 @@
+import { Ship } from "lucide-react";
 import { hero } from "../content/site";
 import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
 
 export function Hero() {
+  const [first, second] = hero.headline.split(", ");
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
       <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 60%" eager className="hero-photo">
@@ -20,13 +22,20 @@ export function Hero() {
             <p className="trip-title">{hero.trip.title}</p>
             <p className="trip-meta">{hero.trip.meta}</p>
           </div>
+          <div className="fcard flight-card">
+            <span className="icon-dot">
+              <Ship size={16} strokeWidth={1.75} />
+            </span>
+            {hero.flight}
+          </div>
         </div>
         <div className="hero-copy">
           <h1 id="hero-title">
-            {hero.headline}
+            <span>{first},</span> <span>{second}</span>
           </h1>
           <p className="hero-sub">{hero.subline}</p>
           <WaitlistForm className="hero-form" />
+          <p className="note">{hero.note}</p>
         </div>
       </Photo>
     </section>

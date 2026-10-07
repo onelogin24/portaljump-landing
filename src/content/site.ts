@@ -8,33 +8,36 @@ export const nav = {
 };
 
 export const hero = {
-  headline: "Your trip, mapped.",
-  subline: "Places picked for you, in the right order.",
+  headline: "Every day of your trip, mapped for you.",
+  subline: "Places picked for your taste, in the right order, with travel time between each stop.",
+  note: "Free to join. Only early access emails.",
   image: "hero.jpg",
   alt: "A traveller looking out over a sunlit coastal city",
   trip: { title: "Amalfi Coast, 5 days", meta: "2 stays, 1 ferry, 9 places" },
+  flight: "Ferry to Positano, about 40 min",
 };
 
 export type StoryStep = {
   tab: string;
   headline: [string, string];
+  body: string;
 };
 
 export const story = {
   steps: [
-    { tab: "Your style", headline: ["Pick what you love.", "We find the rest."] },
-    { tab: "Your day", headline: ["Your day, in order.", "With time between stops."] },
-    { tab: "Your bookings", headline: ["Bookings on the map.", "Stays, tables, tickets."] },
+    { tab: "Your style", headline: ["Tell it what you love.", "It finds the rest."], body: "Slow mornings, street food, a view at sunset. Every pick follows from that." },
+    { tab: "Your day", headline: ["Your day,", "in the right order."], body: "Stops placed so you walk less and see more, with travel time on the map." },
+    { tab: "Your bookings", headline: ["Your bookings,", "where they happen."], body: "Your stay, your table and your tickets, on the same map as your plans." },
   ] as StoryStep[],
 };
 
 export const features = {
-  headline: ["One trip.", "One page."],
+  headline: ["Everything for the trip, on one page.", "Not in ten tabs."],
   cards: [
-    { lead: "Map.", rest: "Every stop, in order.", kind: "map" },
-    { lead: "Bookings.", rest: "All in one list.", kind: "bookings" },
-    { lead: "Picks.", rest: "Chosen for you.", kind: "picks" },
-    { lead: "Reviews.", rest: "From people who went.", kind: "reviews" },
+    { lead: "Map.", rest: "Every place you plan to go, in order.", kind: "map" },
+    { lead: "Bookings.", rest: "Every confirmation in one list.", kind: "bookings" },
+    { lead: "Picks.", rest: "Chosen for how you travel.", kind: "picks" },
+    { lead: "Reviews.", rest: "Notes from people who went.", kind: "reviews" },
   ] as const,
   confirmed: "Confirmed",
   bookings: [
@@ -60,28 +63,29 @@ export const band = {
 };
 
 export const who = {
-  headline: ["For every kind of trip.", ""],
+  headline: ["Whoever you travel with,", "it plans around them."],
   items: [
-    { name: "Solo", line: "Your pace.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
-    { name: "Couples", line: "Picks for two.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
-    { name: "Families", line: "Easy days out.", image: "who-families.jpg", position: "center 50%", alt: "A family walking along a beach together" },
-    { name: "Groups", line: "Everyone's favourites.", image: "who-groups.jpg", position: "center", alt: "A group of friends laughing around a table on holiday" },
-    { name: "Creators", line: "The best light.", image: "who-creators.jpg", position: "center 50%", alt: "A creator filming a street scene on a trip" },
+    { name: "Solo", line: "Your pace. Your places.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
+    { name: "Couples", line: "Picks that suit you both.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
+    { name: "Families", line: "Shorter walks, places kids enjoy.", image: "who-families.jpg", position: "center 50%", alt: "A family walking along a beach together" },
+    { name: "Groups", line: "Everyone's must-sees, in one day.", image: "who-groups.jpg", position: "center", alt: "A group of friends laughing around a table on holiday" },
+    { name: "Creators", line: "The best places, in the best light.", image: "who-creators.jpg", position: "center 50%", alt: "A creator filming a street scene on a trip" },
   ],
 };
 
 export const pitch = {
-  headline: ["Fits you.", "Not a timetable."],
+  headline: ["A plan that fits you.", "Not a timetable."],
   items: [
-    { n: "01", title: "Picked for you", body: "Chosen for your taste." },
-    { n: "02", title: "In the right order", body: "Walk less, see more." },
-    { n: "03", title: "No clock-watching", body: "Travel times, not timetables." },
+    { n: "01", title: "Picked for you", body: "Tell it what you love. Every suggestion is chosen for you." },
+    { n: "02", title: "In the right order", body: "Stops lined up so you walk less and see more." },
+    { n: "03", title: "No clock-watching", body: "How far each stop is and how long the day runs. Never a timetable." },
   ],
 };
 
 export const closing = {
-  line1: "Your next trip, mapped.",
-  line2: "Be first to try it.",
+  line1: "Your next trip, already mapped.",
+  line2: "Be one of the first to try it.",
+  note: "Free to join. Only early access emails.",
 };
 
 export const form = {
