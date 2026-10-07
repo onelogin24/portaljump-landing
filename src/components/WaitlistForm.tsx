@@ -2,13 +2,14 @@ import { useId, useState, type FormEvent } from "react";
 import { Check } from "lucide-react";
 import { CONTACT_EMAIL, WAITLIST_ENDPOINT } from "../config";
 import { form } from "../content/site";
+import { markJoined, useJoined } from "../waitlistState";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function WaitlistForm({ className = "" }: { className?: string }) {
   const [email, setEmail] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+  const done = useJoined();
   const [busy, setBusy] = useState(false);
   const errId = useId();
 
@@ -30,7 +31,7 @@ export function WaitlistForm({ className = "" }: { className?: string }) {
           redirect: "follow",
         });
         const data = await res.json();
-        if (res.ok && data.ok === true) setDone(true);
+        if (res.ok && data.ok === true) markJoined();
         else setErrorMsg(data.error === "invalid_email" ? form.invalid : form.failed);
       } catch {
         setErrorMsg(form.failed);
@@ -40,7 +41,7 @@ export function WaitlistForm({ className = "" }: { className?: string }) {
     } else {
       const subject = encodeURIComponent(`${form.subject}: ${value}`);
       window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
-      setDone(true);
+      markJoined();
     }
   }
 

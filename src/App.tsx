@@ -7,15 +7,19 @@ import { Pitch } from "./components/Pitch";
 import { Closing } from "./components/Closing";
 import { Footer } from "./components/Footer";
 import { useReveal } from "./useReveal";
-import { LegalPage } from "./components/LegalPage";
-import privacy from "./content/legal/privacy.md?raw";
-import terms from "./content/legal/terms.md?raw";
+import { lazy, Suspense } from "react";
+
+const LegalRoute = lazy(() => import("./components/LegalRoute"));
 
 export default function App() {
   useReveal();
   const path = window.location.pathname.replace(/\/+$/, "");
-  if (path === "/privacy") return <LegalPage title="Privacy Policy" source={privacy} />;
-  if (path === "/terms") return <LegalPage title="Terms of Use" source={terms} />;
+  if (path === "/privacy" || path === "/terms")
+    return (
+      <Suspense fallback={null}>
+        <LegalRoute which={path === "/privacy" ? "privacy" : "terms"} />
+      </Suspense>
+    );
   return (
     <>
       <TopBar />

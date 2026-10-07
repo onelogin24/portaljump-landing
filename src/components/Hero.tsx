@@ -15,7 +15,7 @@ export function Hero() {
   const [first, second] = hero.headline.split(", ");
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
-      <Photo file={hero.image} alt={hero.alt} sizes="(min-width: 1248px) 1200px, 100vw" position="center 60%" eager className="hero-photo">
+      <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 60%" eager className="hero-photo">
         <div className="hero-shade" />
         <div className="hero-cards" aria-hidden="true">
           <div className="fcard trip-card">

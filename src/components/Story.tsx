@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { story } from "../content/site";
-import { Itinerary } from "./Itinerary";
+import { lazy } from "react";
+import { LazyOnView } from "./LazyOnView";
+
+const Itinerary = lazy(() => import("./Itinerary"));
 
 const INTERVAL_MS = 9000;
 
@@ -9,16 +12,35 @@ export function Story() {
   const [paused, setPaused] = useState(false);
   const [stopped, setStopped] = useState(false);
   const [held, setHeld] = useState(false);
+  const [inView, setInView] = useState(true);
+  const [tabHidden, setTabHidden] = useState(false);
+  const section = useRef<HTMLElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const count = story.steps.length;
 
   const reduced = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
-    if (paused || held || stopped || reduced) return;
+    if (paused || held || stopped || reduced || !inView || tabHidden) return;
     const t = setTimeout(() => setActive((a) => (a + 1) % count), INTERVAL_MS);
     return () => clearTimeout(t);
-  }, [active, paused, held, stopped, reduced, count]);
+  }, [active, paused, held, stopped, reduced, count, inView, tabHidden]);
+
+  // Pause while the section is off screen or the page tab is hidden.
+  useEffect(() => {
+    const el = section.current;
+    const onVis = () => setTabHidden(document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    let io: IntersectionObserver | undefined;
+    if (el && "IntersectionObserver" in window) {
+      io = new IntersectionObserver((entries) => setInView(entries.some((e) => e.isIntersecting)), { threshold: 0.1 });
+      io.observe(el);
+    }
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      io?.disconnect();
+    };
+  }, []);
 
   function choose(i: number) {
     setStopped(true);
@@ -39,6 +61,7 @@ export function Story() {
 
   return (
     <section
+      ref={section}
       id="how-it-works"
       className="section wrap story"
       aria-labelledby={`story-title-${active}`}
@@ -79,7 +102,9 @@ export function Story() {
         ))}
       </div>
       <div id="story-panel" role="tabpanel" aria-labelledby={`tab-${active}`}>
-        <Itinerary active={active} onHold={setHeld} />
+        <LazyOnView fallback={<div className="map-panel" />}>
+          <Itinerary active={active} onHold={setHeld} />
+        </LazyOnView>
       </div>
     </section>
   );

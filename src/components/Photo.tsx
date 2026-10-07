@@ -11,7 +11,7 @@ type Props = {
   children?: ReactNode;
 };
 
-type Meta = { width: number; height: number; smWidth: number; smHeight: number };
+type Meta = { width: number; height: number; smWidth: number; smHeight: number; xsWidth: number };
 const meta = manifest as Record<string, Meta>;
 
 /** Photo block; the warm gradient shows behind the image, and alone when the file is missing. */
@@ -25,7 +25,7 @@ export function Photo({ file, alt, sizes = "100vw", position = "center", eager, 
         <picture>
           <source
             type="image/webp"
-            srcSet={`/images/${name}-sm.webp ${m.smWidth}w, /images/${name}.webp ${m.width}w`}
+            srcSet={`/images/${name}-xs.webp ${m.xsWidth}w, /images/${name}-sm.webp ${m.smWidth}w, /images/${name}.webp ${m.width}w`}
             sizes={sizes}
           />
           <img

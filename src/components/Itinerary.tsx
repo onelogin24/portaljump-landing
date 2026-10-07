@@ -15,7 +15,7 @@ import {
 import { MapCanvas, legMid, points, type LegData, type LegState, type PinData, type Size, type XY } from "./MapCanvas";
 import { recIcons, recPin, recs, type Rec } from "./recs";
 
-const thumb = (name: string) => `/images/${name}-sm.webp`;
+const thumb = (name: string) => `/images/${name}-th.webp`;
 const CARD_OPEN_MS = 1600;
 const CARD_SHRINK_MS = 300;
 const REC_STAGGER_MS = 120;
@@ -67,7 +67,7 @@ const nameLines = (text: string, perLine: number) => Math.max(1, Math.ceil(text.
 function RecThumb({ rec, size }: { rec: Rec; size: number }) {
   const Icon = recIcons[rec.icon];
   return rec.photo ? (
-    <img className="thumb" style={{ width: size, height: size }} src={thumb(rec.photo)} alt="" loading="lazy" />
+    <img className="thumb" style={{ width: size, height: size }} src={thumb(rec.photo)} alt="" width={44} height={44} loading="lazy" decoding="async" />
   ) : (
     <span className="thumb thumb-icon" style={{ width: size, height: size }}>
       <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
@@ -75,7 +75,7 @@ function RecThumb({ rec, size }: { rec: Rec; size: number }) {
   );
 }
 
-export function Itinerary({ active, onHold }: { active: number; onHold?: (held: boolean) => void }) {
+export default function Itinerary({ active, onHold }: { active: number; onHold?: (held: boolean) => void }) {
   const panel = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef(0);
@@ -268,7 +268,7 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
         ]
       : [];
 
-  const reserve = mobile ? { right: 0, bottom: cardH + 48 } : { right: 348, bottom: 0 };
+  const reserve = mobile ? { right: 0, bottom: cardH + 24 } : { right: 348, bottom: 0 };
   const recsVisible = active !== 2;
 
   return (
@@ -330,7 +330,7 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
                   return (
                     <div key={s.id} className="pcard-pos" style={{ left: left ? p.x - 34 - 180 : p.x + 34, top: p.y }}>
                       <div className={`pcard card ${left ? "to-left" : ""} ${closing ? "closing" : ""}`}>
-                        <img src={thumb(s.photo)} alt="" />
+                        <img src={thumb(s.photo)} alt="" width={320} height={200} decoding="async" />
                         <p className="pcard-name">{s.name}</p>
                         <span className="pcard-tag">{s.reason}</span>
                       </div>
@@ -348,7 +348,7 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
               {active === 1 &&
                 dayBoxes.map(({ rect, i }) => (
                   <div key={stops[i].id} className="daycard card" style={{ left: rect.x, top: rect.y, width: rect.w }}>
-                    <img src={thumb(stops[i].photo)} alt="" />
+                    <img src={thumb(stops[i].photo)} alt="" width={320} height={200} decoding="async" />
                     <p className="daycard-name">{stops[i].name}</p>
                     {dayCardTravel[i] && <span className="daycard-travel">{dayCardTravel[i]}</span>}
                   </div>
@@ -381,7 +381,7 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
                 recs.map((r, i) => {
                   if (i >= recShown) return null;
                   const p = toPx(r.at);
-                  const d = 36;
+                  const d = 44;
                   return (
                     <button
                       key={r.id}
@@ -412,12 +412,12 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
               {open && openStyle && (
                 <div
                   className="rec-card rec-ui card"
-                  style={openStyle}
+                  style={mobile ? undefined : openStyle}
                   onPointerEnter={cancelClose}
                   onPointerLeave={(e) => e.pointerType === "mouse" && scheduleClose()}
                 >
                   {open.photo ? (
-                    <img src={thumb(open.photo)} alt="" />
+                    <img src={thumb(open.photo)} alt="" width={320} height={200} decoding="async" />
                   ) : (
                     <span className="rec-card-icon">
                       {(() => {
@@ -449,14 +449,14 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
         }}
       </MapCanvas>
 
-      <div ref={cardRef} className="itin-card card" aria-live="polite">
+      <div ref={cardRef} className={`itin-card card ${mobile && openRec ? "sheet-hidden" : ""}`} aria-live="polite">
         {active === 0 && (
           <>
             <p className="card-title">{panelText.styleTitle}</p>
             <ul className="itin-rows">
               {stops.map((s, i) => (
                 <li key={s.id} className={`itin-row thumb-row ${i < rows ? "show" : ""}`}>
-                  <img className="thumb thumb-40" src={thumb(s.photo)} alt="" loading="lazy" />
+                  <img className="thumb thumb-40" src={thumb(s.photo)} alt="" width={44} height={44} loading="lazy" decoding="async" />
                   <span className="itin-text">
                     <span className="itin-place">{s.name}</span>
                     <span className="itin-note">{s.reason}</span>
@@ -489,7 +489,7 @@ export function Itinerary({ active, onHold }: { active: number; onHold?: (held: 
               {stops.map((s, i) => (
                 <li key={s.id} className="timeline-item">
                   <div className={`itin-row thumb-row ${i < rows ? "show" : ""}`}>
-                    <img className="thumb thumb-44" src={thumb(s.photo)} alt="" loading="lazy" />
+                    <img className="thumb thumb-44" src={thumb(s.photo)} alt="" width={44} height={44} loading="lazy" decoding="async" />
                     <span className="itin-text">
                       <span className="itin-place">{s.name}</span>
                       <span className="itin-time">{s.when}</span>

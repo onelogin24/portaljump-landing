@@ -2,6 +2,7 @@
 // Run once with `npm run map`; the output is committed so the site never calls Overpass.
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { rasterizeMap } from "./rasterize-map.mjs";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -278,3 +279,5 @@ await writeFile(
   JSON.stringify({ width: W, height: H, points, geo, recommendations }, null, 2) + "\n",
 );
 console.log(`lisbon.svg ${(out.svg.length / 1024).toFixed(0)} KB, ${W}x${H}`, out.stats, attempt);
+
+await rasterizeMap();

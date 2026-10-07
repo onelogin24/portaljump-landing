@@ -2,8 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#FBFAF7" />
+    <link rel="preload" as="image" type="image/webp" href="/images/hero-xs.webp" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" imagesrcset="/images/hero-sm.webp 1280w, /images/hero.webp 2560w" imagesizes="(min-width: 1248px) 1200px, 100vw" media="(min-width: 768px)" fetchpriority="high" />
     <link rel="preload" href="/fonts/adventor-700.woff2" as="font" type="font/woff2" crossorigin />
     <title>Portal Jump | Every day of your trip, mapped for you</title>
     <meta name="description" content="Tell Portal Jump how you like to travel. It picks the places, puts them in order and maps your days, with travel time between every stop." />

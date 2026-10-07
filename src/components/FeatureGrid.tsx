@@ -1,30 +1,21 @@
 import type { CSSProperties } from "react";
 import { Bed, Plane, Star, Ticket, Utensils } from "lucide-react";
 import { features } from "../content/site";
-import { MapCanvas, points, type LegData, type PinData } from "./MapCanvas";
-import { recPin, recs } from "./recs";
-import { stops } from "../content/itinerary";
+import { lazy } from "react";
+import { LazyOnView } from "./LazyOnView";
 import { Photo } from "./Photo";
 
 const bookingIcons = { plane: Plane, bed: Bed, fork: Utensils, ticket: Ticket };
 
-const fit = [points.chiado, points.lanes, points.graca, ...recs.map((r) => r.at)];
-const mapPins: PinData[] = [
-  ...recs.map((r) => recPin(r, 0.45)),
-  ...stops.map((s) => ({ key: s.id, at: points[s.at], photo: s.photo, n: s.n })),
-];
-const mapLegs: LegData[] = [
-  { key: "leg1", a: points.chiado, b: points.lanes, state: "drawn" },
-  { key: "leg2", a: points.lanes, b: points.graca, state: "drawn" },
-];
+const IllMap = lazy(() => import("./IllMap"));
 
 function Illustration({ kind }: { kind: (typeof features.cards)[number]["kind"] }) {
   switch (kind) {
     case "map":
       return (
-        <div className="ill ill-map" aria-hidden="true">
-          <MapCanvas fit={fit} pins={mapPins} legs={mapLegs} animate={false} pinSize={40} />
-        </div>
+        <LazyOnView className="ill ill-map" fallback={null} ariaHidden>
+          <IllMap />
+        </LazyOnView>
       );
     case "bookings":
       return (

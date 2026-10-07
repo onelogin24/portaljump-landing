@@ -10,6 +10,8 @@ await mkdir(out, { recursive: true });
 
 const FULL = 2560;
 const SMALL = 1280;
+const XS = 1100; // phones
+const THUMB = 320; // map pins and list thumbnails
 const manifest = {};
 
 // Accepts "name.jpg" and "name.jpg.jpg"; files with "backup" in the name are ignored.
@@ -28,15 +30,18 @@ for (const file of files) {
   // Never upscale: cap at the original width.
   const width = Math.min(FULL, srcWidth);
   const smWidth = Math.min(SMALL, srcWidth);
+  const xsWidth = Math.min(XS, srcWidth);
   const height = Math.round((srcHeight * width) / srcWidth);
   const smHeight = Math.round((srcHeight * smWidth) / srcWidth);
 
   const base = () => sharp(input).rotate();
   await base().resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toFile(path.join(out, `${name}.webp`));
   await base().resize({ width: smWidth, withoutEnlargement: true }).webp({ quality: 80 }).toFile(path.join(out, `${name}-sm.webp`));
+  await base().resize({ width: xsWidth, withoutEnlargement: true }).webp({ quality: 66 }).toFile(path.join(out, `${name}-xs.webp`));
+  await base().resize({ width: Math.min(THUMB, srcWidth), withoutEnlargement: true }).webp({ quality: 74 }).toFile(path.join(out, `${name}-th.webp`));
   await base().resize({ width, withoutEnlargement: true }).jpeg({ quality: 84 }).toFile(path.join(out, `${name}.jpg`));
 
-  manifest[name] = { width, height, smWidth, smHeight };
+  manifest[name] = { width, height, smWidth, smHeight, xsWidth };
   console.log(name, `${width}x${height}`);
 }
 

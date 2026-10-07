@@ -1,4 +1,4 @@
-import { Fragment, useEffect, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { TopBar } from "./TopBar";
 import { Footer } from "./Footer";
 
@@ -66,6 +66,7 @@ export function LegalPage({ title, source }: { title: string; source: string }) 
   useEffect(() => {
     document.title = `${title} | Portal Jump`;
   }, [title]);
+  const [wide] = useState(() => typeof matchMedia === "function" && matchMedia("(min-width: 768px)").matches);
   const blocks = parse(source);
   const toc = blocks.filter((b): b is Extract<Block, { id: string }> => b.t === "h2");
   return (
@@ -75,15 +76,17 @@ export function LegalPage({ title, source }: { title: string; source: string }) 
         <article className="legal-col">
           <h1>{title}</h1>
           <p className="legal-date">Effective October 7, 2026</p>
-          <nav className="legal-toc" aria-label="Contents">
-            <h2>Contents</h2>
-            <ol>
+          <nav aria-label="Contents">
+            <details className="legal-toc" open={wide}>
+              <summary>Contents</summary>
+              <ol>
               {toc.map((h) => (
                 <li key={h.id}>
                   <a href={`#${h.id}`}>{h.text.replace(/^\d+\.\s*/, "")}</a>
                 </li>
               ))}
-            </ol>
+              </ol>
+            </details>
           </nav>
           {blocks.map((b, i) => {
             if (b.t === "h2") return <h2 key={i} id={b.id}>{b.text}</h2>;
@@ -98,7 +101,7 @@ export function LegalPage({ title, source }: { title: string; source: string }) 
               );
             if (b.t === "table")
               return (
-                <div className="legal-table" key={i}>
+                <div className="legal-table" key={i} role="region" aria-label="Table" tabIndex={0}>
                   <table>
                     <thead>
                       <tr>

@@ -14,6 +14,9 @@ export const geo = mapData.geo as Record<"chiado" | "lanes" | "graca" | "stay" |
 export const recPoints = mapData.recommendations as { id: string; x: number; y: number; lon: number; lat: number }[];
 
 const TWEEN_MS = 1000;
+// The base map ships as webp (1600 or 3200 wide); the SVG is only the source for npm run map.
+const BASE_MAP =
+  typeof window !== "undefined" && (window.innerWidth > 1024 || window.devicePixelRatio > 1.5) ? "/map/lisbon-3200.webp" : "/map/lisbon-1600.webp";
 const PAD = 0.18;
 const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
@@ -30,13 +33,15 @@ export function fitView(pts: XY[], size: Size, reserve: Reserve): View {
   const bw = Math.max(maxX - minX, 40);
   const bh = Math.max(maxY - minY, 40);
   let k = Math.min(aw / (bw * (1 + 2 * PAD)), ah / (bh * (1 + 2 * PAD)), 2.5);
-  k = Math.max(k, size.w / MAP_W, size.h / MAP_H); // never show beyond the map edge
+  // Never show beyond the map edge, except in a portrait panel where every stop must stay in view.
+  if (size.h <= size.w) k = Math.max(k, size.w / MAP_W, size.h / MAP_H);
   const w = size.w / k;
   const h = size.h / k;
   const cx = (minX + maxX) / 2;
   const cy = (minY + maxY) / 2;
-  const x = Math.min(Math.max(cx - aw / 2 / k, 0), MAP_W - w);
-  const y = Math.min(Math.max(cy - ah / 2 / k, 0), MAP_H - h);
+  const clamp = (v: number, hi: number) => (hi < 0 ? hi / 2 : Math.min(Math.max(v, 0), hi));
+  const x = clamp(cx - aw / 2 / k, MAP_W - w);
+  const y = clamp(cy - ah / 2 / k, MAP_H - h);
   return { x, y, w, h };
 }
 
@@ -199,7 +204,7 @@ export function MapCanvas({ fit, reserve = { right: 0, bottom: 0 }, pins, legs =
             <circle r="23" />
           </clipPath>
         </defs>
-        <image href="/map/lisbon.svg" x="0" y="0" width={MAP_W} height={MAP_H} preserveAspectRatio="none" />
+        <image href={BASE_MAP} x="0" y="0" width={MAP_W} height={MAP_H} preserveAspectRatio="none" />
         {legs.map((l) => (
           <Leg key={l.key} leg={l} animate={animate} uid={uid} />
         ))}
@@ -216,7 +221,7 @@ export function MapCanvas({ fit, reserve = { right: 0, bottom: 0 }, pins, legs =
                   <circle r="26" fill={p.ringDark ? "#0B0B0C" : "#fff"} />
                   {p.photo ? (
                     <image
-                      href={`/images/${p.photo}-sm.webp`}
+                      href={`/images/${p.photo}-th.webp`}
                       x="-23"
                       y="-23"
                       width="46"
