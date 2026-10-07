@@ -1,7 +1,15 @@
-import { Ship } from "lucide-react";
+import { BedDouble, Plane, Ship, Utensils, Compass, Star } from "lucide-react";
 import { hero } from "../content/site";
 import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
+
+const chipIcons = {
+  Stays: BedDouble,
+  Flights: Plane,
+  Eats: Utensils,
+  "Things to do": Compass,
+  Reviews: Star,
+};
 
 export function Hero() {
   const [first, second] = hero.headline.split(", ");
@@ -38,6 +46,16 @@ export function Hero() {
           <p className="note">{hero.note}</p>
         </div>
       </Photo>
+      <ul className="chips" aria-label="What you can plan">
+        {hero.chips.map((c) => {
+          const Icon = chipIcons[c];
+          return (
+            <li key={c} className="chip">
+              <Icon size={16} strokeWidth={1.75} aria-hidden="true" /> {c}
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

@@ -15,6 +15,7 @@ export const hero = {
   alt: "A traveller looking out over a sunlit coastal city",
   trip: { title: "Amalfi Coast, 5 days", meta: "2 stays, 1 ferry, 9 places" },
   flight: "Ferry to Positano, about 40 min",
+  chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
 export type StoryStep = {
