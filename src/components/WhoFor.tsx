@@ -4,9 +4,9 @@ import { Photo } from "./Photo";
 
 export function WhoFor() {
   return (
-    <section className="section wrap" aria-labelledby="who-title">
+    <section id="who-its-for" className="section wrap" aria-labelledby="who-title">
       <h2 id="who-title" className="h-xl" data-reveal>
-        {who.headline}
+        {who.headline[0]} <span className="soft">{who.headline[1]}</span>
       </h2>
       <ul className="who-row">
         {who.items.map((w, i) => (

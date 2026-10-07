@@ -9,8 +9,8 @@ export function TopBar() {
         </a>
         <nav className="topbar-links" aria-label="Primary">
           {nav.links.map((l) => (
-            <a key={l} href="/#waitlist">
-              {l}
+            <a key={l.href} href={l.href}>
+              {l.label}
             </a>
           ))}
         </nav>

@@ -9,7 +9,8 @@
     "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
     "fonts": "node scripts/build-fonts.mjs",
     "photos": "node scripts/build-photos.mjs",
-    "map": "node scripts/build-map.mjs"
+    "map": "node scripts/build-map.mjs",
+    "og": "node scripts/build-og.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.52.0",
@@ -17,6 +18,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",

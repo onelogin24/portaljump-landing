@@ -39,6 +39,7 @@ export function Story() {
 
   return (
     <section
+      id="how-it-works"
       className="section wrap story"
       aria-labelledby={`story-title-${active}`}
       data-reveal

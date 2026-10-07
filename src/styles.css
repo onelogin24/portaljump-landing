@@ -191,10 +191,11 @@ h3 { font-weight: 700; font-size: 22px; letter-spacing: -0.01em; line-height: 1.
   left: 56px;
   bottom: 56px;
   width: calc(100% - 112px);
-  max-width: 600px;
+  max-width: 720px;
   color: #fff;
 }
-.hero-copy h1 span { display: block; white-space: nowrap; }
+.hero-copy h1 { font-size: 64px; }
+.hero-copy h1 span { display: block; }
 .hero-copy h1, .hero-sub { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25); }
 .hero-photo > picture { animation: hero-settle 2.4s ease-out both; }
 @keyframes hero-settle {

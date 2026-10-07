@@ -1,12 +1,16 @@
 export const nav = {
   brand: "Portal Jump",
-  links: ["Stays", "Flights", "Eats", "Things to do", "Trips"],
-  cta: "Join waitlist",
+  links: [
+    { label: "How it works", href: "#how-it-works" },
+    { label: "Who it's for", href: "#who-its-for" },
+  ],
+  cta: "Get early access",
 };
 
 export const hero = {
-  headline: "Your whole trip. One map.",
-  subline: "A personal itinerary map. Places picked for you, in the right order, with how long between them.",
+  headline: "Every day of your trip, mapped for you.",
+  subline: "Tell Portal Jump how you like to travel. It picks the places, puts them in the right order and shows how long it takes to get from one to the next. Your stays and bookings sit on the same map.",
+  note: "Free to join. Only early access emails, nothing else.",
   image: "hero.jpg",
   alt: "A traveller looking out over a sunlit coastal city",
   trip: { title: "Amalfi Coast, 5 days", meta: "2 stays, 1 ferry, 9 places" },
@@ -22,19 +26,19 @@ export type StoryStep = {
 
 export const story = {
   steps: [
-    { tab: "Your style", headline: ["Tell it", "how you travel."], body: "Pick what you love. It recommends the rest." },
-    { tab: "Your day", headline: ["Your day,", "mapped."], body: "Stops in the right order, with how long between them." },
-    { tab: "Your bookings", headline: ["Everything in", "one place."], body: "Stays, tables and tickets, pinned where they happen." },
+    { tab: "Your style", headline: ["Tell it what you love.", "It finds the rest."], body: "Slow mornings, street food, a good view at sunset. Pick what matters to you, and every place it suggests follows from that." },
+    { tab: "Your day", headline: ["Your day,", "in the right order."], body: "Each stop is placed so you walk less and see more, with the travel time between them written on the map." },
+    { tab: "Your bookings", headline: ["Your bookings,", "where they happen."], body: "Your stay, your dinner table and your tickets sit on the same map as your plans, not in ten different emails." },
   ] as StoryStep[],
 };
 
 export const features = {
-  headline: ["Everything in one trip.", "Nothing in ten tabs."],
+  headline: ["Everything for the trip, on one page.", "Not in ten tabs."],
   cards: [
-    { lead: "Map.", rest: "Every stop, pinned.", kind: "map" },
-    { lead: "Bookings.", rest: "Every confirmation, one list.", kind: "bookings" },
-    { lead: "Picks.", rest: "Places that fit your style.", kind: "picks" },
-    { lead: "Reviews.", rest: "From people who went.", kind: "reviews" },
+    { lead: "Map.", rest: "Every place you plan to go, pinned and in order.", kind: "map" },
+    { lead: "Bookings.", rest: "Every confirmation in one list.", kind: "bookings" },
+    { lead: "Picks.", rest: "Places chosen for how you travel.", kind: "picks" },
+    { lead: "Reviews.", rest: "Notes from people who have been there.", kind: "reviews" },
   ] as const,
   confirmed: "Confirmed",
   bookings: [
@@ -60,34 +64,34 @@ export const band = {
 };
 
 export const who = {
-  headline: "Built for every kind of trip.",
+  headline: ["Whoever you travel with,", "it plans around them."],
   items: [
-    { name: "Solo", line: "Go where you want, when you want.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
-    { name: "Couples", line: "Plan together, in one place.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
-    { name: "Families", line: "Everyone's plans, one map.", image: "who-families.jpg", position: "center 50%", alt: "A family walking along a beach together" },
-    { name: "Groups", line: "No more group chat chaos.", image: "who-groups.jpg", position: "center", alt: "A group of friends laughing around a table on holiday" },
-    { name: "Creators", line: "Share the trips you love.", image: "who-creators.jpg", position: "center 50%", alt: "A creator filming a street scene on a trip" },
+    { name: "Solo", line: "Your pace. Your places.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
+    { name: "Couples", line: "Picks that suit you both.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
+    { name: "Families", line: "Shorter walks, earlier dinners, places kids enjoy.", image: "who-families.jpg", position: "center 50%", alt: "A family walking along a beach together" },
+    { name: "Groups", line: "Everyone's must-sees in one day that works.", image: "who-groups.jpg", position: "center", alt: "A group of friends laughing around a table on holiday" },
+    { name: "Creators", line: "The places worth photographing, in the best light.", image: "who-creators.jpg", position: "center 50%", alt: "A creator filming a street scene on a trip" },
   ],
 };
 
 export const pitch = {
-  headline: ["A trip that fits you.", "Not a schedule."],
+  headline: ["A plan that fits you.", "Not a timetable."],
   items: [
-    { n: "01", title: "Picked for you", body: "Tell it what you love. It recommends places that match." },
-    { n: "02", title: "In the right order", body: "Stops lined up so you walk less and see more." },
-    { n: "03", title: "No clock-watching", body: "See how long between stops and how long the day takes. Never a timetable." },
+    { n: "01", title: "Picked for you", body: "Tell it what you love. Every place it suggests is chosen for you, not for everyone." },
+    { n: "02", title: "In the right order", body: "Stops are lined up so you walk less, wait less and see more." },
+    { n: "03", title: "No clock-watching", body: "You see how far each stop is and how long the day runs. Never a list of times to keep." },
   ],
 };
 
 export const closing = {
-  line1: "Every trip, mapped.",
-  line2: "Start with yours.",
-  note: "We'll only email you about early access.",
+  line1: "Your next trip, already mapped.",
+  line2: "Be one of the first to try it.",
+  note: "Free to join. Only early access emails, nothing else.",
 };
 
 export const form = {
   placeholder: "you@email.com",
-  button: "Join waitlist",
+  button: "Get early access",
   invalid: "Enter a valid email",
   failed: "Something went wrong. Try again.",
   success: "You're on the list.",

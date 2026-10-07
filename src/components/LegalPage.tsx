@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, useEffect, type ReactNode } from "react";
 import { TopBar } from "./TopBar";
 import { Footer } from "./Footer";
 
@@ -63,6 +63,9 @@ function inline(text: string): ReactNode {
 }
 
 export function LegalPage({ title, source }: { title: string; source: string }) {
+  useEffect(() => {
+    document.title = `${title} | Portal Jump`;
+  }, [title]);
   const blocks = parse(source);
   const toc = blocks.filter((b): b is Extract<Block, { id: string }> => b.t === "h2");
   return (
