@@ -1,8 +1,8 @@
 import { footerBrand, footerColumns, footerMeta, socials } from "../content/footer";
-import { InstagramIcon, LinkedinIcon } from "./SocialIcons";
+import { InstagramIcon, LinkedinIcon, XIcon } from "./SocialIcons";
 import { WaitlistForm } from "./WaitlistForm";
 
-const socialIcons = { instagram: InstagramIcon, linkedin: LinkedinIcon };
+const socialIcons = { instagram: InstagramIcon, linkedin: LinkedinIcon, x: XIcon };
 // Placeholders stay hidden until a real URL is filled in.
 const liveSocials = socials.filter((s) => /^https:\/\//.test(s.href));
 

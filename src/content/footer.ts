@@ -26,12 +26,13 @@ export const footerColumns: FooterColumn[] = [
   },
 ];
 
-export type Social = { icon: "instagram" | "linkedin"; label: string; href: string };
+export type Social = { icon: "instagram" | "linkedin" | "x"; label: string; href: string };
 
-/** Shown as icons in the footer bottom row; an entry only appears once its href is a real https URL. */
+/** Shown as icons in the footer bottom row; an entry only appears when its href is an https URL. */
 export const socials: Social[] = [
-  { icon: "instagram", label: "Portal Jump on Instagram", href: "PASTE_INSTAGRAM_URL" },
-  { icon: "linkedin", label: "Portal Jump on LinkedIn", href: "PASTE_LINKEDIN_URL" },
+  { icon: "instagram", label: "Portal Jump on Instagram", href: "https://www.instagram.com/portaljump.ai/" },
+  { icon: "linkedin", label: "Portal Jump on LinkedIn", href: "https://www.linkedin.com/company/portal-jump" },
+  { icon: "x", label: "Portal Jump on X", href: "https://x.com/portaljumpai" },
 ];
 
 export const footerMeta = {
