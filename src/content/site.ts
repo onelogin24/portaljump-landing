@@ -2,7 +2,9 @@ export const nav = {
   brand: "Portal Jump",
   links: [
     { label: "How it works", href: "#how-it-works" },
+    { label: "Journey", href: "#journey" },
     { label: "Who it's for", href: "#who-its-for" },
+    { label: "For agencies", href: "#for-agencies" },
   ],
   cta: "Get early access",
 };
@@ -11,10 +13,10 @@ export const hero = {
   headline: ["Your whole trip.", "One Map."] as const,
   subline: "Booking, plans, picks and reviews, pinned where they happen.",
   note: "Free to join. Only early access emails.",
-  image: "hero.jpg",
-  alt: "A traveller looking out over a sunlit coastal city",
-  trip: { title: "Amalfi Coast, 5 days", meta: "2 stays, 1 ferry, 9 places" },
-  flight: "Ferry to Positano, about 40 min",
+  image: "rec-santaluzia.jpg",
+  alt: "Lisbon rooftops and the river from a hilltop viewpoint",
+  trip: { title: "Lisbon, 5 days", meta: "1 stay, 4 bookings, 3 picks" },
+  flight: "About 10 min by tram 28",
   chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
@@ -26,7 +28,7 @@ export type StoryStep = {
 
 export const story = {
   steps: [
-    { tab: "Your style", headline: ["Go with the map."], body: "Your plans, live on the map while you travel." },
+    { tab: "Your picks", headline: ["Picked for how you travel."], body: "Tell it what you love. Every place on the map is chosen for you." },
     { tab: "Your day", headline: ["Your day,", "in the right order."], body: "Stops placed so you walk less and see more, with travel time on the map." },
     { tab: "Your bookings", headline: ["Your bookings,", "where they happen."], body: "Your stay, your table and your tickets, on the same map as your plans." },
   ] as StoryStep[],
@@ -74,13 +76,31 @@ export const who = {
   ],
 };
 
-export const pitch = {
-  headline: ["A plan that fits you.", "Not a timetable."],
-  items: [
-    { n: "01", title: "Picked for you", body: "Tell it what you love. Every suggestion is chosen for you." },
-    { n: "02", title: "In the right order", body: "Stops lined up so you walk less and see more." },
-    { n: "03", title: "No clock-watching", body: "How far each stop is and how long the day runs. Never a timetable." },
-  ],
+export const journey = {
+  headline: ["Your trip, level by level.", "Not a timetable."],
+  body: "Days are levels. Stops are checkpoints. Tap any one for details.",
+  label: "Trip route, day by day",
+  day: (n: number) => `Day ${n}`,
+  photoAlt: {
+    "who-solo": "A solo traveller with a backpack on a mountain trail",
+    "pick-nata": "Pasteis de nata on a plate",
+    "pick-golden": "A street in golden hour light",
+    "pick-miradouro": "Viewpoint over Lisbon rooftops",
+  } as Record<string, string>,
+};
+
+export const agencies = {
+  headline: ["For travel agencies.", "Your brand, our map."],
+  body: "Give every client a live trip map. We share the revenue on what they book.",
+  cta: "Talk to us",
+  subject: "Travel agency partnership",
+  cardLabel: "Your agency name",
+  confirmed: "Confirmed",
+  bookings: [
+    { icon: "bed", title: "Alfama Guesthouse", date: "5 nights" },
+    { icon: "fork", title: "Dinner at the market", date: "Saturday night" },
+    { icon: "ticket", title: "Tram 28 day pass", date: "Sunday" },
+  ] as const,
 };
 
 export const closing = {

@@ -13,6 +13,7 @@ import {
 } from "../content/itinerary";
 import { MapCanvas, legMid, points, type LegData, type LegState, type PinData, type Size, type XY } from "./MapCanvas";
 import { recIcons, recPin, recs } from "./recs";
+import { placeCard, useMedia, type Rect } from "./mapUi";
 
 const thumb = (name: string) => `/images/${name}-th.webp`;
 const CARD_OPEN_MS = 1600;
@@ -23,34 +24,6 @@ const legIcons = { tram: TramFront, walk: Footprints };
 const stopFit = [points.chiado, points.lanes, points.graca];
 const dayFit = [...stopFit, ...recs.map((r) => r.at)];
 const bookFit = [points.stay, points.market, points.graca];
-
-function useMedia(query: string) {
-  const [match, setMatch] = useState(() => typeof matchMedia === "function" && matchMedia(query).matches);
-  useEffect(() => {
-    const mq = matchMedia(query);
-    const on = () => setMatch(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, [query]);
-  return match;
-}
-
-type Rect = { x: number; y: number; w: number; h: number };
-const overlaps = (a: Rect, b: Rect, pad = 4) =>
-  a.x < b.x + b.w + pad && a.x + a.w + pad > b.x && a.y < b.y + b.h + pad && a.y + a.h + pad > b.y;
-
-/** Pick right, left, above, then below: the first box that clears every obstacle and the panel edge. */
-function placeCard(pin: XY, r: number, w: number, h: number, obstacles: Rect[], bounds: Size): Rect {
-  const gap = 16;
-  const options: Rect[] = [
-    { x: pin.x + r + gap, y: pin.y - h / 2, w, h },
-    { x: pin.x - r - gap - w, y: pin.y - h / 2, w, h },
-    { x: pin.x - w / 2, y: pin.y - r - gap - h, w, h },
-    { x: pin.x - w / 2, y: pin.y + r + gap, w, h },
-  ];
-  const inside = (b: Rect) => b.x >= 8 && b.y >= 8 && b.x + b.w <= bounds.w - 8 && b.y + b.h <= bounds.h - 8;
-  return options.find((b) => inside(b) && !obstacles.some((o) => overlaps(b, o))) ?? options.find(inside) ?? options[0];
-}
 
 function leaderPoints(card: Rect, pin: XY, r: number) {
   const ax = Math.min(Math.max(pin.x, card.x), card.x + card.w);

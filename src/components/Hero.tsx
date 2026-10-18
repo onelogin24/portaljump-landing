@@ -1,4 +1,4 @@
-import { BedDouble, Plane, Ship, Utensils, Compass, Star } from "lucide-react";
+import { BedDouble, Plane, TramFront, Utensils, Compass, Star } from "lucide-react";
 import { hero } from "../content/site";
 import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
@@ -14,7 +14,7 @@ const chipIcons = {
 export function Hero() {
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
-      <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 60%" eager className="hero-photo">
+      <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 72%" eager className="hero-photo">
         <div className="hero-shade" />
         <div className="hero-cards" aria-hidden="true">
           <div className="fcard trip-card">
@@ -31,7 +31,7 @@ export function Hero() {
           </div>
           <div className="fcard flight-card">
             <span className="icon-dot">
-              <Ship size={16} strokeWidth={1.75} />
+              <TramFront size={16} strokeWidth={1.75} />
             </span>
             {hero.flight}
           </div>
