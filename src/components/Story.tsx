@@ -71,7 +71,7 @@ export function Story() {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="tabs" role="tablist" aria-label="How it works" onKeyDown={onKeyDown}>
+      <div className="tabs glass" role="tablist" aria-label="How it works" onKeyDown={onKeyDown}>
         {story.steps.map((s, i) => (
           <button
             key={s.tab}

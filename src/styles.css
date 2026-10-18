@@ -45,6 +45,14 @@
   --line: rgba(11, 11, 12, 0.08);
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.05);
 
+  /* frosted glass, only for small pieces that float over a photo or the map */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(20px) saturate(180%);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-edge: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --glass-shadow: 0 8px 24px rgba(11, 11, 12, 0.08);
+  --glass-shine: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 40%);
+
   /* spacing system */
   --space-section: 112px;
   --space-head: 32px;
@@ -127,6 +135,41 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   box-shadow: var(--shadow);
 }
 
+.glass {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-edge), var(--glass-shadow);
+}
+.glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--glass-shine);
+  pointer-events: none;
+}
+/* Grey text over dark photo or the footer: 0.94 keeps --ink-2 at 4.5:1 even over black. */
+.glass-strong { --glass-bg: rgba(255, 255, 255, 0.94); }
+/* --ink-3 is 2.6:1 even on white, so small labels on glass use --ink-2. */
+.glass .pcard-tag, .glass .itin-time, .glass .itin-travel { color: var(--ink-2); }
+/* No blur support (older browsers): near solid white instead. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { --glass-bg: rgba(255, 255, 255, 0.92); }
+  .glass-strong { --glass-bg: rgba(255, 255, 255, 0.94); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { --glass-bg: #fff !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .glass::before { display: none; }
+}
+
 .photo {
   position: relative;
   overflow: hidden;
@@ -191,15 +234,6 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   gap: var(--space-text);
   padding: var(--space-chip) var(--space-chip) var(--space-chip) var(--space-items);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid var(--line);
-}
-@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-  .topbar {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-  }
 }
 .brand { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
 .topbar-links { display: flex; gap: var(--space-items); font-size: 14px; letter-spacing: 0.01em; color: var(--ink-2); }
@@ -251,10 +285,7 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   width: 300px;
 }
 .fcard {
-  background: var(--card);
-  border: 1px solid var(--line);
   border-radius: 20px;
-  box-shadow: var(--shadow);
   color: var(--ink);
   animation: float 6s ease-in-out infinite;
 }
@@ -307,6 +338,7 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   letter-spacing: 0.01em;
 }
 .chip:active { transform: scale(0.97); }
+.chip.glass { background: var(--glass-bg); border-color: var(--glass-border); }
 
 /* waitlist form */
 .wl { max-width: 460px; }
@@ -357,8 +389,6 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   padding: 4px;
   gap: 4px;
   border-radius: 999px;
-  background: var(--card);
-  border: 1px solid var(--line);
 }
 .tab {
   border: 0;
@@ -419,7 +449,7 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 .pin-num { fill: #fff; font-family: var(--font); font-size: 12px; font-weight: 400; }
 
 .pref-chips { position: absolute; top: var(--float-inset); left: var(--float-inset); display: flex; flex-wrap: wrap; gap: var(--space-chip); max-width: 60%; pointer-events: none; }
-.pref-chips .chip { opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); box-shadow: var(--shadow); }
+.pref-chips .chip { opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .pref-chips .chip.show { opacity: 1; transform: none; }
 
 .pcard-pos { position: absolute; width: 180px; transform: translateY(-50%); pointer-events: none; }
@@ -539,23 +569,10 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   line-height: 1.5;
   color: var(--ink-3);
 }
+.map-credit::after { content: ""; position: absolute; top: -16px; right: -4px; bottom: -8px; left: -4px; }
 @media (hover: hover) {
   .map-credit:hover { color: var(--ink); }
 }
-.ui-card { padding: var(--card-pad); font-size: 14px; letter-spacing: 0.01em; line-height: 1.5; }
-.list-card { display: grid; gap: var(--space-sm); min-width: 200px; }
-.list-card li { display: flex; align-items: center; gap: var(--space-sm); }
-.tick {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: #fff;
-  flex: none;
-}
-
 /* features */
 .feature-grid > * { min-width: 0; }
 .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-text); margin-top: var(--space-head); }
@@ -588,95 +605,12 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 
 /* three steps: a short, quiet pause after the hero */
 .steps h2 { text-align: center; }
-.steps-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); max-width: 960px; margin: var(--space-items) auto 0; }
-.step { padding: var(--space-text) 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+/* an ordered list for screen readers, without visible numbers */
+.steps-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-text); margin: var(--space-items) 0 0; padding: 0; list-style: none; }
+.step { padding: var(--space-items); border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
 .step-icon { display: block; color: var(--ink); }
-.step-title { margin-top: 10px; font-size: 16px; line-height: 1.3; letter-spacing: 0; }
-.step-body { margin-top: 4px; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
-
-/* journey: the trip as a level map */
-.journey-head { text-align: center; }
-.journey-panel {
-  margin-top: var(--space-head);
-  height: clamp(400px, calc(100vh - 240px), 620px);
-  height: clamp(400px, calc(100svh - 240px), 620px);
-}
-.canvas-overlay > .jr-path, .canvas-overlay > .jr-nodes { pointer-events: none; }
-.jr-path { position: absolute; inset: 0; }
-.jr-nodes { position: absolute; inset: 0; }
-.jr-node { position: absolute; opacity: 0; }
-.jr-go .jr-node { animation: drop var(--dur) var(--ease) both; animation-delay: var(--d, 0ms); }
-.jr-hit {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  cursor: pointer;
-  pointer-events: auto;
-  touch-action: manipulation;
-}
-.jr-hit::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); border-radius: 50%; }
-.jr-day {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: var(--ink);
-  color: #fff;
-  font-size: 16px;
-  line-height: 1;
-  box-shadow: 0 0 0 3px #fff, 0 4px 10px rgba(0, 0, 0, 0.22);
-}
-.jr-day[aria-expanded="true"] { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink), 0 4px 10px rgba(0, 0, 0, 0.22); }
-.jr-pin { border-radius: 50%; background: #fff; padding: 3px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22); }
-.jr-pin[aria-expanded="true"] { background: var(--ink); }
-.jr-pin img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-.jr-num {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: #fff;
-  font-size: 12px;
-  line-height: 1;
-}
-.jr-label {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 22px;
-  border-radius: 999px;
-  background: #fff;
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  color: var(--ink);
-  font-size: 12px;
-  line-height: 1;
-  white-space: nowrap;
-  pointer-events: none;
-}
-.leg-chip.jr-pill { transform: none; animation: none; opacity: 0; pointer-events: none; }
-.jr-go .leg-chip.jr-pill { animation: pc-open var(--dur) var(--ease) both; animation-delay: var(--d, 0ms); }
-.jr-leaders { opacity: 0; }
-.jr-go .jr-leaders { opacity: 1; transition: opacity var(--dur) var(--ease) 1.6s; }
-.jr-card { position: absolute; z-index: 2; padding: var(--space-chip); border-radius: 14px; animation: pc-open var(--dur-fast) var(--ease) both; }
-.jr-card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; }
-.jr-card .pcard-tag, .jr-sheet .pcard-tag { color: var(--ink-2); }
-.jr-sheet { display: flex; align-items: center; gap: var(--space-sm); margin-top: var(--space-sm); padding: var(--space-sm); border-radius: 16px; animation: pc-open var(--dur-fast) var(--ease) both; }
-.jr-sheet img { flex: none; width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
-.jr-sheet .pcard-name { margin-top: 0; font-size: 15px; }
-.jr-sheet .pcard-tag { font-size: 13px; }
+.step-title { margin-top: var(--space-sm); font-size: 16px; line-height: 1.3; letter-spacing: 0; }
+.step-body { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
 
 /* for travel agencies */
 .feature.agency { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: var(--space-head); padding: var(--space-head); }
@@ -767,9 +701,6 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   .slide, .slide.active { transition: none; }
   html { scroll-behavior: auto; }
   .btn, .tab, .tab::before { transition: none; }
-  .jr-node, .jr-go .jr-node, .leg-chip.jr-pill, .jr-go .leg-chip.jr-pill { animation: none; opacity: 1; }
-  .jr-card, .jr-sheet { animation: none; }
-  .jr-go .jr-leaders { transition: none; }
   [data-reveal] { transition-delay: 0s; }
 }
 
@@ -811,6 +742,7 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   /* top bar: wordmark left, small button right */
   .topbar { padding: 6px 6px 6px var(--space-text); }
   .topbar-links { display: none; }
+  .topbar.glass-strong { --glass-bg: rgba(255, 255, 255, 0.55); }
   .topbar .btn { position: relative; height: 44px; padding: 0 16px; font-size: 13px; }
   .topbar .btn::after { content: ""; position: absolute; inset: -4px -2px; }
 
@@ -897,21 +829,14 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   .ill-picks { gap: var(--space-chip); }
 
   /* three steps: compact rows, icon left */
-  .steps-row { grid-template-columns: 1fr; gap: var(--space-chip); margin-top: var(--space-text); }
-  .step { display: grid; grid-template-columns: 18px 1fr; column-gap: var(--space-sm); padding: var(--space-sm) var(--space-text); }
+  .steps-row { grid-template-columns: 1fr; margin-top: var(--space-text); }
+  .step { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: var(--space-sm); padding: 18px; }
   .step-icon { grid-row: span 2; margin-top: 2px; }
   .step-title { margin-top: 0; }
-  .step-body { margin-top: 0; }
 
   /* who it's for: swipe row */
   .who-row { gap: var(--space-sm); scroll-snap-type: x mandatory; }
   .who-row li { flex: 0 0 min(320px, 78vw); }
-
-  /* journey */
-  .journey-panel { height: clamp(300px, calc(100vh - 330px), 440px); height: clamp(300px, calc(100svh - 330px), 440px); }
-  .jr-day { font-size: 14px; }
-  .jr-num { width: 18px; height: 18px; top: -5px; right: -5px; }
-  .leg-chip.jr-pill { max-width: 132px; white-space: normal; line-height: 1.35; }
 
   /* agencies */
   .feature.agency { grid-template-columns: 1fr; gap: var(--space-items); padding: var(--card-pad); }
@@ -960,4 +885,5 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   .legal-col h2 { font-size: 26px; margin-top: 48px; }
   .legal-col h3 { font-size: 20px; }
   .legal-table table { min-width: 560px; }
+  .legal-toc a { display: inline-flex; align-items: center; min-height: 44px; padding: 0; }
 }

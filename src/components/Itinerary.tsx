@@ -277,7 +277,7 @@ export default function Itinerary({ active, onHold }: { active: number; onHold?:
               {active === 0 && (
                 <ul className="pref-chips">
                   {preferences.map((p, i) => (
-                    <li key={p} className={`chip ${i < chips ? "show" : ""}`}>
+                    <li key={p} className={`chip glass ${i < chips ? "show" : ""}`}>
                       {p}
                     </li>
                   ))}
@@ -372,7 +372,7 @@ export default function Itinerary({ active, onHold }: { active: number; onHold?:
                 })}
               {open && openStyle && (
                 <div
-                  className="rec-card rec-ui card"
+                  className="rec-card rec-ui card glass"
                   style={mobile ? undefined : openStyle}
                   onPointerEnter={cancelClose}
                   onPointerLeave={(e) => e.pointerType === "mouse" && scheduleClose()}
@@ -410,7 +410,7 @@ export default function Itinerary({ active, onHold }: { active: number; onHold?:
         }}
       </MapCanvas>
 
-      <div ref={cardRef} className={`itin-card card ${mobile && openRec ? "sheet-hidden" : ""}`} aria-live="polite">
+      <div ref={cardRef} className={`itin-card card glass ${mobile && openRec ? "sheet-hidden" : ""}`} aria-live="polite">
         {active === 0 && (
           <>
             <p className="card-title">{panelText.styleTitle}</p>

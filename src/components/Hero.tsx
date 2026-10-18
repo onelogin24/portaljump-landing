@@ -17,7 +17,7 @@ export function Hero() {
       <Photo file={hero.image} alt={hero.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 72%" eager className="hero-photo">
         <div className="hero-shade" />
         <div className="hero-cards" aria-hidden="true">
-          <div className="fcard trip-card">
+          <div className="fcard trip-card glass glass-strong">
             <svg viewBox="0 0 252 120" className="mini-map" role="presentation">
               <rect width="252" height="120" rx="12" fill="#F1EDE4" />
               <path d="M0 84 C60 70 90 100 150 82 S230 60 252 70" stroke="#E4DDCE" strokeWidth="10" fill="none" />
@@ -29,7 +29,7 @@ export function Hero() {
             <p className="trip-title">{hero.trip.title}</p>
             <p className="trip-meta">{hero.trip.meta}</p>
           </div>
-          <div className="fcard flight-card">
+          <div className="fcard flight-card glass">
             <span className="icon-dot">
               <TramFront size={16} strokeWidth={1.75} />
             </span>

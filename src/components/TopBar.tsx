@@ -16,7 +16,7 @@ function goToWaitlist(e: MouseEvent<HTMLAnchorElement>) {
 export function TopBar() {
   return (
     <header className="topbar-wrap">
-      <div className="topbar">
+      <div className="topbar glass glass-strong">
         <a href="/" className="brand">
           {nav.brand}
         </a>

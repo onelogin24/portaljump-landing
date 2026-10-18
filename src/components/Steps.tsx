@@ -10,7 +10,7 @@ export function Steps() {
       <h2 id="steps-title" className="h-xl" data-reveal="fade">
         {steps.headline[0]} <span className="soft">{steps.headline[1]}</span>
       </h2>
-      <ol className="steps-row">
+      <ol className="steps-row" role="list">
         {steps.items.map((s, i) => {
           const Icon = stepIcons[s.icon];
           return (

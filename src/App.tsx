@@ -4,7 +4,6 @@ import { Steps } from "./components/Steps";
 import { Story } from "./components/Story";
 import { FeatureGrid } from "./components/FeatureGrid";
 import { WhoFor } from "./components/WhoFor";
-import { Journey } from "./components/Journey";
 import { Agencies } from "./components/Agencies";
 import { Closing } from "./components/Closing";
 import { Footer } from "./components/Footer";
@@ -29,7 +28,6 @@ export default function App() {
         <Hero />
         <Steps />
         <Story />
-        <Journey />
         <FeatureGrid />
         <WhoFor />
         <Agencies />

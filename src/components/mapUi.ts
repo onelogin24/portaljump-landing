@@ -13,7 +13,7 @@ export function useMedia(query: string) {
 }
 
 export type Rect = { x: number; y: number; w: number; h: number };
-export const overlaps = (a: Rect, b: Rect, pad = 4) =>
+const overlaps = (a: Rect, b: Rect, pad = 4) =>
   a.x < b.x + b.w + pad && a.x + a.w + pad > b.x && a.y < b.y + b.h + pad && a.y + a.h + pad > b.y;
 
 /** Pick right, left, above, then below: the first box that clears every obstacle and the panel edge. */

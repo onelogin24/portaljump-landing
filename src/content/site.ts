@@ -2,7 +2,6 @@ export const nav = {
   brand: "Portal Jump",
   links: [
     { label: "How it works", href: "#how-it-works" },
-    { label: "Journey", href: "#journey" },
     { label: "Who it's for", href: "#who-its-for" },
     { label: "For agencies", href: "#for-agencies" },
   ],
@@ -83,19 +82,6 @@ export const steps = {
     { icon: "pin", title: "Pin", body: "Every stop on one map, in order." },
     { icon: "route", title: "Go", body: "Travel time between stops, never clock times." },
   ] as const,
-};
-
-export const journey = {
-  headline: "Your trip, level by level.",
-  body: "Days are levels. Stops are checkpoints. Tap any one for details.",
-  label: "Trip route, day by day",
-  day: (n: number) => `Day ${n}`,
-  photoAlt: {
-    "who-solo": "A solo traveller with a backpack on a mountain trail",
-    "pick-nata": "Pasteis de nata on a plate",
-    "pick-golden": "A street in golden hour light",
-    "pick-miradouro": "Viewpoint over Lisbon rooftops",
-  } as Record<string, string>,
 };
 
 export const agencies = {
