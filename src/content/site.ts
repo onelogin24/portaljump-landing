@@ -76,8 +76,17 @@ export const who = {
   ],
 };
 
+export const steps = {
+  headline: ["Plan in three steps.", "No timetable."],
+  items: [
+    { icon: "compass", title: "Explore", body: "Places chosen for how you travel." },
+    { icon: "pin", title: "Pin", body: "Every stop on one map, in order." },
+    { icon: "route", title: "Go", body: "Travel time between stops, never clock times." },
+  ] as const,
+};
+
 export const journey = {
-  headline: ["Your trip, level by level.", "Not a timetable."],
+  headline: "Your trip, level by level.",
   body: "Days are levels. Stops are checkpoints. Tap any one for details.",
   label: "Trip route, day by day",
   day: (n: number) => `Day ${n}`,

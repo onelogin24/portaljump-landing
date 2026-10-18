@@ -9,7 +9,7 @@ export function Journey() {
     <section id="journey" className="section wrap" aria-labelledby="journey-title" data-reveal>
       <div className="journey-head">
         <h2 id="journey-title" className="h-xl">
-          {journey.headline[0]} <span className="soft">{journey.headline[1]}</span>
+          {journey.headline}
         </h2>
         <p className="body">{journey.body}</p>
       </div>

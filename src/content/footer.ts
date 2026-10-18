@@ -3,8 +3,8 @@ import { CONTACT_EMAIL } from "../config";
 export type FooterLink = { label: string; href: string };
 export type FooterColumn = { title: string; links: FooterLink[] };
 
-export const footerTop = {
-  line: "Plan your next trip on one map.",
+export const footerBrand = {
+  line: "Your whole trip. One map.",
 };
 
 export const footerColumns: FooterColumn[] = [
