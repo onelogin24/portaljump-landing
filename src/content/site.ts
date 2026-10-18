@@ -19,22 +19,25 @@ export const hero = {
   chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
+/** A headline with an optional second part shown in the soft color. */
+export type Headline = [string, string?];
+
 export type StoryStep = {
   tab: string;
-  headline: [string, string?];
+  headline: Headline;
   body: string;
 };
 
 export const story = {
   steps: [
-    { tab: "Your picks", headline: ["Picked for how you travel."], body: "Tell it what you love. Every place on the map is chosen for you." },
+    { tab: "Your picks", headline: ["Your taste.", "Your map."], body: "Tell us what you love. We'll take it from there." },
     { tab: "Your day", headline: ["Your day,", "in the right order."], body: "Stops placed so you walk less and see more, with travel time on the map." },
     { tab: "Your bookings", headline: ["Your bookings,", "where they happen."], body: "Your stay, your table and your tickets, on the same map as your plans." },
   ] as StoryStep[],
 };
 
 export const features = {
-  headline: ["Everything for the trip, on one page.", "Not in ten tabs."],
+  headline: ["Keep your itinerary, bookings, and favourite places in one\u00a0view."] as Headline,
   cards: [
     { lead: "Map.", rest: "Every place you plan to go, in order.", kind: "map" },
     { lead: "Bookings.", rest: "Every confirmation in one list.", kind: "bookings" },
@@ -65,7 +68,7 @@ export const band = {
 };
 
 export const who = {
-  headline: ["Whoever you travel with,", "it plans around them."],
+  headline: ["A trip that feels right for\u00a0everyone."] as Headline,
   items: [
     { name: "Solo", line: "Your pace. Your places.", image: "who-solo.jpg", position: "center 60%", alt: "A solo traveller with a backpack on a mountain trail" },
     { name: "Couples", line: "Picks that suit you both.", image: "who-couples.jpg", position: "center 55%", alt: "A couple sharing a map at a seaside cafe" },
@@ -76,7 +79,7 @@ export const who = {
 };
 
 export const steps = {
-  headline: ["Plan in three steps.", "No timetable."],
+  headline: ["Plan your trip in three simple\u00a0steps."] as Headline,
   items: [
     { icon: "compass", title: "Explore", body: "Places chosen for how you travel." },
     { icon: "pin", title: "Pin", body: "Every stop on one map, in order." },

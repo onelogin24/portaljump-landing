@@ -72,7 +72,13 @@ export function FeatureGrid() {
   return (
     <section className="section wrap" aria-labelledby="features-title">
       <h2 id="features-title" className="h-xl" data-reveal>
-        {features.headline[0]} <span className="soft">{features.headline[1]}</span>
+        {features.headline[0]}
+        {features.headline[1] && (
+          <>
+            {" "}
+            <span className="soft">{features.headline[1]}</span>
+          </>
+        )}
       </h2>
       <div className="feature-grid">
         {features.cards.map((c, i) => (

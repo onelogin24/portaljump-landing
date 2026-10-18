@@ -8,7 +8,13 @@ export function Steps() {
   return (
     <section className="section wrap steps" aria-labelledby="steps-title">
       <h2 id="steps-title" className="h-xl" data-reveal="fade">
-        {steps.headline[0]} <span className="soft">{steps.headline[1]}</span>
+        {steps.headline[0]}
+        {steps.headline[1] && (
+          <>
+            {" "}
+            <span className="soft">{steps.headline[1]}</span>
+          </>
+        )}
       </h2>
       <ol className="steps-row" role="list">
         {steps.items.map((s, i) => {
