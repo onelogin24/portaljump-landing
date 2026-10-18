@@ -26,13 +26,13 @@ export const footerColumns: FooterColumn[] = [
   },
 ];
 
-/** Add a URL to show the Social column; entries without one stay hidden. */
-export const socials: FooterLink[] = [
-  { label: "Instagram", href: "" },
-  { label: "X", href: "" },
-  { label: "LinkedIn", href: "" },
+export type Social = { icon: "instagram" | "linkedin"; label: string; href: string };
+
+/** Shown as icons in the footer bottom row; an entry only appears once its href is a real https URL. */
+export const socials: Social[] = [
+  { icon: "instagram", label: "Portal Jump on Instagram", href: "PASTE_INSTAGRAM_URL" },
+  { icon: "linkedin", label: "Portal Jump on LinkedIn", href: "PASTE_LINKEDIN_URL" },
 ];
-export const socialTitle = "Social";
 
 export const footerMeta = {
   brand: "Portal Jump",

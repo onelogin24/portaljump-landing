@@ -1,9 +1,12 @@
-import { footerBrand, footerColumns, footerMeta, socials, socialTitle } from "../content/footer";
+import { footerBrand, footerColumns, footerMeta, socials } from "../content/footer";
+import { InstagramIcon, LinkedinIcon } from "./SocialIcons";
 import { WaitlistForm } from "./WaitlistForm";
 
+const socialIcons = { instagram: InstagramIcon, linkedin: LinkedinIcon };
+// Placeholders stay hidden until a real URL is filled in.
+const liveSocials = socials.filter((s) => /^https:\/\//.test(s.href));
+
 export function Footer() {
-  const live = socials.filter((s) => s.href);
-  const columns = live.length ? [...footerColumns, { title: socialTitle, links: live }] : footerColumns;
   return (
     <footer className="footer">
       <div className="wrap">
@@ -16,15 +19,13 @@ export function Footer() {
             <WaitlistForm className="footer-form" />
           </div>
           <nav className="footer-cols" aria-label="Footer">
-            {columns.map((col) => (
+            {footerColumns.map((col) => (
               <div key={col.title}>
                 <h3>{col.title}</h3>
                 <ul>
                   {col.links.map((l) => (
                     <li key={l.label}>
-                      <a href={l.href} {...(/^https?:/.test(l.href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-                        {l.label}
-                      </a>
+                      <a href={l.href}>{l.label}</a>
                     </li>
                   ))}
                 </ul>
@@ -35,6 +36,20 @@ export function Footer() {
         <div className="footer-bottom-row">
           <span>{footerMeta.copyright}</span>
           <a href={`mailto:${footerMeta.email}`}>{footerMeta.email}</a>
+          {liveSocials.length > 0 && (
+            <ul className="footer-social">
+              {liveSocials.map((s) => {
+                const Icon = socialIcons[s.icon];
+                return (
+                  <li key={s.icon}>
+                    <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
+                      <Icon size={18} />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           <span>
             {footerMeta.credits.before}
             <a href={footerMeta.credits.link.href} target="_blank" rel="noopener noreferrer">
