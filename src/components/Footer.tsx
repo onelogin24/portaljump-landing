@@ -1,6 +1,5 @@
 import { footerBrand, footerColumns, footerMeta, socials } from "../content/footer";
 import { InstagramIcon, LinkedinIcon, XIcon } from "./SocialIcons";
-import { WaitlistForm } from "./WaitlistForm";
 
 const socialIcons = { instagram: InstagramIcon, linkedin: LinkedinIcon, x: XIcon };
 // Placeholders stay hidden until a real URL is filled in.
@@ -16,9 +15,6 @@ export function Footer() {
               {footerMeta.brand}
             </a>
             <p className="footer-line">{footerBrand.line}</p>
-            <div id="waitlist">
-              <WaitlistForm className="footer-form" />
-            </div>
           </div>
           <nav className="footer-cols" aria-label="Footer">
             {footerColumns.map((col) => (
