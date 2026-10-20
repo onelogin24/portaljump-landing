@@ -12,10 +12,6 @@ export const hero = {
   headline: ["Your whole trip.", "One Map."] as const,
   subline: "Booking, plans, picks and reviews, pinned where they happen.",
   note: "Free to join. Only early access emails.",
-  image: "rec-santaluzia.jpg",
-  alt: "Lisbon rooftops and the river from a hilltop viewpoint",
-  trip: { title: "Lisbon, 5 days", meta: "1 stay, 4 bookings, 3 picks" },
-  flight: "About 10 min by tram 28",
   chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
