@@ -8,6 +8,12 @@
   Cache-Control: public, max-age=2592000
 /og.png
   Cache-Control: public, max-age=86400
+/favicon-48.png
+  Cache-Control: public, max-age=86400
+/favicon-192.png
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
 /*.html
   Cache-Control: no-cache
 /

@@ -10,7 +10,8 @@
     "fonts": "node scripts/build-fonts.mjs",
     "photos": "node scripts/build-photos.mjs",
     "map": "node scripts/build-map.mjs",
-    "og": "node scripts/build-og.mjs"
+    "og": "node scripts/build-og.mjs",
+    "icons": "node scripts/build-icons.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.52.0",
