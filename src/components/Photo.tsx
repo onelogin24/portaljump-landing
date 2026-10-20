@@ -14,6 +14,16 @@ type Props = {
 type Meta = { width: number; height: number; smWidth: number; smHeight: number; xsWidth: number };
 const meta = manifest as Record<string, Meta>;
 
+/** Smallest to largest; when two sizes share a width, the larger file (higher quality) wins. */
+function srcSet(name: string, m: Meta) {
+  const sizes: [string, number][] = [
+    [`/images/${name}-xs.webp`, m.xsWidth],
+    [`/images/${name}-sm.webp`, m.smWidth],
+    [`/images/${name}.webp`, m.width],
+  ];
+  return sizes.filter(([, w], i) => !sizes.slice(i + 1).some(([, w2]) => w2 === w)).map(([u, w]) => `${u} ${w}w`).join(", ");
+}
+
 /** Photo block; the warm gradient shows behind the image, and alone when the file is missing. */
 export function Photo({ file, alt, sizes = "100vw", position = "center", eager, className = "", children }: Props) {
   const [failed, setFailed] = useState(false);
@@ -25,7 +35,7 @@ export function Photo({ file, alt, sizes = "100vw", position = "center", eager, 
         <picture>
           <source
             type="image/webp"
-            srcSet={`${m.xsWidth < m.smWidth ? `/images/${name}-xs.webp ${m.xsWidth}w, ` : ""}/images/${name}-sm.webp ${m.smWidth}w, /images/${name}.webp ${m.width}w`}
+            srcSet={srcSet(name, m)}
             sizes={sizes}
           />
           <img

@@ -14,17 +14,11 @@ export const hero = {
   note: "Free to join. Only early access emails.",
   image: "closing-roadtrip.jpg",
   alt: "Illustration of friends on a road trip",
-  chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
+  chips: ["Hotels", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
 /** A headline with an optional second part shown in the soft color. */
 export type Headline = [string, string?];
-
-export type StoryStep = {
-  tab: string;
-  headline: Headline;
-  body: string;
-};
 
 export const mapCredit = { text: "© OpenStreetMap contributors", href: "https://www.openstreetmap.org/copyright" };
 

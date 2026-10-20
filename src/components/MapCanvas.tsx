@@ -57,8 +57,6 @@ function legGeometry(a: XY, b: XY) {
     mid: { x: 0.25 * a.x + 0.5 * c.x + 0.25 * b.x, y: 0.25 * a.y + 0.5 * c.y + 0.25 * b.y },
   };
 }
-export const legMid = (a: XY, b: XY) => legGeometry(a, b).mid;
-
 export type PinData = {
   key: string;
   at: XY;

@@ -4,7 +4,7 @@ import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
 
 const chipIcons = {
-  Stays: BedDouble,
+  Hotels: BedDouble,
   Flights: Plane,
   Eats: Utensils,
   "Things to do": Compass,
