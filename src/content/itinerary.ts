@@ -15,13 +15,6 @@ export type Stop = {
   reason: string;
 };
 
-export const credit = {
-  text: "Map data © OpenStreetMap contributors",
-  href: "https://www.openstreetmap.org/copyright",
-};
-
-export const preferences = ["Slow mornings", "Street food", "Views"];
-
 export const stops: Stop[] = [
   {
     id: "chiado",
@@ -58,28 +51,6 @@ export const stops: Stop[] = [
   },
 ];
 
-export const stay = { id: "stay", at: "stay" as PointKey, photo: "rec-santaluzia", name: "Alfama Guesthouse", label: "5 nights", icon: "bed" as const };
-export const dinner = { id: "dinner", at: "market" as PointKey, photo: "pick-golden", name: "Dinner at the market", label: "Saturday night", icon: "fork" as const };
-
-export const legs = [
-  { icon: "tram" as const, text: "About 10 min by tram 28", sub: "or 20 min walk" },
-  { icon: "walk" as const, text: "About 12 min walk, uphill" },
-];
-
-export const panelText = {
-  styleTitle: "Picked for you",
-  dayTitle: "Day 2, Lisbon",
-  dayFooter: "About 5 hours, 2.4 km, mostly on foot",
-  bookingsTitle: "Bookings",
-  confirmed: "Confirmed",
-  bookings: [
-    { place: "Flight to Lisbon", note: "Friday" },
-    { place: "Alfama Guesthouse", note: "5 nights" },
-    { place: "Dinner at the market", note: "Saturday night" },
-    { place: "Tram 28 day pass", note: "Sunday" },
-  ],
-};
-
 export type RecMeta = {
   id: string;
   name: string;
@@ -87,8 +58,6 @@ export type RecMeta = {
   reason: string;
   icon: "landmark" | "church" | "lift" | "castle" | "binoculars";
 };
-
-export const recommendedTitle = "More you might like";
 
 export const recMeta: RecMeta[] = [
   { id: "rec-comercio", name: "Praca do Comercio", descriptor: "Riverside square", reason: "Because you like views", icon: "landmark" },
@@ -98,12 +67,3 @@ export const recMeta: RecMeta[] = [
   { id: "rec-santaluzia", name: "Miradouro de Santa Luzia", descriptor: "Viewpoint", reason: "Next to your route", icon: "binoculars" },
   { id: "rec-carmo", name: "Carmo Convent", descriptor: "Convento do Carmo", reason: "Quiet morning stop", icon: "church" },
 ];
-
-export const recText = {
-  add: "Add to day",
-  added: "Added",
-  walk: (min: number) => `About ${min} min walk`,
-  recommended: "recommended",
-};
-
-export const dayCardTravel = ["About 10 min by tram 28", "About 12 min walk, uphill"];

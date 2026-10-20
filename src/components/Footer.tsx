@@ -16,7 +16,9 @@ export function Footer() {
               {footerMeta.brand}
             </a>
             <p className="footer-line">{footerBrand.line}</p>
-            <WaitlistForm className="footer-form" />
+            <div id="waitlist">
+              <WaitlistForm className="footer-form" />
+            </div>
           </div>
           <nav className="footer-cols" aria-label="Footer">
             {footerColumns.map((col) => (

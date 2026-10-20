@@ -10,11 +10,8 @@ export const nav = {
 
 export const hero = {
   headline: ["Your whole trip.", "One Map."] as const,
-  subline: "Booking, plans, picks and reviews, pinned where they happen.",
-  note: "Free to join. Only early access emails.",
   image: "closing-roadtrip.jpg",
   alt: "Illustration of friends on a road trip",
-  chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
 /** A headline with an optional second part shown in the soft color. */
@@ -24,14 +21,6 @@ export type StoryStep = {
   tab: string;
   headline: Headline;
   body: string;
-};
-
-export const story = {
-  steps: [
-    { tab: "Your picks", headline: ["Your taste.", "Your map."], body: "Tell us what you love. We'll take it from there." },
-    { tab: "Your day", headline: ["Your day,", "in the right order."], body: "Stops placed so you walk less and see more, with travel time on the map." },
-    { tab: "Your bookings", headline: ["Your bookings,", "where they happen."], body: "Your stay, your table and your tickets, on the same map as your plans." },
-  ] as StoryStep[],
 };
 
 export const features = {
@@ -44,10 +33,10 @@ export const features = {
   ] as const,
   confirmed: "Confirmed",
   bookings: [
-    { icon: "plane", title: "Flight to Lisbon", date: "Fri 12 Jun" },
-    { icon: "bed", title: "Alfama Guesthouse", date: "12 to 17 Jun" },
-    { icon: "fork", title: "Dinner at Taberna", date: "Saturday night" },
-    { icon: "ticket", title: "Tram 28 day pass", date: "Sun" },
+    { icon: "plane", title: "Flight to Lisbon", date: "Friday" },
+    { icon: "bed", title: "Alfama Guesthouse", date: "5 nights" },
+    { icon: "fork", title: "Dinner at the market", date: "Saturday night" },
+    { icon: "ticket", title: "Tram 28 day pass", date: "Sunday" },
   ] as const,
   picks: [
     { image: "pick-nata.jpg", alt: "Pasteis de nata on a plate", name: "Pasteis de nata", tag: "Saved" },
@@ -97,12 +86,6 @@ export const agencies = {
     { icon: "fork", title: "Dinner at the market", date: "Saturday night" },
     { icon: "ticket", title: "Tram 28 day pass", date: "Sunday" },
   ] as const,
-};
-
-export const closing = {
-  line1: "Every trip mapped.",
-  line2: "Start with yours.",
-  note: "Free to join. Only early access emails.",
 };
 
 export const form = {

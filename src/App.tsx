@@ -1,7 +1,6 @@
 import { TopBar } from "./components/TopBar";
 import { Hero } from "./components/Hero";
 import { Steps } from "./components/Steps";
-import { Story } from "./components/Story";
 import { FeatureGrid } from "./components/FeatureGrid";
 import { WhoFor } from "./components/WhoFor";
 import { Agencies } from "./components/Agencies";
@@ -27,7 +26,6 @@ export default function App() {
       <main>
         <Hero />
         <Steps />
-        <Story />
         <FeatureGrid />
         <WhoFor />
         <Agencies />

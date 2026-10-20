@@ -6,7 +6,7 @@ const stepIcons = { compass: Compass, pin: MapPin, route: Route };
 
 export function Steps() {
   return (
-    <section className="section wrap steps" aria-labelledby="steps-title">
+    <section id="how-it-works" className="section wrap steps" aria-labelledby="steps-title">
       <h2 id="steps-title" className="h-xl" data-reveal="fade">
         {steps.headline[0]}
         {steps.headline[1] && (
