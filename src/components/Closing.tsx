@@ -5,9 +5,9 @@ import { WaitlistForm } from "./WaitlistForm";
 export function Closing() {
   return (
     <section id="waitlist" className="section wrap" aria-labelledby="closing-title" data-reveal>
-      <Photo file={band.image} alt={band.alt} sizes="(max-width: 767px) 320px, (min-width: 1248px) 1200px, 100vw" position="center 45%" className="closing-photo">
-        <div className="closing-wash" />
-        <div className="closing-copy">
+      <div className="scene scene-closing">
+        <Photo file={band.image} alt={band.alt} sizes="(min-width: 1200px) 1200px, 100vw" position="center 10%" className="scene-img" />
+        <div className="scene-copy">
           <h2 id="closing-title" className="closing-title">
             {closing.line1}
             <br />
@@ -16,7 +16,7 @@ export function Closing() {
           <WaitlistForm className="closing-form" />
           <p className="note">{closing.note}</p>
         </div>
-      </Photo>
+      </div>
     </section>
   );
 }

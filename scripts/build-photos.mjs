@@ -13,6 +13,8 @@ const SMALL = 1280;
 const XS = 1100; // phones
 const THUMB = 320; // map pins and list thumbnails
 const manifest = {};
+// Illustrations shown full bleed: near-lossless webp, high quality jpg, never downscaled, one phone size.
+const FIDELITY = new Set(["closing-roadtrip"]);
 
 // Accepts "name.jpg" and "name.jpg.jpg"; files with "backup" in the name are ignored.
 const files = (await readdir(src))
@@ -35,6 +37,15 @@ for (const file of files) {
   const smHeight = Math.round((srcHeight * smWidth) / srcWidth);
 
   const base = () => sharp(input).rotate();
+  if (FIDELITY.has(name)) {
+    const phone = Math.min(XS, srcWidth);
+    await base().webp({ quality: 95, smartSubsample: true, effort: 6 }).toFile(path.join(out, `${name}.webp`));
+    await base().resize({ width: phone, withoutEnlargement: true }).webp({ quality: 95, smartSubsample: true, effort: 6 }).toFile(path.join(out, `${name}-sm.webp`));
+    await base().jpeg({ quality: 92, chromaSubsampling: "4:4:4" }).toFile(path.join(out, `${name}.jpg`));
+    manifest[name] = { width: srcWidth, height: srcHeight, smWidth: phone, smHeight: Math.round((srcHeight * phone) / srcWidth), xsWidth: phone };
+    console.log(name, `${srcWidth}x${srcHeight} (full fidelity)`);
+    continue;
+  }
   await base().resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toFile(path.join(out, `${name}.webp`));
   await base().resize({ width: smWidth, withoutEnlargement: true }).webp({ quality: 80 }).toFile(path.join(out, `${name}-sm.webp`));
   await base().resize({ width: xsWidth, withoutEnlargement: true }).webp({ quality: 66 }).toFile(path.join(out, `${name}-xs.webp`));

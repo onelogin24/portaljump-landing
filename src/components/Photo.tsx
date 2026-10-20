@@ -25,7 +25,7 @@ export function Photo({ file, alt, sizes = "100vw", position = "center", eager, 
         <picture>
           <source
             type="image/webp"
-            srcSet={`/images/${name}-xs.webp ${m.xsWidth}w, /images/${name}-sm.webp ${m.smWidth}w, /images/${name}.webp ${m.width}w`}
+            srcSet={`${m.xsWidth < m.smWidth ? `/images/${name}-xs.webp ${m.xsWidth}w, ` : ""}/images/${name}-sm.webp ${m.smWidth}w, /images/${name}.webp ${m.width}w`}
             sizes={sizes}
           />
           <img
