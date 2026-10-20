@@ -58,7 +58,7 @@ export const stops: Stop[] = [
   },
 ];
 
-export const stay = { id: "stay", at: "stay" as PointKey, photo: "who-solo", name: "Alfama Guesthouse", label: "5 nights", icon: "bed" as const };
+export const stay = { id: "stay", at: "stay" as PointKey, photo: "rec-santaluzia", name: "Alfama Guesthouse", label: "5 nights", icon: "bed" as const };
 export const dinner = { id: "dinner", at: "market" as PointKey, photo: "pick-golden", name: "Dinner at the market", label: "Saturday night", icon: "fork" as const };
 
 export const legs = [

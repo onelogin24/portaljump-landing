@@ -17,13 +17,13 @@ export function WhoFor() {
       <ul className="who-row">
         {who.items.map((w, i) => (
           <li key={w.name} data-reveal style={{ "--i": i } as CSSProperties}>
-            <Photo file={w.image} alt={w.alt} sizes="(min-width: 1024px) 232px, (min-width: 768px) 260px, 78vw" position={w.position} className="who-card">
-              <div className="who-shade" />
+            <div className="who-card">
+              <Photo file={w.image} alt={w.alt} sizes="(min-width: 1024px) 232px, (min-width: 768px) 260px, 78vw" position={w.position} className="who-img" />
               <div className="who-text">
                 <h3>{w.name}</h3>
                 <p>{w.line}</p>
               </div>
-            </Photo>
+            </div>
           </li>
         ))}
       </ul>
