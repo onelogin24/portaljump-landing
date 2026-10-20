@@ -1,7 +1,6 @@
 import { useId, useState, type FormEvent } from "react";
 import { Check } from "lucide-react";
-import { CONTACT_EMAIL, WAITLIST_ENDPOINT } from "../config";
-import { form } from "../content/site";
+import { form, NOTICE_VERSION, waitlistNotice } from "../content/site";
 import { markJoined, useJoined } from "../waitlistState";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -21,27 +20,20 @@ export function WaitlistForm({ className = "" }: { className?: string }) {
       return;
     }
     setErrorMsg(null);
-    if (WAITLIST_ENDPOINT) {
-      setBusy(true);
-      try {
-        const res = await fetch(WAITLIST_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ email: value }),
-          redirect: "follow",
-        });
-        const data = await res.json();
-        if (res.ok && data.ok === true) markJoined();
-        else setErrorMsg(data.error === "invalid_email" ? form.invalid : form.failed);
-      } catch {
-        setErrorMsg(form.failed);
-      } finally {
-        setBusy(false);
-      }
-    } else {
-      const subject = encodeURIComponent(`${form.subject}: ${value}`);
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
-      markJoined();
+    setBusy(true);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: value, page: window.location.pathname, noticeVersion: NOTICE_VERSION }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok === true) markJoined();
+      else setErrorMsg(data.error === "invalid_email" ? form.invalid : form.failed);
+    } catch {
+      setErrorMsg(form.failed);
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -74,6 +66,9 @@ export function WaitlistForm({ className = "" }: { className?: string }) {
           {form.button}
         </button>
       </div>
+      <p className="wl-notice">
+        {waitlistNotice.text} <a href={waitlistNotice.href}>{waitlistNotice.linkLabel}</a>
+      </p>
       {errorMsg && (
         <p id={errId} className="wl-error" role="alert">
           {errorMsg}

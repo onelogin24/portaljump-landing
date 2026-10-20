@@ -1,11 +1,16 @@
 {
   "name": "portaljump-landing",
+  "main": "src/worker.ts",
   "compatibility_date": "2026-10-01",
   "build": {
     "command": "npm run build"
   },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "WAITLIST_ENDPOINT": "https://script.google.com/macros/s/AKfycbycq-dRUnqvj_qFF_4cUdbWvfqNvTHrKhKw7uwWtpzLkOq_BjoHtAvA__mxDKA66FoK/exec"
   }
 }

@@ -26,6 +26,10 @@ We use your information only to send early access and launch updates to people w
 
 **What we do not do.** We do not use analytics, advertising or tracking pixels. We do not sell or "share" personal information (as "share" is defined in the California Consumer Privacy Act). We do not use personal information for targeted advertising or profiling. We do not make automated decisions with legal or similarly significant effects. We do not collect sensitive personal information or track your location. We do not use your information to train AI models.
 
+## Waitlist
+
+When you join the waitlist we collect your email address, your approximate country, region and city (worked out from your internet connection, not GPS), the page you joined from, the time, and which notice you saw. We use this to send launch emails and to plan launches by region. It is stored in Google Sheets, with Google as our provider. We keep it until you ask us to delete it. You can withdraw at any time by emailing hello@portaljump.co.
+
 ## 3. Who we share it with
 
 We share personal information only with:

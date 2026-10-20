@@ -95,3 +95,11 @@ export const form = {
   success: "You're on the list.",
   subject: "Waitlist request",
 };
+
+export const NOTICE_VERSION = "2026-10-21";
+
+export const waitlistNotice = {
+  text: "By joining, you agree to receive Portal Jump launch emails. We save your email and approximate location.",
+  linkLabel: "Privacy Policy",
+  href: "/privacy",
+};
