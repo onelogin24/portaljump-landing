@@ -66,11 +66,11 @@ export const band = {
 export const who = {
   headline: ["A trip that feels right for\u00a0everyone."] as Headline,
   items: [
-    { name: "Solo", line: "Your pace. Your places.", image: "who-solo.jpg", position: "center top", alt: "Illustration of a woman in a camel coat reading a map" },
-    { name: "Couples", line: "Picks that suit you both.", image: "who-couples.jpg", position: "center top", alt: "Illustration of a couple looking at a film camera together" },
-    { name: "Families", line: "Shorter walks, places kids enjoy.", image: "who-families.jpg", position: "center top", alt: "Illustration of a father carrying his daughter on his shoulders" },
-    { name: "Groups", line: "Everyone's must-sees, in one day.", image: "who-groups.jpg", position: "center top", alt: "Illustration of three friends taking a selfie" },
-    { name: "Creators", line: "The best places, in the best light.", image: "who-creators.jpg", position: "center top", alt: "Illustration of a photographer raising her camera" },
+    { name: "Solo", line: "Your pace. Your places.", image: "who-solo.jpg", position: "center", alt: "Illustration of a traveller in a pink hat reading a map" },
+    { name: "Couples", line: "Picks that suit you both.", image: "who-couples.jpg", position: "center", alt: "Illustration of a couple sharing an ice cream" },
+    { name: "Families", line: "Shorter walks, places kids enjoy.", image: "who-families.jpg", position: "center", alt: "Illustration of a mother carrying her child on her shoulders" },
+    { name: "Groups", line: "Everyone's must-sees, in one day.", image: "who-groups.jpg", position: "center", alt: "Illustration of three friends taking a selfie" },
+    { name: "Creators", line: "The best places, in the best light.", image: "who-creators.jpg", position: "center", alt: "Illustration of a photographer raising her camera" },
   ],
 };
 

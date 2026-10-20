@@ -552,7 +552,8 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 /* who */
 .who-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-items); margin-top: var(--space-head); }
 .who-card { width: 100%; overflow: hidden; border-radius: 20px; background: #ededed; color: #0b0b0c; }
-.who-img { width: 100%; aspect-ratio: 4 / 5; border-radius: 0; }
+.who-img { width: 100%; aspect-ratio: 3 / 4; border-radius: 0; background: none; }
+.who-img img { object-fit: contain; }
 .who-img img { transition: transform 500ms var(--ease); }
 .who-text { padding: var(--space-text); }
 .who-text h3 { font-size: 17px; line-height: 1.3; }
