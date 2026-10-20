@@ -16,6 +16,7 @@ For the purposes of the GDPR and UK GDPR, APLUSB DECOR PRIVATE LIMITED is the co
 | Information | Where it comes from | Why we use it | Legal basis (EU and UK) | How long we keep it |
 | --- | --- | --- | --- | --- |
 | Email address | You, when you join the waitlist | To send early access and launch updates | Consent | Until launch plus 12 months, or until you unsubscribe or ask us to delete it, whichever is first |
+| Approximate country, region and city, the page you joined from, the time, and which notice you saw | Worked out from your internet connection (not GPS) and your waitlist sign-up, when you join the waitlist | To send launch emails, plan launches by region, and keep a record of the notice you saw | Consent | Until you ask us to delete it, and you can withdraw at any time |
 | Anything you write to us | You, when you email us | To read and reply to your message | Legitimate interests (answering you) | As long as needed to handle your request |
 | IP address, browser and device type, pages requested, date and time of request | Collected automatically by our hosting provider Cloudflare, Inc. (USA) | To deliver the Site and keep it secure | Legitimate interests (security and hosting) | Kept by Cloudflare under its own retention practices |
 | Any of the above, where the law requires | Various | To meet legal obligations | Legal obligation, where applicable | As long as the law requires |
@@ -97,6 +98,8 @@ This section covers the California Consumer Privacy Act as amended by the Califo
 | Category | Examples | Collected | Sold or shared |
 | --- | --- | --- | --- |
 | Identifiers | Email address, IP address | Yes | No |
+| Geolocation data (approximate) | Country, region and city worked out from your internet connection, not GPS | Yes, stored in Google Sheets | No |
+| Waitlist sign-up details | Page you joined from, time, and which notice you saw | Yes, stored in Google Sheets | No |
 | Internet or network activity | Pages requested, browser and device type, date and time of request | Yes, through our hosting provider | No |
 | Sensitive personal information | None | No | Not applicable |
 
