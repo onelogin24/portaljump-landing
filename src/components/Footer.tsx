@@ -52,13 +52,6 @@ export function Footer() {
               })}
             </ul>
           )}
-          <span>
-            {footerMeta.credits.before}
-            <a href={footerMeta.credits.link.href} target="_blank" rel="noopener noreferrer">
-              {footerMeta.credits.link.label}
-            </a>
-            {footerMeta.credits.after}
-          </span>
         </div>
       </div>
     </footer>

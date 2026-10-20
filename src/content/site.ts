@@ -23,6 +23,8 @@ export type StoryStep = {
   body: string;
 };
 
+export const mapCredit = { text: "© OpenStreetMap contributors", href: "https://www.openstreetmap.org/copyright" };
+
 export const features = {
   headline: ["Keep your itinerary, bookings, and favourite places in one\u00a0view."] as Headline,
   cards: [

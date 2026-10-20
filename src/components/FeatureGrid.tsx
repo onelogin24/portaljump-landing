@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { Bed, Plane, Star, Ticket, Utensils } from "lucide-react";
-import { features } from "../content/site";
+import { features, mapCredit } from "../content/site";
 import { lazy } from "react";
 import { LazyOnView } from "./LazyOnView";
 import { Photo } from "./Photo";
@@ -13,9 +13,14 @@ function Illustration({ kind }: { kind: (typeof features.cards)[number]["kind"] 
   switch (kind) {
     case "map":
       return (
-        <LazyOnView className="ill ill-map" fallback={null} ariaHidden>
-          <IllMap />
-        </LazyOnView>
+        <div className="ill-map-wrap">
+          <LazyOnView className="ill-map" fallback={null} ariaHidden>
+            <IllMap />
+          </LazyOnView>
+          <a className="map-credit" href={mapCredit.href} target="_blank" rel="noopener noreferrer">
+            {mapCredit.text}
+          </a>
+        </div>
       );
     case "bookings":
       return (

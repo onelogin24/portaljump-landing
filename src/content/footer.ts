@@ -39,9 +39,4 @@ export const footerMeta = {
   brand: "Portal Jump",
   copyright: "© 2026 APLUSB DECOR PRIVATE LIMITED",
   email: CONTACT_EMAIL,
-  credits: {
-    before: "Photography via Unsplash and PAKUTASO. Map data ",
-    link: { label: "OpenStreetMap", href: "https://www.openstreetmap.org/copyright" },
-    after: ".",
-  },
 };

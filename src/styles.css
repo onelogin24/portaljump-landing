@@ -323,6 +323,24 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 .feature { padding: 20px var(--space-items); display: flex; flex-direction: column; overflow: hidden; border-radius: 28px; }
 .feature h3 .soft { font-weight: 400; }
 .ill { flex: 1; margin-top: var(--space-text); min-height: 0; }
+.ill-map-wrap { position: relative; display: flex; flex-direction: column; flex: 1; min-height: 0; margin-top: var(--space-text); }
+.ill-map-wrap > .ill-map { flex: 1; }
+.map-credit {
+  position: absolute;
+  z-index: 2;
+  right: var(--space-sm);
+  bottom: var(--space-chip);
+  padding: 2px var(--space-chip);
+  border-radius: 999px;
+  background: rgba(243, 238, 229, 0.9);
+  font-size: 11px;
+  line-height: 1.5;
+  color: #5a5a5f;
+}
+.map-credit::after { content: ""; position: absolute; top: -16px; right: -4px; bottom: -8px; left: -4px; }
+@media (hover: hover) {
+  .map-credit:hover { color: var(--ink); }
+}
 .ill-map { position: relative; isolation: isolate; min-height: 180px; border-radius: 16px; overflow: hidden; background: #f3eee5; }
 .ill-bookings { display: grid; grid-auto-rows: 1fr; gap: var(--space-chip); }
 .booking { display: flex; align-items: center; gap: var(--space-sm); padding: 4px var(--space-sm); border-radius: 14px; box-shadow: none; }
@@ -407,7 +425,6 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   color: var(--ink-3);
 }
 .footer-bottom-row a { color: #fff; }
-.footer-bottom-row span a { text-decoration: underline; text-underline-offset: 3px; }
 /* social icons: 44px tap area, kept to the text line height on wide screens */
 .footer-social { display: flex; gap: 4px; margin-block: -12px; }
 .footer-social a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: var(--ink-3); }
