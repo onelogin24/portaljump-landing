@@ -59,8 +59,8 @@ export const features = {
 };
 
 export const band = {
-  image: "band.jpg",
-  alt: "A quiet temple garden in Kyoto in autumn",
+  image: "closing-roadtrip.jpg",
+  alt: "Illustration of friends on a road trip",
 };
 
 export const who = {
