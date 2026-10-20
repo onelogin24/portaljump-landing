@@ -12,7 +12,7 @@ export const hero = {
   headline: ["Your whole trip.", "One Map."] as const,
   subline: "Booking, plans, picks and reviews, pinned where they happen.",
   note: "Free to join. Only early access emails.",
-  image: "closing-roadtrip.jpg",
+  image: "closing-roadtrip-v2.jpg",
   alt: "Illustration of friends on a road trip",
   chips: ["Hotels", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
@@ -25,9 +25,9 @@ export const mapCredit = { text: "© OpenStreetMap contributors", href: "https:/
 export const features = {
   headline: ["Keep your itinerary, bookings, and favourite places in one\u00a0view."] as Headline,
   cards: [
-    { lead: "Map.", rest: "Every place you plan to go, in order.", kind: "map" },
-    { lead: "Bookings.", rest: "Every confirmation in one list.", kind: "bookings" },
-    { lead: "Picks.", rest: "Chosen for how you travel.", kind: "picks" },
+    { lead: "Map.", rest: "Explore the map. Pin every stop.", kind: "map" },
+    { lead: "Bookings.", rest: "Every booking, in one list.", kind: "bookings" },
+    { lead: "Picks.", rest: "Chosen. Curated for you.", kind: "picks" },
     { lead: "Reviews.", rest: "Notes from people who went.", kind: "reviews" },
   ] as const,
   confirmed: "Confirmed",
@@ -67,15 +67,15 @@ export const who = {
 export const steps = {
   headline: ["Plan your trip in three simple\u00a0steps."] as Headline,
   items: [
-    { icon: "compass", title: "Explore", body: "Places chosen for how you travel." },
-    { icon: "pin", title: "Pin", body: "Every stop on one map, in order." },
-    { icon: "route", title: "Go", body: "Travel time between stops, never clock times." },
+    { icon: "compass", title: "Explore", body: "Discover places you'll want to go." },
+    { icon: "pin", title: "Pin", body: "Save the places you want to visit." },
+    { icon: "route", title: "Go", body: "Your entire journey, mapped in one place." },
   ] as const,
 };
 
 export const agencies = {
   headline: ["For travel agencies.", "Your brand, our map."],
-  body: "Give every client a live trip map. We share the revenue on what they book.",
+  body: "A bespoke trip map for every client, under your brand.",
   cta: "Talk to us",
   subject: "Travel agency partnership",
   cardLabel: "Your agency name",

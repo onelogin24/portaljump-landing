@@ -21,7 +21,7 @@ export function Steps() {
           const Icon = stepIcons[s.icon];
           return (
             <li key={s.title} className="step" data-reveal="fade" style={{ "--i": i + 1 } as CSSProperties}>
-              <Icon className="step-icon" size={18} strokeWidth={1.75} aria-hidden="true" />
+              <Icon className="step-icon" size={22} strokeWidth={1.5} aria-hidden="true" />
               <h3 className="step-title">{s.title}</h3>
               <p className="step-body">{s.body}</p>
             </li>
