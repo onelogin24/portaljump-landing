@@ -6,7 +6,7 @@ export function Closing() {
   return (
     <section id="waitlist" className="section wrap" aria-labelledby="closing-title" data-reveal>
       <div className="scene scene-closing">
-        <Photo file={band.image} alt={band.alt} sizes="(min-width: 1200px) 1200px, 100vw" position="center 10%" className="scene-img" />
+        <Photo file={band.image} alt={band.alt} sizes="(min-width: 1200px) 1200px, 100vw" position="center top" className="scene-img" />
         <div className="scene-copy">
           <h2 id="closing-title" className="closing-title">
             {closing.line1}

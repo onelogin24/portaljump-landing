@@ -255,7 +255,19 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   height: min(calc(100svh - 170px), 640px);
   min-height: 440px;
 }
-.scene-closing { height: clamp(420px, calc(100vh - 120px), 600px); height: clamp(420px, calc(100svh - 120px), 600px); }
+.scene-closing {
+  height: clamp(420px, calc(100vh - 120px), 600px);
+  height: clamp(420px, calc(100svh - 120px), 600px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 16px;
+}
+/* closing: text centred over the image; only the text gets a soft light halo, never the image */
+.scene-closing .scene-copy { width: min(560px, 100%); padding: 0; text-align: center; }
+.scene-closing .scene-copy .wl { margin-inline: auto; max-width: 460px; }
+.scene-closing .scene-copy h2, .scene-closing .scene-copy .note { text-shadow: 0 0 14px rgba(255, 255, 255, 0.6), 0 0 3px rgba(255, 255, 255, 0.5); }
+.scene-closing .scene-copy .wl-error { margin-left: 0; }
 .scene-img { position: absolute; inset: 0; border-radius: 0; background: none; }
 .scene-copy {
   position: relative;
@@ -822,15 +834,20 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 @media (max-width: 1199px) {
   .scene { display: grid; grid-template-rows: auto minmax(0, 1fr); }
   .scene-hero { height: max(calc(100vh - 170px), 560px); height: max(calc(100svh - 170px), 560px); }
-  .scene-closing { height: max(calc(100vh - 120px), 560px); height: max(calc(100svh - 120px), 560px); }
   .scene-copy { width: auto; padding: 28px 28px 20px; }
   .scene-img { position: relative; inset: auto; grid-row: 2; min-height: 0; height: 100%; }
   .scene-img img { object-position: 58% 30% !important; }
   .scene-copy .wl { max-width: 460px; }
+  .scene-closing { display: flex; height: clamp(480px, calc(100vh - 120px), 600px); height: clamp(480px, calc(100svh - 120px), 600px); }
+  .scene-closing .scene-img { position: absolute; inset: 0; grid-row: auto; height: auto; }
+  .scene-closing .scene-img img { object-position: 45% top !important; }
+  .scene-closing .scene-copy { width: min(560px, 100%); padding: 0; }
 }
 @media (max-width: 767px) {
-  .scene-hero, .scene-closing { height: max(calc(100vh - 100px), 540px); height: max(calc(100svh - 100px), 540px); }
+  .scene-hero { height: max(calc(100vh - 100px), 540px); height: max(calc(100svh - 100px), 540px); }
   .scene-copy { padding: 24px 20px 16px; }
+  .scene-closing .scene-copy { padding: 0; }
+  .scene-closing .scene-img img { object-position: 45% top !important; }
   .scene-copy h1, .closing-title { font-size: 34px; }
   .hero-sub { font-size: 15px; margin-top: 8px; }
   .hero-form, .closing-form { margin-top: var(--space-text); }

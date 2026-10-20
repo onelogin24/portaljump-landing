@@ -1,5 +1,5 @@
 import { BedDouble, Plane, Utensils, Compass, Star } from "lucide-react";
-import { band, hero } from "../content/site";
+import { hero } from "../content/site";
 import { Photo } from "./Photo";
 import { WaitlistForm } from "./WaitlistForm";
 
@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section className="wrap hero" aria-labelledby="hero-title">
       <div className="scene scene-hero">
-        <Photo file={band.image} alt={band.alt} sizes="(min-width: 1200px) 1200px, 100vw" position="center 10%" eager className="scene-img" />
+        <Photo file={hero.image} alt={hero.alt} sizes="(min-width: 1200px) 1200px, 100vw" position="center 10%" eager className="scene-img" />
         <div className="scene-copy">
           <h1 id="hero-title">
             <span>{hero.headline[0]}</span> <span>{hero.headline[1]}</span>

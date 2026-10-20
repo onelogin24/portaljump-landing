@@ -14,7 +14,7 @@ const XS = 1100; // phones
 const THUMB = 320; // map pins and list thumbnails
 const manifest = {};
 // Illustrations shown full bleed: near-lossless webp, high quality jpg, never downscaled, one phone size.
-const FIDELITY = new Set(["closing-roadtrip"]);
+const FIDELITY = new Set(["closing-roadtrip", "closing-final"]);
 
 // Accepts "name.jpg" and "name.jpg.jpg"; files with "backup" in the name are ignored.
 const files = (await readdir(src))

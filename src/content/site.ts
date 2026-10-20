@@ -12,6 +12,8 @@ export const hero = {
   headline: ["Your whole trip.", "One Map."] as const,
   subline: "Booking, plans, picks and reviews, pinned where they happen.",
   note: "Free to join. Only early access emails.",
+  image: "closing-roadtrip.jpg",
+  alt: "Illustration of friends on a road trip",
   chips: ["Stays", "Flights", "Eats", "Things to do", "Reviews"] as const,
 };
 
@@ -59,8 +61,8 @@ export const features = {
 };
 
 export const band = {
-  image: "closing-roadtrip.jpg",
-  alt: "Illustration of friends on a road trip",
+  image: "closing-final.jpg",
+  alt: "Illustration of a road trip",
 };
 
 export const who = {
