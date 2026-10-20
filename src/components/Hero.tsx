@@ -19,6 +19,10 @@ const MAP_H = mapData.height;
 const POINTS = mapData.points as Record<string, { x: number; y: number }>;
 const PILL_EDGE = 12;
 
+/** Travel loop, in ms: intro wait, leg 1, pause, leg 2, pause, fade, rest. */
+const LOOP = { start: 1700, leg: 3000, pause: 1000, fade: 600 };
+const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
 type Pt = { x: number; y: number };
 
 /** Same fit as scripts/build-og.mjs: the 3 stops with 20% padding, filling the box. */
@@ -53,6 +57,9 @@ function HeroMap() {
   const box = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
+  const legRefs = useRef<(SVGPathElement | null)[]>([]);
+  const pinRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const dotRef = useRef<HTMLSpanElement>(null);
   const [pillW, setPillW] = useState<number[]>([0, 0]);
 
   useLayoutEffect(() => {
@@ -70,6 +77,91 @@ function HeroMap() {
     setPillW((prev) => (prev.every((v, i) => v === next[i]) ? prev : next));
   }, [size.w]);
 
+  // Traveller dot: runs along the real leg paths; paused off screen and in hidden tabs.
+  useLayoutEffect(() => {
+    const el = box.current;
+    const dot = dotRef.current;
+    if (!el || !dot || size.w === 0) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const paths = legRefs.current;
+    const pills = pillRefs.current;
+    if (!paths[0] || !paths[1]) return;
+    const lens = paths.map((p) => p!.getTotalLength());
+    let visible = true;
+    let raf = 0;
+    let last = 0;
+    let clock = 0;
+    let pulsed = [false, false, false];
+    const pulse = (i: number) => {
+      pinRefs.current[i]?.animate([{ transform: "scale(1)" }, { transform: "scale(1.06)" }, { transform: "scale(1)" }], { duration: 400, easing: "ease-in-out" });
+    };
+    const place = (leg: number, p: number) => {
+      const pt = paths[leg]!.getPointAtLength(lens[leg] * p);
+      dot.style.transform = `translate(${pt.x}px, ${pt.y}px)`;
+    };
+    const l2Start = LOOP.leg + LOOP.pause;
+    const l2End = l2Start + LOOP.leg;
+    const cycle = l2End + LOOP.fade + 1000;
+    const frame = (now: number) => {
+      raf = 0;
+      clock += last ? Math.min(now - last, 100) : 0;
+      last = now;
+      let leg = -1;
+      let op = 0;
+      if (clock >= LOOP.start) {
+        const u = (clock - LOOP.start) % cycle;
+        if (u < 60) pulsed = [false, false, false];
+        if (u < LOOP.leg) {
+          leg = 0;
+          place(0, ease(u / LOOP.leg));
+          op = Math.min(1, u / 200);
+        } else if (u < l2Start) {
+          place(0, 1);
+          op = 1;
+        } else if (u < l2End) {
+          leg = 1;
+          place(1, ease((u - l2Start) / LOOP.leg));
+          op = 1;
+        } else if (u < l2End + LOOP.fade) {
+          place(1, 1);
+          op = 1 - (u - l2End) / LOOP.fade;
+        }
+        if (!pulsed[0] && u < LOOP.leg) { pulsed[0] = true; pulse(0); }
+        if (!pulsed[1] && u >= LOOP.leg) { pulsed[1] = true; pulse(1); }
+        if (!pulsed[2] && u >= l2End) { pulsed[2] = true; pulse(2); }
+      }
+      dot.style.opacity = String(op);
+      pills[0]?.classList.toggle("on", leg === 0);
+      pills[1]?.classList.toggle("on", leg === 1);
+      if (visible && !document.hidden) raf = requestAnimationFrame(frame);
+    };
+    const sync = () => {
+      const run = visible && !document.hidden;
+      el.classList.toggle("paused", !run);
+      if (run && !raf) {
+        last = 0;
+        raf = requestAnimationFrame(frame);
+      } else if (!run && raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+    const io = new IntersectionObserver((entries) => {
+      visible = entries[entries.length - 1].isIntersecting;
+      sync();
+    });
+    io.observe(el);
+    document.addEventListener("visibilitychange", sync);
+    sync();
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      if (raf) cancelAnimationFrame(raf);
+      pills[0]?.classList.remove("on");
+      pills[1]?.classList.remove("on");
+    };
+  }, [size.w, size.h]);
+
   const f = size.w > 0 && size.h > 0 ? fit(size.w, size.h) : null;
   const lines = f ? [curve(f.pts[0], f.pts[1]), curve(f.pts[1], f.pts[2])] : [];
 
@@ -77,6 +169,7 @@ function HeroMap() {
     <div className="hero-map" ref={box}>
       {f && (
         <div className="hero-art" aria-hidden="true">
+          <div className="hero-drift">
           <picture>
             <source type="image/webp" srcSet="/map/lisbon-1600.webp 1x, /map/lisbon-3200.webp 2x" />
             <img
@@ -101,13 +194,13 @@ function HeroMap() {
             {lines.map((l, i) => (
               <g key={i} mask={`url(#hero-leg-mask-${i})`}>
                 <path d={l.d} fill="none" stroke="#fff" strokeWidth={7} strokeLinecap="round" />
-                <path d={l.d} fill="none" stroke="#0B0B0C" strokeWidth={3} strokeLinecap="round" strokeDasharray="2 9" />
+                <path ref={(el) => { legRefs.current[i] = el; }} d={l.d} fill="none" stroke="#0B0B0C" strokeWidth={3} strokeLinecap="round" strokeDasharray="2 9" />
               </g>
             ))}
           </svg>
           {stops.map((s, i) => (
             <span key={s.id} className="hero-pin" style={{ left: f.pts[i].x, top: f.pts[i].y, ["--i" as string]: i }}>
-              <span className="hero-pin-inner">
+              <span className="hero-pin-inner" ref={(el) => { pinRefs.current[i] = el; }}>
                 <img src={`/images/${s.photo}-th.webp`} alt="" width={72} height={72} loading="eager" decoding="async" />
                 <b className="hero-badge">{s.n}</b>
               </span>
@@ -129,6 +222,8 @@ function HeroMap() {
               </span>
             );
           })}
+          <span className="hero-dot" ref={dotRef} />
+          </div>
         </div>
       )}
       <a className="map-credit" href={credit.href} target="_blank" rel="noopener noreferrer">

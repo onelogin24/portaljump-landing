@@ -324,6 +324,28 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   animation-delay: calc(700ms + var(--i) * 150ms);
 }
 .hero-map .map-credit { z-index: 2; }
+.hero-drift { position: absolute; inset: 0; animation: hero-drift 20s ease-in-out infinite alternate; }
+.hero-map.paused .hero-drift { animation-play-state: paused; }
+.hero-dot {
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35), 0 2px 10px rgba(11, 11, 12, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.hero-pill { transition: background-color 400ms var(--ease); }
+.hero-pill.on { --glass-bg: rgba(255, 255, 255, 0.9); }
+@keyframes hero-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.03); }
+}
 @keyframes hero-pin-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
@@ -717,6 +739,7 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .hero-drift { animation: none; }
   .pin-drop, .pcard, .daycard, .rec-card, .leg-chip, .pin-chip, .hero-pin, .hero-pill, .hero-leg-reveal { animation: none; }
   .pin-fade { transition: none; }
   .itin-row, .itin-foot, .itin-travel, .pref-chips .chip { transition: none; opacity: 1; transform: none; }
