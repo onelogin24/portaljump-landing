@@ -403,7 +403,7 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 .who-img img { transition: transform 500ms var(--ease); }
 .who-text { padding: var(--space-text); min-height: 100px; }
 .who-text h3 { font-size: 17px; line-height: 1.3; }
-.who-text p { margin-top: 4px; font-size: 14px; line-height: 1.5; color: #636368; }
+.who-text p { margin-top: 4px; white-space: nowrap; font-size: 14px; line-height: 1.5; color: #636368; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .who-card:hover .who-img img { transform: scale(1.03); }
 }

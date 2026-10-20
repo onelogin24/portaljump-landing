@@ -58,9 +58,9 @@ export const who = {
   items: [
     { name: "Solo", line: "Your pace. Your places.", image: "who-solo.jpg", position: "center", alt: "Illustration of a traveller in a pink hat reading a map" },
     { name: "Couples", line: "Picks that suit you both.", image: "who-couples.jpg", position: "center", alt: "Illustration of a couple sharing an ice cream" },
-    { name: "Families", line: "Shorter walks, places kids enjoy.", image: "who-families.jpg", position: "center", alt: "Illustration of a mother carrying her child on her shoulders" },
-    { name: "Groups", line: "Everyone's must-sees, in one day.", image: "who-groups.jpg", position: "center", alt: "Illustration of three friends taking a selfie" },
-    { name: "Creators", line: "The best places, in the best light.", image: "who-creators.jpg", position: "center", alt: "Illustration of a photographer raising her camera" },
+    { name: "Families", line: "Easy walks, fun for kids.", image: "who-families.jpg", position: "center", alt: "Illustration of a mother carrying her child on her shoulders" },
+    { name: "Groups", line: "Every must-see, together.", image: "who-groups.jpg", position: "center", alt: "Illustration of three friends taking a selfie" },
+    { name: "Creators", line: "Best places, best light.", image: "who-creators.jpg", position: "center", alt: "Illustration of a photographer raising her camera" },
   ],
 };
 
