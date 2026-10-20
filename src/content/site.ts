@@ -11,7 +11,6 @@ export const nav = {
 export const hero = {
   headline: ["Your whole trip.", "One Map."] as const,
   subline: "Booking, plans, picks and reviews, pinned where they happen.",
-  note: "Free to join. Only early access emails.",
   image: "closing-roadtrip-v2.jpg",
   alt: "Illustration of friends on a road trip",
   chips: ["Hotels", "Flights", "Eats", "Things to do", "Reviews"] as const,

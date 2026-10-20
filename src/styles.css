@@ -268,10 +268,8 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
 .hero-sub { margin-top: var(--space-sm); font-size: 16px; line-height: 1.5; color: #1c1c1e; }
 .hero-form { margin-top: var(--space-items); }
 .scene-copy .wl { max-width: 320px; }
-.scene-copy .note { margin-top: var(--space-sm); color: #1c1c1e; }
 .scene-copy .wl-error { background: #fff; display: inline-block; padding: 2px var(--space-sm); border-radius: 999px; margin-left: var(--space-chip); }
 
-.note { margin-top: var(--space-text); color: rgba(255, 255, 255, 0.75); font-size: 13px; line-height: 1.5; }
 
 .chips {
   display: flex;
@@ -613,5 +611,4 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   .scene-copy h1 { font-size: min(34px, 9.4vw); }
   .hero-sub { font-size: 15px; margin-top: 8px; }
   .hero-form { margin-top: var(--space-text); }
-  .scene-copy .note { margin-top: 8px; }
 }

@@ -24,7 +24,6 @@ export function Hero() {
           <div id="waitlist">
             <WaitlistForm className="hero-form" />
           </div>
-          <p className="note">{hero.note}</p>
         </div>
       </div>
       <ul className="chips hero-chips" aria-label="What you can plan">
