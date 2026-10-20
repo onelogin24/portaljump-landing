@@ -840,14 +840,14 @@ h3 { font-weight: 400; font-size: 18px; letter-spacing: -0.01em; line-height: 1.
   .scene-copy .wl { max-width: 460px; }
   .scene-closing { display: flex; height: clamp(480px, calc(100vh - 120px), 600px); height: clamp(480px, calc(100svh - 120px), 600px); }
   .scene-closing .scene-img { position: absolute; inset: 0; grid-row: auto; height: auto; }
-  .scene-closing .scene-img img { object-position: 45% top !important; }
+  .scene-closing .scene-img img { object-position: 57% top !important; }
   .scene-closing .scene-copy { width: min(560px, 100%); padding: 0; }
 }
 @media (max-width: 767px) {
   .scene-hero { height: max(calc(100vh - 100px), 540px); height: max(calc(100svh - 100px), 540px); }
   .scene-copy { padding: 24px 20px 16px; }
   .scene-closing .scene-copy { padding: 0; }
-  .scene-closing .scene-img img { object-position: 45% top !important; }
+  .scene-closing .scene-img img { object-position: 57% top !important; }
   .scene-copy h1, .closing-title { font-size: 34px; }
   .hero-sub { font-size: 15px; margin-top: 8px; }
   .hero-form, .closing-form { margin-top: var(--space-text); }

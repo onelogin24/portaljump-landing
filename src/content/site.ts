@@ -61,7 +61,7 @@ export const features = {
 };
 
 export const band = {
-  image: "closing-final.jpg",
+  image: "closing-final-v2.jpg",
   alt: "Illustration of a road trip",
 };
 

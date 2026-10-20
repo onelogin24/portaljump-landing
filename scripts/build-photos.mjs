@@ -15,6 +15,8 @@ const THUMB = 320; // map pins and list thumbnails
 const manifest = {};
 // Illustrations shown full bleed: near-lossless webp, high quality jpg, never downscaled, one phone size.
 const FIDELITY = new Set(["closing-roadtrip", "closing-final"]);
+// Images are cached for a year by file name, so a replaced image ships under a new name (bump the suffix).
+const OUTPUT_NAME = { "closing-final": "closing-final-v2" };
 
 // Accepts "name.jpg" and "name.jpg.jpg"; files with "backup" in the name are ignored.
 const files = (await readdir(src))
@@ -38,12 +40,13 @@ for (const file of files) {
 
   const base = () => sharp(input).rotate();
   if (FIDELITY.has(name)) {
+    const outName = OUTPUT_NAME[name] ?? name;
     const phone = Math.min(XS, srcWidth);
-    await base().webp({ quality: 95, smartSubsample: true, effort: 6 }).toFile(path.join(out, `${name}.webp`));
-    await base().resize({ width: phone, withoutEnlargement: true }).webp({ quality: 95, smartSubsample: true, effort: 6 }).toFile(path.join(out, `${name}-sm.webp`));
-    await base().jpeg({ quality: 92, chromaSubsampling: "4:4:4" }).toFile(path.join(out, `${name}.jpg`));
-    manifest[name] = { width: srcWidth, height: srcHeight, smWidth: phone, smHeight: Math.round((srcHeight * phone) / srcWidth), xsWidth: phone };
-    console.log(name, `${srcWidth}x${srcHeight} (full fidelity)`);
+    await base().webp({ quality: 95, smartSubsample: true, effort: 6 }).toFile(path.join(out, `${outName}.webp`));
+    await base().resize({ width: phone, withoutEnlargement: true }).webp({ quality: 95, smartSubsample: true, effort: 6 }).toFile(path.join(out, `${outName}-sm.webp`));
+    await base().jpeg({ quality: 92, chromaSubsampling: "4:4:4" }).toFile(path.join(out, `${outName}.jpg`));
+    manifest[outName] = { width: srcWidth, height: srcHeight, smWidth: phone, smHeight: Math.round((srcHeight * phone) / srcWidth), xsWidth: phone };
+    console.log(outName, `${srcWidth}x${srcHeight} (full fidelity)`);
     continue;
   }
   await base().resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toFile(path.join(out, `${name}.webp`));
