@@ -5,7 +5,7 @@ export const nav = {
     { label: "Who it's for", href: "#who-its-for" },
     { label: "For agencies", href: "#for-agencies" },
   ],
-  cta: "Get early access",
+  cta: "Private beta",
 };
 
 export const hero = {
@@ -88,7 +88,7 @@ export const agencies = {
 
 export const form = {
   placeholder: "you@email.com",
-  button: "Get early access",
+  button: "Private beta",
   invalid: "Enter a valid email",
   failed: "Something went wrong. Try again.",
   success: "You're on the list.",
